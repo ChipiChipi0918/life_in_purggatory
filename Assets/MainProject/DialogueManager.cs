@@ -19,6 +19,8 @@ public class DialogueManager : MonoBehaviour
     private bool isActive = false;
     private Coroutine typingRoutine;
 
+
+
     public void StartDialogue(List<DialogueLine> dialogue)
     {
         lines = dialogue;

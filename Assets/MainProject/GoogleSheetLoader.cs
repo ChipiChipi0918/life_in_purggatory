@@ -20,14 +20,13 @@ public class DialogueLine
     public float duration;
     public DialogueType type = DialogueType.Normal;
 }
+
 public static class CSVParser
 {
     public static List<DialogueLine> Parse(string csv)
     {
         List<DialogueLine> list = new List<DialogueLine>();
         string[] rows = csv.Split('\n');
-
-        bool inArgument = false; // ★ 심문 영역 여부
 
         foreach (var raw in rows)
         {
@@ -39,40 +38,29 @@ public static class CSVParser
                 continue;
 
             string[] cols = row.Split(',');
-            if (cols.Length < 2)
-                continue;
 
             DialogueLine line = new DialogueLine();
-            line.speaker = cols[0].Trim();
-            line.text = cols[1].Trim();
 
-            // ● 타입 결정
-            if (line.speaker == "심문 시작")
-            {
-                line.type = DialogueType.ArgumentStart;
-                inArgument = true;
-            }
-            else if (line.speaker == "심문 종료")
-            {
-                line.type = DialogueType.ArgumentEnd;
-                inArgument = false;
-            }
-            else if (inArgument)
-            {
-                line.type = DialogueType.Argument;  // ★ 심문 중의 모든 줄
-            }
+            // 1열: speaker
+            line.speaker = cols.Length >= 1 ? cols[0].Trim() : "";
+
+            // 2열: text
+            line.text = cols.Length >= 2 ? cols[1].Trim() : "";
+
+            // 3열: duration
+            if (cols.Length >= 3 && float.TryParse(cols[2].Trim(), out float dur))
+                line.duration = dur;
             else
-            {
-                line.type = DialogueType.Normal;
-            }
+                line.duration = 1f;
 
-            // ● duration
-            if (cols.Length >= 3)
-            {
-                float dur;
-                if (float.TryParse(cols[2].Trim(), out dur))
-                    line.duration = dur;
-            }
+
+            // 타입 설정
+            if (line.speaker == "심문 시작")
+                line.type = DialogueType.ArgumentStart;
+            else if (line.speaker == "심문 종료")
+                line.type = DialogueType.ArgumentEnd;
+            else
+                line.type = DialogueType.Normal;
 
             list.Add(line);
         }
@@ -80,6 +68,8 @@ public static class CSVParser
         return list;
     }
 }
+
+
 
 public class GoogleSheetLoader : MonoBehaviour
 {
@@ -117,4 +107,6 @@ public class GoogleSheetLoader : MonoBehaviour
 
         onLoaded?.Invoke(lines);
     }
+
+
 }
