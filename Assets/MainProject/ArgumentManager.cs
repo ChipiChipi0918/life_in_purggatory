@@ -145,6 +145,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         for (int i = 0; i < length; i++)
         {
             dialogueText.text = text.Substring(0, i + 1);
+            SoundManager.instance.ElinaVoice();
             yield return new WaitForSeconds(timePerChar);
         }
 
