@@ -20,13 +20,14 @@ public class DialogueLine
     public float duration;
     public DialogueType type = DialogueType.Normal;
 }
-
 public static class CSVParser
 {
     public static List<DialogueLine> Parse(string csv)
     {
         List<DialogueLine> list = new List<DialogueLine>();
         string[] rows = csv.Split('\n');
+
+        bool inArgument = false;
 
         foreach (var raw in rows)
         {
@@ -41,26 +42,30 @@ public static class CSVParser
 
             DialogueLine line = new DialogueLine();
 
-            // 1열: speaker
             line.speaker = cols.Length >= 1 ? cols[0].Trim() : "";
-
-            // 2열: text
             line.text = cols.Length >= 2 ? cols[1].Trim() : "";
 
-            // 3열: duration
             if (cols.Length >= 3 && float.TryParse(cols[2].Trim(), out float dur))
                 line.duration = dur;
             else
                 line.duration = 1f;
 
-
-            // 타입 설정
+            // 타입 판정
             if (line.speaker == "심문 시작")
+            {
                 line.type = DialogueType.ArgumentStart;
+                inArgument = true;
+            }
             else if (line.speaker == "심문 종료")
+            {
                 line.type = DialogueType.ArgumentEnd;
+                inArgument = false;
+            }
             else
-                line.type = DialogueType.Normal;
+            {
+                // 심문 시작 ~ 종료 사이 → Argument
+                line.type = inArgument ? DialogueType.Argument : DialogueType.Normal;
+            }
 
             list.Add(line);
         }
@@ -68,6 +73,7 @@ public static class CSVParser
         return list;
     }
 }
+
 
 
 
