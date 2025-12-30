@@ -40,6 +40,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public TMP_Text argumentText;
 
     [Header("Dialogue UI")]
+    public GameObject nameImg;
     public TMP_Text nameText;
     public TMP_Text dialogueText;
     public Slider textSlider;
@@ -120,19 +121,28 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         argumentText.text = "";
 
+        if(line.speaker != "") // ""는 나레이션
+        {
+            nameImg.SetActive(true); //나레이션 아닐때
+        }
+        else
+        {
+            nameImg.SetActive(false); //나레이션 일때
+        }
+
         nameText.text = line.speaker;
 
         if (typingRoutine != null)
             StopCoroutine(typingRoutine);
 
-        typingRoutine = StartCoroutine(TypeCoroutine(line.text));
+        typingRoutine = StartCoroutine(TypeCoroutine(line.speaker, line.text));
     }
 
     #endregion
 
     #region Typing Effect
 
-    IEnumerator TypeCoroutine(string text)
+    IEnumerator TypeCoroutine(string name,string text)
     {
         int length = text.Length;
 
@@ -141,17 +151,27 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         float totalTime = 1.0f;
         float timePerChar = totalTime / length;
+        if (timePerChar < 0.035f) timePerChar = 0.035f;
+        else if (timePerChar > 0.07f) timePerChar = 0.07f;
 
         for (int i = 0; i < length; i++)
         {
             dialogueText.text = text.Substring(0, i + 1);
-            SoundManager.instance.ElinaVoice();
+            if(i%2 == 0) VoiceSoundPlay(name); // 절반만 사운드 재생
             yield return new WaitForSeconds(timePerChar);
         }
+        yield return new WaitForSeconds(0.25f);
 
         textSlider.value = 1f;
     }
 
+    private void VoiceSoundPlay(string name)
+    {
+        if (name == "") return; //나레이션
+
+        if (name == "엘리나") SoundManager.instance.ElinaVoice();
+        else SoundManager.instance.ElinaVoice();
+    }
     #endregion
 
     #region Update & Input
