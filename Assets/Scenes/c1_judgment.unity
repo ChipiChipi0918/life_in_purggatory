@@ -1195,6 +1195,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   argumentText: {fileID: 1325811053}
+  nameText: {fileID: 2338959685317133056}
+  dialogueText: {fileID: 4243594033913353857}
+  textSlider: {fileID: 527996078}
 --- !u!1 &1325811051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1253,8 +1256,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uADF8\uB7FC \uB3C4\uB300\uCCB4 \uADF8\uB140\uC11D\uC740 \uC65C \uBCD1\uC744
-    \uAD6C\uC6B4\uAC74\uB370"
+  m_text: "ewq \uC65C \uBCD1\uC744 \uAD6C\uC6B4\uAC74\uB370"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b9fc5a770f1ecec4e980aaca68b14995, type: 2}
   m_sharedMaterial: {fileID: -1089315166902122673, guid: b9fc5a770f1ecec4e980aaca68b14995, type: 2}
@@ -1939,7 +1941,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3633431228511023741
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2258,7 +2260,6 @@ MonoBehaviour:
   nameText: {fileID: 2338959685317133056}
   dialogueText: {fileID: 4243594033913353857}
   textSlider: {fileID: 527996078}
-  argumentManager: {fileID: 1260226110}
 --- !u!4 &6518877601900522190
 Transform:
   m_ObjectHideFlags: 0

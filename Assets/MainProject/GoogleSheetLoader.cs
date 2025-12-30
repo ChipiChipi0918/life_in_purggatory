@@ -3,14 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using TMPro;
+using UnityEngine.EventSystems;
+using KoreanTyper;
+
+#region Dialogue Data Class
 public enum DialogueType
 {
-    Normal,
-    ArgumentStart,
-    Argument,
-    ArgumentEnd
+    Dialogue,
+    Argument
 }
-
 
 [System.Serializable]
 public class DialogueLine
@@ -18,72 +20,74 @@ public class DialogueLine
     public string speaker;
     public string text;
     public float duration;
-    public DialogueType type = DialogueType.Normal;
+    public DialogueType type;
 }
+
+
+#endregion
+
+#region CSV Parser
 public static class CSVParser
 {
     public static List<DialogueLine> Parse(string csv)
     {
-        List<DialogueLine> list = new List<DialogueLine>();
+        List<DialogueLine> lines = new List<DialogueLine>();
         string[] rows = csv.Split('\n');
 
         bool inArgument = false;
 
-        foreach (var raw in rows)
+        for (int i = 0; i < rows.Length; i++)
         {
-            string row = raw.Trim();
-            if (string.IsNullOrEmpty(row))
-                continue;
-
-            if (row.StartsWith("speaker") || row.StartsWith("이름") || row.StartsWith("Name"))
-                continue;
+            string row = rows[i].Trim();
+            if (string.IsNullOrWhiteSpace(row)) continue;
 
             string[] cols = row.Split(',');
+            if (cols.Length < 2) continue;
 
-            DialogueLine line = new DialogueLine();
+            string speaker = cols[0].Trim().Replace("\r", "");
+            string text = cols[1].Trim();
 
-            line.speaker = cols.Length >= 1 ? cols[0].Trim() : "";
-            line.text = cols.Length >= 2 ? cols[1].Trim() : "";
-
-            if (cols.Length >= 3 && float.TryParse(cols[2].Trim(), out float dur))
-                line.duration = dur;
-            else
-                line.duration = 1f;
-
-            // 타입 판정
-            if (line.speaker == "심문 시작")
+            if (speaker == "논의 시작")
             {
-                line.type = DialogueType.ArgumentStart;
                 inArgument = true;
-            }
-            else if (line.speaker == "심문 종료")
-            {
-                line.type = DialogueType.ArgumentEnd;
-                inArgument = false;
-            }
-            else
-            {
-                // 심문 시작 ~ 종료 사이 → Argument
-                line.type = inArgument ? DialogueType.Argument : DialogueType.Normal;
+                continue;
             }
 
-            list.Add(line);
+            if (speaker == "논의 종료")
+            {
+                inArgument = false;
+                continue;
+            }
+
+            DialogueLine line = new DialogueLine
+            {
+                speaker = speaker,
+                text = text,
+                type = inArgument ? DialogueType.Argument : DialogueType.Dialogue
+            };
+
+            if (cols.Length >= 3 && float.TryParse(cols[2], out float dur))
+                line.duration = dur;
+
+            lines.Add(line);
         }
 
-        return list;
+        return lines;
     }
 }
 
+#endregion
 
 
+#region Google Sheet Loader
 
 public class GoogleSheetLoader : MonoBehaviour
 {
     [Header("일상 URL")]
-    public string dialogueURL;     // 일상 대사
+    public string dialogueURL;
 
     [Header("재판 URL")]
-    public string argumentURL;     // 재판 어그리먼트
+    public string argumentURL;
 
     public IEnumerator LoadDialogueCSV(Action<List<DialogueLine>> onLoaded)
     {
@@ -97,22 +101,25 @@ public class GoogleSheetLoader : MonoBehaviour
 
     private IEnumerator LoadCSV(string url, Action<List<DialogueLine>> onLoaded)
     {
-        UnityWebRequest www = UnityWebRequest.Get(url);
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            Debug.LogError("CSV 다운로드 실패: " + www.error);
-            onLoaded?.Invoke(null);
-            yield break;
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string csv = request.downloadHandler.text;
+                var list = CSVParser.Parse(csv);
+                onLoaded?.Invoke(list);
+            }
+            else
+            {
+                Debug.LogError("CSV Load Failed: " + request.error);
+                onLoaded?.Invoke(new List<DialogueLine>());
+            }
         }
-
-        string csvData = www.downloadHandler.text;
-
-        List<DialogueLine> lines = CSVParser.Parse(csvData);
-
-        onLoaded?.Invoke(lines);
     }
-
-
 }
+
+#endregion
+
+

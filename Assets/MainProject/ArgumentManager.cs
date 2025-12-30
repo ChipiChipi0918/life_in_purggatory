@@ -1,10 +1,11 @@
-using System;
-using KoreanTyper;
+Ôªøusing System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using KoreanTyper;
 
 public static class ArgumentTextFormatter
 {
@@ -18,10 +19,10 @@ public static class ArgumentTextFormatter
             int end = text.IndexOf('*', start + 1);
             if (end == -1) break;
 
-            string target = text.Substring(start + 1, end - start - 1);
+            string keyword = text.Substring(start + 1, end - start - 1);
 
             string replacement =
-                $"<link=\"cmd:{target}\"><b><color=#FF4444>{target}</color></b></link>";
+                $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
 
             text = text.Remove(start, end - start + 1)
                        .Insert(start, replacement);
@@ -33,93 +34,153 @@ public static class ArgumentTextFormatter
 
 public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 {
-    [Header("UI")]
+    public bool isArgumentActive = false;
+
+    [Header("Argument UI")]
     public TMP_Text argumentText;
+
+    [Header("Dialogue UI")]
+    public TMP_Text nameText;
+    public TMP_Text dialogueText;
+    public Slider textSlider;
 
     private List<DialogueLine> lines;
     private int index = 0;
-    private bool isActive = false;
+
+    private Coroutine argumentRoutine;
+    private Coroutine typingRoutine;
 
     private string rawText = "";
     private int hoverIndex = -1;
-    private Action onFinished;
 
+    #region Public Entry
 
-    public void StartArgument(List<DialogueLine> dialogue, Action finishCallback)
+    public void PlayLines(List<DialogueLine> dialogueLines)
     {
-        lines = dialogue;
-        index = 0;
-        isActive = true;
-        onFinished = finishCallback;
-
-        StartCoroutine(PlayArgument());
-    }
-
-    private IEnumerator PlayArgument()
-    {
-        while (isActive && index < lines.Count)
+        if (dialogueLines == null || dialogueLines.Count == 0)
         {
-            DialogueLine line = lines[index];
-
-            rawText = line.text;
-            argumentText.text = ArgumentTextFormatter.Format(rawText);
-
-            yield return new WaitForSeconds(line.duration);
-
-            index++;
+            Debug.LogWarning("ÎåÄÏÇ¨ Îç∞Ïù¥ÌÑ∞ ÏóÜÏùå");
+            return;
         }
 
-        EndArgument();
+        lines = dialogueLines;
+        index = 0;
+
+        StopAllCoroutines();
+        ClearUI();
+
+        PlayNext();
     }
 
-    private void EndArgument()
+    #endregion
+
+    #region Core Flow
+
+    private void PlayNext()
     {
-        isActive = false;
+        if (index >= lines.Count)
+        {
+            isArgumentActive = false;
+            EndAll();
+            return;
+        }
+
+        DialogueLine line = lines[index];
+
+        isArgumentActive = (line.type == DialogueType.Argument);
+
+        if (isArgumentActive)
+        {
+            if (argumentRoutine != null)
+                StopCoroutine(argumentRoutine);
+
+            argumentRoutine = StartCoroutine(PlayArgument(line));
+        }
+        else
+        {
+            ShowDialogue(line);
+        }
+
+        index++;
+    }
+
+
+    IEnumerator PlayArgument(DialogueLine line)
+    {
+        rawText = line.text;
+        argumentText.text = ArgumentTextFormatter.Format(rawText);
+
+        yield return new WaitForSeconds(line.duration);
+
+        PlayNext();
+    }
+
+
+    private void ShowDialogue(DialogueLine line)
+    {
         argumentText.text = "";
 
-        Debug.Log("æÓ±◊∏Æ∏’∆Æ ¡æ∑·");
+        nameText.text = line.speaker;
 
-        onFinished?.Invoke();
+        if (typingRoutine != null)
+            StopCoroutine(typingRoutine);
+
+        typingRoutine = StartCoroutine(TypeCoroutine(line.text));
     }
 
-    // (Hover / Click ∑Œ¡˜ ±‚¡∏ ±◊¥Î∑Œ)
-    public void OnPointerClick(PointerEventData eventData)
+    #endregion
+
+    #region Typing Effect
+
+    IEnumerator TypeCoroutine(string text)
     {
-        Camera cam = null;
+        int length = text.Length;
 
-        if (argumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            cam = argumentText.canvas.worldCamera;
+        textSlider.maxValue = 1f;
+        textSlider.value = 0f;
 
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(argumentText,
-            eventData.position, cam);
+        float totalTime = 1.0f;
+        float timePerChar = totalTime / length;
 
-        if (linkIndex == -1) return;
-
-        TMP_LinkInfo linkInfo = argumentText.textInfo.linkInfo[linkIndex];
-
-        string id = linkInfo.GetLinkID();
-
-        if (id.StartsWith("cmd:"))
+        for (int i = 0; i < length; i++)
         {
-            string keyword = id.Substring(4);
-            Debug.Log("≈¨∏Ø«— ∞≠¡∂ πÆ±∏: " + keyword);
+            dialogueText.text = text.Substring(0, i + 1);
+            yield return new WaitForSeconds(timePerChar);
         }
+
+        textSlider.value = 1f;
     }
+
+    #endregion
+
+    #region Update & Input
 
     private void Update()
     {
-        if (!isActive) return;
+        if (lines == null) return;
+
+        if (Input.GetMouseButtonDown(0) && isArgumentActive==false && textSlider.value==1)
+        {
+            PlayNext();
+        }
+
         CheckHover();
     }
 
+    #endregion
+
+    #region Hover & Click (Argument)
+
     private void CheckHover()
     {
+        if (argumentText.text == "") return;
+
         Camera cam = null;
         if (argumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
             cam = argumentText.canvas.worldCamera;
 
-        int link = TMP_TextUtilities.FindIntersectingLink(argumentText,
-            Input.mousePosition, cam);
+        int link = TMP_TextUtilities.FindIntersectingLink(
+            argumentText, Input.mousePosition, cam);
 
         if (link != hoverIndex)
         {
@@ -149,8 +210,48 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
 
         string formatted = ArgumentTextFormatter.Format(rawText);
-
         argumentText.text = formatted.Replace(normal, hovered);
     }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Camera cam = null;
+        if (argumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            cam = argumentText.canvas.worldCamera;
+
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(
+            argumentText, eventData.position, cam);
+
+        if (linkIndex == -1) return;
+
+        TMP_LinkInfo linkInfo = argumentText.textInfo.linkInfo[linkIndex];
+        string id = linkInfo.GetLinkID();
+
+        if (id.StartsWith("cmd:"))
+        {
+            string keyword = id.Substring(4);
+            Debug.Log("ÌÅ¥Î¶≠Îêú ÌÇ§ÏõåÎìú: " + keyword);
+        }
+    }
+
+    #endregion
+
+    #region Utils
+
+    private void ClearUI()
+    {
+        argumentText.text = "";
+        nameText.text = "";
+        dialogueText.text = "";
+        textSlider.value = 0f;
+    }
+
+    private void EndAll()
+    {
+        ClearUI();
+        Debug.Log("Ï†ÑÏ≤¥ ÎåÄÏÇ¨ Ï¢ÖÎ£å");
+    }
+
+    #endregion
 
 }
