@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DG.Tweening;
+using KoreanTyper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using KoreanTyper;
 
 public static class ArgumentTextFormatter
 {
@@ -34,12 +35,30 @@ public static class ArgumentTextFormatter
 
 public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 {
-    public bool isArgumentActive = false;
+    // --------------------------
+    // isArgumentActive : 변경 감지형 프로퍼티
+    // --------------------------
+    private bool _isArgumentActive = false;
+    public bool isArgumentActive
+    {
+        get => _isArgumentActive;
+        set
+        {
+            if (_isArgumentActive == value) return;
 
-    [Header("Argument UI")]
+            _isArgumentActive = value;
+            UiManager.instance.ArgumentUiOn(value); // 변경될 때만 실행
+        }
+    }
+
+    [Header("Argument")]
     public TMP_Text argumentText;
+    public CanvasGroup argumentTextCancasGroup;
+    public float argumentDuration = 0.5f;
+    public Transform argumentCamTransform;
 
-    [Header("Dialogue UI")]
+    [Header("Dialogue")]
+    public GameObject dialogue;
     public GameObject nameImg;
     public TMP_Text nameText;
     public TMP_Text dialogueText;
@@ -55,7 +74,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private int hoverIndex = -1;
 
     #region Public Entry
-
     public void PlayLines(List<DialogueLine> dialogueLines)
     {
         if (dialogueLines == null || dialogueLines.Count == 0)
@@ -72,7 +90,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         PlayNext();
     }
-
     #endregion
 
     #region Core Flow
@@ -88,6 +105,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         DialogueLine line = lines[index];
 
+        // 여기서 자동으로 UI 변경됨
         isArgumentActive = (line.type == DialogueType.Argument);
 
         if (isArgumentActive)
@@ -95,15 +113,27 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             if (argumentRoutine != null)
                 StopCoroutine(argumentRoutine);
 
+            MoveCam(line.speaker);
+            dialogue.SetActive(false);
             argumentRoutine = StartCoroutine(PlayArgument(line));
         }
         else
         {
+            dialogue.SetActive(true);
             ShowDialogue(line);
         }
 
         index++;
     }
+
+    private void MoveCam(string name)
+    {
+        if (name == "엘리나") argumentCamTransform.transform.DOMoveX(0, 0.5f);
+        else if (name == "미리엘") argumentCamTransform.transform.DOMoveX(-20, 0.5f);
+        else if (name == "에스라") argumentCamTransform.transform.DOMoveX(40, 0.5f);
+        else if (name == "테오도르") argumentCamTransform.transform.DOMoveX(20, 0.5f);
+    }
+
 
 
     IEnumerator PlayArgument(DialogueLine line)
@@ -111,24 +141,38 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         rawText = line.text;
         argumentText.text = ArgumentTextFormatter.Format(rawText);
 
+        argumentTextCancasGroup.alpha = 0f;
+        argumentTextCancasGroup.interactable = false;
+        argumentTextCancasGroup.blocksRaycasts = false;
+
+        yield return new WaitForSeconds(0.2f);
+
+        float time = 0f;
+
+        while (time < argumentDuration)
+        {
+            time += Time.deltaTime;
+            argumentTextCancasGroup.alpha = Mathf.Lerp(0f, 1f, time / argumentDuration);
+            yield return null;
+        }
+
+        argumentTextCancasGroup.alpha = 1f;
+        argumentTextCancasGroup.interactable = true;
+        argumentTextCancasGroup.blocksRaycasts = true;
+
         yield return new WaitForSeconds(line.duration);
 
         PlayNext();
     }
 
-
     private void ShowDialogue(DialogueLine line)
     {
         argumentText.text = "";
 
-        if(line.speaker != "") // ""는 나레이션
-        {
-            nameImg.SetActive(true); //나레이션 아닐때
-        }
+        if (line.speaker != "")
+            nameImg.SetActive(true);
         else
-        {
-            nameImg.SetActive(false); //나레이션 일때
-        }
+            nameImg.SetActive(false);
 
         nameText.text = line.speaker;
 
@@ -142,7 +186,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     #region Typing Effect
 
-    IEnumerator TypeCoroutine(string name,string text)
+    IEnumerator TypeCoroutine(string name, string text)
     {
         int length = text.Length;
 
@@ -157,7 +201,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         for (int i = 0; i < length; i++)
         {
             dialogueText.text = text.Substring(0, i + 1);
-            if(i%2 == 0) VoiceSoundPlay(name); // 절반만 사운드 재생
+            if (i % 2 == 0) VoiceSoundPlay(name);
             yield return new WaitForSeconds(timePerChar);
         }
         yield return new WaitForSeconds(0.25f);
@@ -167,11 +211,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void VoiceSoundPlay(string name)
     {
-        if (name == "") return; //나레이션
+        if (name == "") return;
 
         if (name == "엘리나") SoundManager.instance.ElinaVoice();
         else SoundManager.instance.ElinaVoice();
     }
+
     #endregion
 
     #region Update & Input
@@ -180,7 +225,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         if (lines == null) return;
 
-        if (Input.GetMouseButtonDown(0) && isArgumentActive==false && textSlider.value==1)
+        if (Input.GetMouseButtonDown(0) && isArgumentActive == false && textSlider.value == 1)
         {
             PlayNext();
         }
@@ -190,7 +235,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     #endregion
 
-    #region Hover & Click (Argument)
+    #region Hover & Click
 
     private void CheckHover()
     {
@@ -200,8 +245,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (argumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
             cam = argumentText.canvas.worldCamera;
 
-        int link = TMP_TextUtilities.FindIntersectingLink(
-            argumentText, Input.mousePosition, cam);
+        int link = TMP_TextUtilities.FindIntersectingLink(argumentText, Input.mousePosition, cam);
 
         if (link != hoverIndex)
         {
@@ -274,5 +318,4 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     }
 
     #endregion
-
 }

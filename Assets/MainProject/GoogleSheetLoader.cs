@@ -35,6 +35,7 @@ public static class CSVParser
         string[] rows = csv.Split('\n');
 
         bool inArgument = false;
+        bool waitNextArgumentStart = false;  // 🔥 논의 종료 이후 대기 상태
 
         for (int i = 0; i < rows.Length; i++)
         {
@@ -45,17 +46,28 @@ public static class CSVParser
             if (cols.Length < 2) continue;
 
             string speaker = cols[0].Trim().Replace("\r", "");
-            string text = cols[1].Trim();
+            string text = cols[1].Trim().Replace("\\n", "\n");
 
+            // 🔥 논의 시작
             if (speaker == "논의 시작")
             {
                 inArgument = true;
+                waitNextArgumentStart = false; // 다시 시작
                 continue;
             }
 
+            // 🔥 논의 종료
             if (speaker == "논의 종료")
             {
                 inArgument = false;
+                waitNextArgumentStart = true;  // 다음 논의 시작까지 스킵 모드
+                speaker = "";
+                continue;
+            }
+
+            // 🔥 논의 종료 이후, 다음 논의 시작 전이면 스킵
+            if (waitNextArgumentStart)
+            {
                 continue;
             }
 
@@ -75,6 +87,7 @@ public static class CSVParser
         return lines;
     }
 }
+
 
 #endregion
 
