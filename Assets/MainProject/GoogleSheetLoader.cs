@@ -27,15 +27,25 @@ public class DialogueLine
 #endregion
 
 #region CSV Parser
+public class ArgumentBlock
+{
+    public List<DialogueLine> lines = new List<DialogueLine>();
+    public DialogueLine exitLine;   // 논의 종료 후 출력될 일반 대사
+}
+
 public static class CSVParser
 {
     public static List<DialogueLine> Parse(string csv)
     {
-        List<DialogueLine> lines = new List<DialogueLine>();
+        List<DialogueLine> resultLines = new List<DialogueLine>();
+
         string[] rows = csv.Split('\n');
 
         bool inArgument = false;
-        bool waitNextArgumentStart = false;  // 🔥 논의 종료 이후 대기 상태
+        ArgumentBlock currentBlock = null;
+
+        if (ArgumentManager.argumentBlocks == null)
+            ArgumentManager.argumentBlocks = new List<ArgumentBlock>();
 
         for (int i = 0; i < rows.Length; i++)
         {
@@ -48,26 +58,29 @@ public static class CSVParser
             string speaker = cols[0].Trim().Replace("\r", "");
             string text = cols[1].Trim().Replace("\\n", "\n");
 
-            // 🔥 논의 시작
+            // 논의 시작
             if (speaker == "논의 시작")
             {
                 inArgument = true;
-                waitNextArgumentStart = false; // 다시 시작
+                currentBlock = new ArgumentBlock();
                 continue;
             }
 
-            // 🔥 논의 종료
+            // 논의 종료
             if (speaker == "논의 종료")
             {
                 inArgument = false;
-                waitNextArgumentStart = true;  // 다음 논의 시작까지 스킵 모드
-                speaker = "";
-                continue;
-            }
 
-            // 🔥 논의 종료 이후, 다음 논의 시작 전이면 스킵
-            if (waitNextArgumentStart)
-            {
+                // 종료 후 출력될 대사 저장
+                currentBlock.exitLine = new DialogueLine
+                {
+                    speaker = "엘리나",
+                    text = text,
+                    type = DialogueType.Dialogue,
+                    duration = 0
+                };
+
+                ArgumentManager.argumentBlocks.Add(currentBlock);
                 continue;
             }
 
@@ -81,12 +94,18 @@ public static class CSVParser
             if (cols.Length >= 3 && float.TryParse(cols[2], out float dur))
                 line.duration = dur;
 
-            lines.Add(line);
+            // argument block 내부면 블록에 추가
+            if (inArgument)
+                currentBlock.lines.Add(line);
+
+            // 전체 라인에도 추가 (일반 대사)
+            resultLines.Add(line);
         }
 
-        return lines;
+        return resultLines;
     }
 }
+
 
 
 #endregion

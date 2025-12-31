@@ -35,27 +35,25 @@ public static class ArgumentTextFormatter
 
 public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 {
-    // --------------------------
-    // isArgumentActive : 변경 감지형 프로퍼티
-    // --------------------------
     private bool _isArgumentActive = false;
     public bool isArgumentActive
     {
         get => _isArgumentActive;
-        set
-        {
-            if (_isArgumentActive == value) return;
-
-            _isArgumentActive = value;
-            UiManager.instance.ArgumentUiOn(value); // 변경될 때만 실행
-        }
+        set => _isArgumentActive = value; // ⚡ UI 제어 제거
     }
+
+    public static List<ArgumentBlock> argumentBlocks;
+
+    private int currentBlockIndex = 0;
+    private int repeatIndex = 0;
+    private bool waitingExitDialogue = false;
 
     [Header("Argument")]
     public TMP_Text argumentText;
     public CanvasGroup argumentTextCancasGroup;
     public float argumentDuration = 0.5f;
     public Transform argumentCamTransform;
+    private string beforeSpeaker;
 
     [Header("Dialogue")]
     public GameObject dialogue;
@@ -72,6 +70,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private string rawText = "";
     private int hoverIndex = -1;
+
+    private bool lastUiAnim = false;
+    private bool shouldDialogueBeActive = false;
+
+    
+
 
     #region Public Entry
     public void PlayLines(List<DialogueLine> dialogueLines)
@@ -93,48 +97,102 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #endregion
 
     #region Core Flow
-
     private void PlayNext()
     {
+        if (UiManager.instance != null && UiManager.instance.isUiAnim)
+            return;
+
+        // 🔥 종료 후 대사 출력이 끝나고 유저가 클릭하면 다시 논의 시작
+        if (waitingExitDialogue)
+        {
+            if (textSlider.value == 1) // 대사 타이핑 끝났고 → 클릭한 순간
+            {
+                waitingExitDialogue = false;
+                isArgumentActive = true;       // 다시 논의 모드 시작
+                UiManager.instance.ArgumentUiOn(true);
+
+                PlayArgumentLine();            // 0번 주장부터 재시작
+            }
+            return;
+        }
+
+
+
+        // 🔥 논의 반복 상태라면 계속 진행
+        if (isArgumentActive)
+        {
+            PlayArgumentLine();
+            return;
+        }
+
+        // 🔥 일반 Dialogue 진행
         if (index >= lines.Count)
         {
-            isArgumentActive = false;
             EndAll();
             return;
         }
 
         DialogueLine line = lines[index];
+        index++;
 
-        // 여기서 자동으로 UI 변경됨
-        isArgumentActive = (line.type == DialogueType.Argument);
-
-        if (isArgumentActive)
+        if (line.type == DialogueType.Argument)
         {
-            if (argumentRoutine != null)
-                StopCoroutine(argumentRoutine);
+            isArgumentActive = true;
+            UiManager.instance.ArgumentUiOn(true);
 
-            MoveCam(line.speaker);
-            dialogue.SetActive(false);
-            argumentRoutine = StartCoroutine(PlayArgument(line));
+            PlayArgumentLine();
         }
         else
         {
-            dialogue.SetActive(true);
             ShowDialogue(line);
         }
-
-        index++;
     }
 
     private void MoveCam(string name)
     {
-        if (name == "엘리나") argumentCamTransform.transform.DOMoveX(0, 0.5f);
-        else if (name == "미리엘") argumentCamTransform.transform.DOMoveX(-20, 0.5f);
-        else if (name == "에스라") argumentCamTransform.transform.DOMoveX(40, 0.5f);
-        else if (name == "테오도르") argumentCamTransform.transform.DOMoveX(20, 0.5f);
+        if (name == "엘리나") argumentCamTransform.DOMoveX(0, 0.5f);
+        else if (name == "미리엘") argumentCamTransform.DOMoveX(-20, 0.5f);
+        else if (name == "에스라") argumentCamTransform.DOMoveX(40, 0.5f);
+        else if (name == "테오도르") argumentCamTransform.DOMoveX(20, 0.5f);
     }
+    private void TpCam(string name)
+    {
+        if (name == "엘리나") argumentCamTransform.position = new Vector3(0, 0,-10);
+        else if (name == "미리엘") argumentCamTransform.position = new Vector3(-20, 0,-10);
+        else if (name == "에스라") argumentCamTransform.position = new Vector3(40, 0, -10);
+        else if (name == "테오도르") argumentCamTransform.position = new Vector3(20, 0,-10);
+    }
+    private void PlayArgumentLine()
+    {
+        dialogue.SetActive(false);
+
+        ArgumentBlock block = argumentBlocks[currentBlockIndex];
+
+        // 🔥 반복 끝 → 종료 후 대사 출력
+        if (repeatIndex >= block.lines.Count)
+        {
+            isArgumentActive = false;
+            waitingExitDialogue = true;
+
+            UiManager.instance.ArgumentUiOn(false);
+            repeatIndex = 0;
+
+            ShowDialogue(block.exitLine);
+            return;
+        }
 
 
+        // 🔥 반복 중
+        DialogueLine line = block.lines[repeatIndex];
+        repeatIndex++;
+
+        MoveCam(line.speaker);
+
+        if (argumentRoutine != null)
+            StopCoroutine(argumentRoutine);
+
+        argumentRoutine = StartCoroutine(PlayArgument(line));
+    }
 
     IEnumerator PlayArgument(DialogueLine line)
     {
@@ -145,7 +203,10 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         argumentTextCancasGroup.interactable = false;
         argumentTextCancasGroup.blocksRaycasts = false;
 
-        yield return new WaitForSeconds(0.2f);
+        if (beforeSpeaker == line.speaker)
+            yield return new WaitForSeconds(0.2f);
+        else
+            yield return new WaitForSeconds(0.5f);
 
         float time = 0f;
 
@@ -162,6 +223,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         yield return new WaitForSeconds(line.duration);
 
+        beforeSpeaker = line.speaker;
+
         PlayNext();
     }
 
@@ -169,13 +232,24 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         argumentText.text = "";
 
-        if (line.speaker != "")
-            nameImg.SetActive(true);
-        else
-            nameImg.SetActive(false);
-
+        // --- 이름 ---
+        nameImg.SetActive(line.speaker != "");
         nameText.text = line.speaker;
 
+        TpCam(line.speaker);
+
+        // --- dialogue 활성화 관리 ---
+        if (UiManager.instance.isUiAnim)
+        {
+            shouldDialogueBeActive = true;
+        }
+        else
+        {
+            dialogue.SetActive(true);
+            shouldDialogueBeActive = false;
+        }
+
+        // 타이핑
         if (typingRoutine != null)
             StopCoroutine(typingRoutine);
 
@@ -185,7 +259,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #endregion
 
     #region Typing Effect
-
     IEnumerator TypeCoroutine(string name, string text)
     {
         int length = text.Length;
@@ -195,8 +268,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         float totalTime = 1.0f;
         float timePerChar = totalTime / length;
-        if (timePerChar < 0.035f) timePerChar = 0.035f;
-        else if (timePerChar > 0.07f) timePerChar = 0.07f;
+        if (timePerChar < 0.015f) timePerChar = 0.015f;
+        else if (timePerChar > 0.05f) timePerChar = 0.05f;
 
         for (int i = 0; i < length; i++)
         {
@@ -204,7 +277,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             if (i % 2 == 0) VoiceSoundPlay(name);
             yield return new WaitForSeconds(timePerChar);
         }
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.225f);
 
         textSlider.value = 1f;
     }
@@ -216,14 +289,24 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (name == "엘리나") SoundManager.instance.ElinaVoice();
         else SoundManager.instance.ElinaVoice();
     }
-
     #endregion
 
     #region Update & Input
-
     private void Update()
     {
         if (lines == null) return;
+
+        // 🔥 UI 애니메이션 끝난 순간
+        if (lastUiAnim == true && UiManager.instance.isUiAnim == false)
+        {
+            if (shouldDialogueBeActive)
+            {
+                dialogue.SetActive(true);
+                shouldDialogueBeActive = false;
+            }
+        }
+
+        lastUiAnim = UiManager.instance.isUiAnim;
 
         if (Input.GetMouseButtonDown(0) && isArgumentActive == false && textSlider.value == 1)
         {
@@ -232,7 +315,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         CheckHover();
     }
-
     #endregion
 
     #region Hover & Click
@@ -298,11 +380,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             Debug.Log("클릭된 키워드: " + keyword);
         }
     }
-
     #endregion
 
     #region Utils
-
     private void ClearUI()
     {
         argumentText.text = "";
@@ -316,6 +396,5 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         ClearUI();
         Debug.Log("전체 대사 종료");
     }
-
     #endregion
 }
