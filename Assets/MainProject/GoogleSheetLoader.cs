@@ -59,7 +59,7 @@ public static class CSVParser
             string text = cols[1].Trim().Replace("\\n", "\n");
 
             // 논의 시작
-            if (speaker == "논의 시작")
+            if (speaker == "논의 시작" || speaker == "심문 시작")
             {
                 inArgument = true;
                 currentBlock = new ArgumentBlock();
@@ -67,7 +67,7 @@ public static class CSVParser
             }
 
             // 논의 종료
-            if (speaker == "논의 종료")
+            if (speaker == "논의 종료" || speaker == "심문 종료")
             {
                 inArgument = false;
 

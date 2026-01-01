@@ -151,16 +151,18 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private void MoveCam(string name)
     {
         if (name == "엘리나") argumentCamTransform.DOMoveX(0, 0.5f);
+        else if (name == "헤스터") argumentCamTransform.DOMoveX(-40, 0.5f);
         else if (name == "미리엘") argumentCamTransform.DOMoveX(-20, 0.5f);
-        else if (name == "에스라") argumentCamTransform.DOMoveX(40, 0.5f);
-        else if (name == "테오도르") argumentCamTransform.DOMoveX(20, 0.5f);
+        else if (name == "알베르트") argumentCamTransform.DOMoveX(40, 0.5f);
+        else if (name == "루카스") argumentCamTransform.DOMoveX(20, 0.5f);
     }
     private void TpCam(string name)
     {
-        if (name == "엘리나") argumentCamTransform.position = new Vector3(0, 0,-10);
-        else if (name == "미리엘") argumentCamTransform.position = new Vector3(-20, 0,-10);
-        else if (name == "에스라") argumentCamTransform.position = new Vector3(40, 0, -10);
-        else if (name == "테오도르") argumentCamTransform.position = new Vector3(20, 0,-10);
+        if (name == "엘리나") argumentCamTransform.position = new Vector3(0-2, 0,-10);
+        else if (name == "헤스터") argumentCamTransform.position = new Vector3(-40-2, 0, -10);
+        else if (name == "미리엘") argumentCamTransform.position = new Vector3(-20-2, 0,-10);
+        else if (name == "알베르트") argumentCamTransform.position = new Vector3(40-2, 0, -10);
+        else if (name == "루카스") argumentCamTransform.position = new Vector3(20-2, 0,-10);
     }
     private void PlayArgumentLine()
     {
