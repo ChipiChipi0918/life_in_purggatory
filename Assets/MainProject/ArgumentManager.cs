@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static Unity.Collections.AllocatorManager;
 
 public static class ArgumentTextFormatter
 {
@@ -35,6 +36,8 @@ public static class ArgumentTextFormatter
 
 public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 {
+    public static ArgumentManager instance;
+
     private bool _isArgumentActive = false;
     public bool isArgumentActive
     {
@@ -85,8 +88,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private bool lastUiAnim = false;
     private bool shouldDialogueBeActive = false;
 
-    
 
+    private void Awake()
+    {
+        if (instance == null) instance = this;
+    }
 
     #region Public Entry
     public void PlayLines(List<DialogueLine> dialogueLines)
@@ -116,6 +122,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 🔥 종료 후 대사 출력이 끝나고 유저가 클릭하면 다시 논의 시작
         if (waitingExitDialogue)
         {
+
             if (textSlider.value == 1) // 대사 타이핑 끝났고 → 클릭한 순간
             {
                 waitingExitDialogue = false;
@@ -174,15 +181,16 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     }
 
-    private void MoveCam(string name)
+    public void MoveCam(string name)
     {
-        if (name == "엘리나") argumentCamTransform.DOMoveX(0, 0.5f);
-        else if (name == "헤스터") argumentCamTransform.DOMoveX(-40, 0.5f);
-        else if (name == "미르엘") argumentCamTransform.DOMoveX(-20, 0.5f);
-        else if (name == "알베르트") argumentCamTransform.DOMoveX(40, 0.5f);
-        else if (name == "루카스") argumentCamTransform.DOMoveX(20, 0.5f);
+        float time = 0.5f;
+        if (name == "엘리나") argumentCamTransform.DOMoveX(0, time);
+        else if (name == "헤스터") argumentCamTransform.DOMoveX(-40, time);
+        else if (name == "미르엘") argumentCamTransform.DOMoveX(-20, time);
+        else if (name == "알베르트") argumentCamTransform.DOMoveX(40, time);
+        else if (name == "루카스") argumentCamTransform.DOMoveX(20, time);
     }
-    private void TpCam(string name)
+    public void TpCam(string name)
     {
         if (name == "엘리나") argumentCamTransform.position = new Vector3(0-2, 0,-10);
         else if (name == "헤스터") argumentCamTransform.position = new Vector3(-40-2, 0, -10);
@@ -246,6 +254,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         while (time < argumentDuration)
         {
             time += Time.deltaTime;
+
             argumentTextCancasGroup.alpha = Mathf.Lerp(0f, 1f, time / argumentDuration);
             yield return null;
         }
@@ -308,6 +317,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
             // 지금은 오답이어도 그냥 다시 고르게 놔둠
             UiManager.instance.Shaking(0.5f);
+            line.text = "(역시... 이건 아닌가봐... 다시 한번 생각해보자)";
+            ShowDialogue(line);
         }
     }
 
@@ -366,6 +377,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         nameText.text = line.speaker;
 
         TpCam(line.speaker);
+        
 
         // --- dialogue 활성화 관리 ---
         if (UiManager.instance.isUiAnim)
@@ -403,7 +415,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         for (int i = 0; i < length; i++)
         {
             dialogueText.text = text.Substring(0, i + 1);
-            if (i % 2 == 0) VoiceSoundPlay(name);
+            if (i % 2 == 1) VoiceSoundPlay(name);
             yield return new WaitForSeconds(timePerChar);
         }
         yield return new WaitForSeconds(0.225f);
@@ -443,7 +455,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             if (waitingArgumentEndText)
             {
                 waitingArgumentEndText = false;
-                TpCam("엘리나");
+                
                 ShowDialogue(new DialogueLine
                 {
                     speaker = "엘리나",
