@@ -21,6 +21,10 @@ public class DialogueLine
     public string text;
     public float duration;
     public DialogueType type;
+
+    public bool isChoice;
+    public List<string> choices;
+    public int correctIndex;
 }
 
 
@@ -32,7 +36,6 @@ public class ArgumentBlock
     public List<DialogueLine> lines = new List<DialogueLine>();
     public DialogueLine exitLine;   // 논의 종료 후 출력될 일반 대사
 }
-
 public static class CSVParser
 {
     public static List<DialogueLine> Parse(string csv)
@@ -58,7 +61,52 @@ public static class CSVParser
             string speaker = cols[0].Trim().Replace("\r", "");
             string text = cols[1].Trim().Replace("\\n", "\n");
 
-            // 논의 시작
+            // ============================
+            // 🔥 선택지 처리
+            // ============================
+            if (speaker == "선택지")
+            {
+                Debug.Log("선택지 CSV 발견!");
+
+                DialogueLine choiceLine = new DialogueLine
+                {
+                    speaker = "",              // 선택지는 발화자 없음
+                    text = "",                 // 텍스트 없음
+                    type = DialogueType.Dialogue,
+                    isChoice = true,
+                    choices = new List<string>()
+                };
+
+                // 🔥 2열 텍스트: 선택1/선택2/선택3
+                string[] rawChoices = text.Split('/');
+
+                int correctIndex = -1;
+
+                for (int c = 0; c < rawChoices.Length; c++)
+                {
+                    string ch = rawChoices[c].Trim();
+
+                    // 🔥 *정답* 처리
+                    if (ch.StartsWith("*") && ch.EndsWith("*"))
+                    {
+                        ch = ch.Substring(1, ch.Length - 2);  // 별 제거
+                        correctIndex = c;
+                    }
+
+                    choiceLine.choices.Add(ch);
+                }
+
+                choiceLine.correctIndex = correctIndex;
+
+                resultLines.Add(choiceLine);
+                continue;
+            }
+
+
+
+            // ============================
+            // 🔥 논의 시작
+            // ============================
             if (speaker == "논의 시작" || speaker == "심문 시작")
             {
                 inArgument = true;
@@ -66,12 +114,13 @@ public static class CSVParser
                 continue;
             }
 
-            // 논의 종료
+            // ============================
+            // 🔥 논의 종료
+            // ============================
             if (speaker == "논의 종료" || speaker == "심문 종료")
             {
                 inArgument = false;
 
-                // 종료 후 출력될 대사 저장
                 currentBlock.exitLine = new DialogueLine
                 {
                     speaker = "엘리나",
@@ -84,6 +133,10 @@ public static class CSVParser
                 continue;
             }
 
+
+            // ============================
+            // 🔥 일반 or Argument 대사 처리
+            // ============================
             DialogueLine line = new DialogueLine
             {
                 speaker = speaker,
@@ -94,18 +147,15 @@ public static class CSVParser
             if (cols.Length >= 3 && float.TryParse(cols[2], out float dur))
                 line.duration = dur;
 
-            // argument block 내부면 블록에 추가
             if (inArgument)
                 currentBlock.lines.Add(line);
 
-            // 전체 라인에도 추가 (일반 대사)
             resultLines.Add(line);
         }
 
         return resultLines;
     }
 }
-
 
 
 #endregion

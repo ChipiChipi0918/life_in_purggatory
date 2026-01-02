@@ -47,6 +47,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private int currentBlockIndex = 0;
     private int repeatIndex = 0;
     private bool waitingExitDialogue = false;
+    private bool argumentForceEnded = false;
+    private bool waitingArgumentEndText = false;
+
+    [Header("Choice")]
+    public GameObject choicePanel;      // 선택지 전체 패널
+    public GameObject choiceButtonPrefab; // 버튼 프리팹
+    public Transform choiceButtonParent;  // 버튼 배치될 위치
+
 
     [Header("Argument")]
     public TMP_Text argumentText;
@@ -54,6 +62,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public float argumentDuration = 0.5f;
     public Transform argumentCamTransform;
     private string beforeSpeaker;
+    private bool isChoice;
+    
+
 
     [Header("Dialogue")]
     public GameObject dialogue;
@@ -137,6 +148,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         if (line.type == DialogueType.Argument)
         {
+            if (argumentForceEnded)
+            {
+                PlayNext();
+                return;
+            }
+
             isArgumentActive = true;
             UiManager.instance.ArgumentUiOn(true);
 
@@ -144,15 +161,24 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            ShowDialogue(line);
+            // 🔥 선택지 처리 추가
+            if (line.isChoice)
+            {
+                ShowChoice(line);
+            }
+            else
+            {
+                ShowDialogue(line);
+            }
         }
+
     }
 
     private void MoveCam(string name)
     {
         if (name == "엘리나") argumentCamTransform.DOMoveX(0, 0.5f);
         else if (name == "헤스터") argumentCamTransform.DOMoveX(-40, 0.5f);
-        else if (name == "미리엘") argumentCamTransform.DOMoveX(-20, 0.5f);
+        else if (name == "미르엘") argumentCamTransform.DOMoveX(-20, 0.5f);
         else if (name == "알베르트") argumentCamTransform.DOMoveX(40, 0.5f);
         else if (name == "루카스") argumentCamTransform.DOMoveX(20, 0.5f);
     }
@@ -160,7 +186,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         if (name == "엘리나") argumentCamTransform.position = new Vector3(0-2, 0,-10);
         else if (name == "헤스터") argumentCamTransform.position = new Vector3(-40-2, 0, -10);
-        else if (name == "미리엘") argumentCamTransform.position = new Vector3(-20-2, 0,-10);
+        else if (name == "미르엘") argumentCamTransform.position = new Vector3(-20-2, 0,-10);
         else if (name == "알베르트") argumentCamTransform.position = new Vector3(40-2, 0, -10);
         else if (name == "루카스") argumentCamTransform.position = new Vector3(20-2, 0,-10);
     }
@@ -179,10 +205,15 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             UiManager.instance.ArgumentUiOn(false);
             repeatIndex = 0;
 
-            ShowDialogue(block.exitLine);
+            // 🔥 자연 종료일 때만 exitLine 출력
+            if (!argumentForceEnded)
+            {
+                ShowDialogue(block.exitLine);
+                waitingArgumentEndText = true;   // 🔥 exitLine 출력 후 Hello World 단계로 진입
+            }
+
             return;
         }
-
 
         // 🔥 반복 중
         DialogueLine line = block.lines[repeatIndex];
@@ -229,9 +260,105 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         PlayNext();
     }
+    private void ShowChoice(DialogueLine line)
+    {
+        isChoice = true;
+        Debug.Log("선택지 발견!");
+
+        choicePanel.SetActive(true);
+
+        // 기존 버튼들 삭제
+        foreach (Transform child in choiceButtonParent)
+            Destroy(child.gameObject);
+
+        // 선택지 생성
+        for (int i = 0; i < line.choices.Count; i++)
+        {
+            int index = i;
+
+            GameObject btnObj = Instantiate(choiceButtonPrefab , choiceButtonParent);
+            btnObj.transform.localPosition += new Vector3(i * 50, i * 100);
+            TMP_Text btnText = btnObj.transform.GetChild(0).GetComponent<TMP_Text>();
+            btnText.text = line.choices[i];
+
+            btnObj.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                OnChoiceSelected(line, index);
+            });
+        }
+    }
+
+    private void OnChoiceSelected(DialogueLine line, int choice)
+    {
+        // 정답
+        if (choice == line.correctIndex)
+        {
+            Debug.Log("정답 선택!");
+
+            isChoice = false;
+
+            choicePanel.SetActive(false);
+
+            // 다음 대사로 진행
+            PlayNext();
+        }
+        else
+        {
+            Debug.Log("오답 선택!");
+
+            // 지금은 오답이어도 그냥 다시 고르게 놔둠
+            UiManager.instance.Shaking(0.5f);
+        }
+    }
+
+
+    public void ForceEndArgumentLoop()
+    {
+        ArgumentBlock block = ArgumentManager.argumentBlocks[currentBlockIndex];
+
+        // 반복 인덱스를 끝까지 밀기
+        repeatIndex = block.lines.Count;
+
+        // 논의 상태 종료 플래그
+        isArgumentActive = false;
+        waitingExitDialogue = true;
+
+        // UI 닫기
+        UiManager.instance.ArgumentUiOn(false);
+
+        // 종료 후 출력될 대사 즉시 재생
+        ShowDialogue(block.exitLine);
+    }
+    private void SkipToAfterExitLine()
+    {
+        if (lines == null || lines.Count == 0) return;
+
+        DialogueLine exitLine = ArgumentManager.argumentBlocks[currentBlockIndex].exitLine;
+
+        int exitIndex = lines.FindIndex(l =>
+            l.speaker == exitLine.speaker &&
+            l.text == exitLine.text);
+
+        if (exitIndex != -1)
+            index = exitIndex + 1;
+    }
+
+    private void ArgumentCorrect()
+    {
+        argumentForceEnded = true;
+        repeatIndex = 0;
+        isArgumentActive = false;
+        waitingExitDialogue = false;
+
+        UiManager.instance.camRotate(new Vector3(0, 0, 0f));
+
+        SkipToAfterExitLine();
+    }
+
 
     private void ShowDialogue(DialogueLine line)
     {
+
         argumentText.text = "";
 
         // --- 이름 ---
@@ -308,12 +435,40 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             }
         }
 
+        
         lastUiAnim = UiManager.instance.isUiAnim;
 
-        if (Input.GetMouseButtonDown(0) && isArgumentActive == false && textSlider.value == 1)
+        if (Input.GetMouseButtonDown(0) && isArgumentActive == false && isChoice == false && textSlider.value == 1)
         {
+            if (waitingArgumentEndText)
+            {
+                waitingArgumentEndText = false;
+                TpCam("엘리나");
+                ShowDialogue(new DialogueLine
+                {
+                    speaker = "엘리나",
+                    text = "(다시 한번 모두의 의견을 들어보자.)",
+                    type = DialogueType.Dialogue
+                });
+                
+                waitingExitDialogue = true;
+                return;
+            }
+
+            if (waitingExitDialogue)
+            {
+                waitingExitDialogue = false;
+                isArgumentActive = true;
+                UiManager.instance.ArgumentUiOn(true);
+
+                PlayArgumentLine();
+                return;
+            }
+
+            // 3) 기본적인 흐름
             PlayNext();
         }
+
 
         CheckHover();
     }
@@ -368,9 +523,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (argumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
             cam = argumentText.canvas.worldCamera;
 
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(
-            argumentText, eventData.position, cam);
-
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(argumentText, eventData.position, cam);
         if (linkIndex == -1) return;
 
         TMP_LinkInfo linkInfo = argumentText.textInfo.linkInfo[linkIndex];
@@ -380,8 +533,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             string keyword = id.Substring(4);
             Debug.Log("클릭된 키워드: " + keyword);
+
+            // ⬇ 논의 종료 처리 (exitLine 스킵)
+            ArgumentCorrect();
         }
     }
+
     #endregion
 
     #region Utils
