@@ -35,18 +35,18 @@ public class UiManager : MonoBehaviour
         if (isStart)
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentStartUi));
-            camRotate(new Vector3(0, 0, 2.5f));
+            camRotate(new Vector3(0, 0, 2.5f),1);
         }
         else
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentEndUi));
-            camRotate(new Vector3(0, 0, 0f));
+            camRotate(new Vector3(0, 0, 0f),1);
         }
     }
 
-    public void camRotate(Vector3 a)
+    public void camRotate(Vector3 a, float speed)
     {
-        camTransform.DORotate(a, 1f).SetUpdate(true);
+        camTransform.DORotate(a, speed).SetUpdate(true);
     }
     
     IEnumerator ArgumentUiOnCoroutine(Transform startOrEnd)

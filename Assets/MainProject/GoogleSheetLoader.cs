@@ -20,6 +20,7 @@ public class DialogueLine
     public string speaker;
     public string text;
     public float duration;
+    public string camFormat;
     public DialogueType type;
 
     public bool isChoice;
@@ -60,6 +61,8 @@ public static class CSVParser
 
             string speaker = cols[0].Trim().Replace("\r", "");
             string text = cols[1].Trim().Replace("\\n", "\n");
+
+            string camFormat = cols[3].Trim().Replace("\r", "");
 
             // ============================
             // 🔥 선택지 처리
@@ -141,6 +144,7 @@ public static class CSVParser
             {
                 speaker = speaker,
                 text = text,
+                camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue
             };
 

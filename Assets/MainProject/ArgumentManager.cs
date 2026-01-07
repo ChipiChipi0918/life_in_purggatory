@@ -58,16 +58,17 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public GameObject choiceButtonPrefab; // 버튼 프리팹
     public Transform choiceButtonParent;  // 버튼 배치될 위치
 
+    [Header("Argument Text")]
+    public TMP_Text argumentText1;
+    public TMP_Text argumentText2;
+    private TMP_Text nowArgumentText;
 
     [Header("Argument")]
-    public TMP_Text argumentText;
-    public CanvasGroup argumentTextCancasGroup;
     public float argumentDuration = 0.5f;
     public Transform argumentCamTransform;
     private string beforeSpeaker;
+    private string beforeCamFormat;
     private bool isChoice;
-    
-
 
     [Header("Dialogue")]
     public GameObject dialogue;
@@ -92,6 +93,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         if (instance == null) instance = this;
+
+        nowArgumentText = argumentText1;
+
+        argumentText1.gameObject.SetActive(false);
+        argumentText2.gameObject.SetActive(false);
     }
 
     #region Public Entry
@@ -133,8 +139,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             }
             return;
         }
-
-
 
         // 🔥 논의 반복 상태라면 계속 진행
         if (isArgumentActive)
@@ -180,26 +184,51 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
 
     }
+    private void ArgumentTextUpdate(DialogueLine line)
+    {
+        argumentText1.gameObject.SetActive(false);
+        argumentText2.gameObject.SetActive(false);
 
-    public void MoveCam(string name)
+        if (line.camFormat == "left")
+        {
+            nowArgumentText = argumentText1;
+            MoveCam(line.speaker, 2.2f);
+
+            if (repeatIndex > 1 && repeatIndex != argumentBlocks[currentBlockIndex].lines.Count)
+                UiManager.instance.camRotate(new Vector3(0, 0, 2.5f), 0.5f);
+        }
+        else if (line.camFormat == "right")
+        {
+            nowArgumentText = argumentText2;
+            MoveCam(line.speaker, -2.2f);
+
+            if(repeatIndex > 1 && repeatIndex != argumentBlocks[currentBlockIndex].lines.Count)
+                UiManager.instance.camRotate(new Vector3(0, 0, -2.5f),0.5f);
+        }
+
+        nowArgumentText.gameObject.SetActive(true);
+    }
+
+    public void MoveCam(string name,float addPosX)
     {
         float time = 0.5f;
-        if (name == "엘리나") argumentCamTransform.DOMoveX(0, time);
-        else if (name == "헤스터") argumentCamTransform.DOMoveX(-40, time);
-        else if (name == "미르엘") argumentCamTransform.DOMoveX(-20, time);
-        else if (name == "알베르트") argumentCamTransform.DOMoveX(40, time);
-        else if (name == "루카스") argumentCamTransform.DOMoveX(20, time);
+        if (name == "엘리나") argumentCamTransform.DOMoveX(0 + addPosX, time);
+        else if (name == "헤스터") argumentCamTransform.DOMoveX(-40 + addPosX, time);
+        else if (name == "미르엘") argumentCamTransform.DOMoveX(-20 + addPosX, time);
+        else if (name == "알베르트") argumentCamTransform.DOMoveX(40 + addPosX, time);
+        else if (name == "루카스") argumentCamTransform.DOMoveX(20 + addPosX, time);
     }
     public void TpCam(string name)
     {
-        if (name == "엘리나") argumentCamTransform.position = new Vector3(0-2, 0,-10);
-        else if (name == "헤스터") argumentCamTransform.position = new Vector3(-40-2, 0, -10);
-        else if (name == "미르엘") argumentCamTransform.position = new Vector3(-20-2, 0,-10);
-        else if (name == "알베르트") argumentCamTransform.position = new Vector3(40-2, 0, -10);
-        else if (name == "루카스") argumentCamTransform.position = new Vector3(20-2, 0,-10);
+        if (name == "엘리나") argumentCamTransform.position = new Vector3(0, 0, -10);
+        else if (name == "헤스터") argumentCamTransform.position = new Vector3(-40, 0, -10);
+        else if (name == "미르엘") argumentCamTransform.position = new Vector3(-20, 0, -10);
+        else if (name == "알베르트") argumentCamTransform.position = new Vector3(40, 0, -10);
+        else if (name == "루카스") argumentCamTransform.position = new Vector3(20, 0, -10);
     }
     private void PlayArgumentLine()
     {
+        
         dialogue.SetActive(false);
 
         ArgumentBlock block = argumentBlocks[currentBlockIndex];
@@ -227,7 +256,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         DialogueLine line = block.lines[repeatIndex];
         repeatIndex++;
 
-        MoveCam(line.speaker);
+        ArgumentTextUpdate(line);
 
         if (argumentRoutine != null)
             StopCoroutine(argumentRoutine);
@@ -238,13 +267,15 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     IEnumerator PlayArgument(DialogueLine line)
     {
         rawText = line.text;
-        argumentText.text = ArgumentTextFormatter.Format(rawText);
+        nowArgumentText.text = ArgumentTextFormatter.Format(rawText);
 
-        argumentTextCancasGroup.alpha = 0f;
-        argumentTextCancasGroup.interactable = false;
-        argumentTextCancasGroup.blocksRaycasts = false;
+        CanvasGroup argumentTextCanvasGroup = nowArgumentText.GetComponent<CanvasGroup>();
 
-        if (beforeSpeaker == line.speaker)
+        argumentTextCanvasGroup.alpha = 0f;
+        argumentTextCanvasGroup.interactable = false;
+        argumentTextCanvasGroup.blocksRaycasts = false;
+
+        if (beforeSpeaker == line.speaker && beforeCamFormat == line.camFormat)
             yield return new WaitForSeconds(0.2f);
         else
             yield return new WaitForSeconds(0.5f);
@@ -255,17 +286,18 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             time += Time.deltaTime;
 
-            argumentTextCancasGroup.alpha = Mathf.Lerp(0f, 1f, time / argumentDuration);
+            argumentTextCanvasGroup.alpha = Mathf.Lerp(0f, 1f, time / argumentDuration);
             yield return null;
         }
 
-        argumentTextCancasGroup.alpha = 1f;
-        argumentTextCancasGroup.interactable = true;
-        argumentTextCancasGroup.blocksRaycasts = true;
+        argumentTextCanvasGroup.alpha = 1f;
+        argumentTextCanvasGroup.interactable = true;
+        argumentTextCanvasGroup.blocksRaycasts = true;
 
         yield return new WaitForSeconds(line.duration);
 
         beforeSpeaker = line.speaker;
+        beforeCamFormat = line.camFormat;
 
         PlayNext();
     }
@@ -285,7 +317,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             int index = i;
 
-            GameObject btnObj = Instantiate(choiceButtonPrefab , choiceButtonParent);
+            GameObject btnObj = Instantiate(choiceButtonPrefab, choiceButtonParent);
             btnObj.transform.localPosition += new Vector3(i * 50, i * 100);
             TMP_Text btnText = btnObj.transform.GetChild(0).GetComponent<TMP_Text>();
             btnText.text = line.choices[i];
@@ -361,7 +393,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         isArgumentActive = false;
         waitingExitDialogue = false;
 
-        UiManager.instance.camRotate(new Vector3(0, 0, 0f));
+        UiManager.instance.camRotate(new Vector3(0, 0, 0f), 1);
 
         SkipToAfterExitLine();
     }
@@ -370,7 +402,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private void ShowDialogue(DialogueLine line)
     {
 
-        argumentText.text = "";
+        nowArgumentText.text = "";
 
         // --- 이름 ---
         nameImg.SetActive(line.speaker != "");
@@ -480,8 +512,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             // 3) 기본적인 흐름
             PlayNext();
         }
-
-
         CheckHover();
     }
     #endregion
@@ -490,13 +520,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void CheckHover()
     {
-        if (argumentText.text == "") return;
+        if (nowArgumentText.text == "") return;
 
         Camera cam = null;
-        if (argumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            cam = argumentText.canvas.worldCamera;
+        if (nowArgumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            cam = nowArgumentText.canvas.worldCamera;
 
-        int link = TMP_TextUtilities.FindIntersectingLink(argumentText, Input.mousePosition, cam);
+        int link = TMP_TextUtilities.FindIntersectingLink(nowArgumentText, Input.mousePosition, cam);
 
         if (link != hoverIndex)
         {
@@ -509,11 +539,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         if (hoverIndex == -1)
         {
-            argumentText.text = ArgumentTextFormatter.Format(rawText);
+            nowArgumentText.text = ArgumentTextFormatter.Format(rawText);
             return;
         }
 
-        TMP_LinkInfo info = argumentText.textInfo.linkInfo[hoverIndex];
+        TMP_LinkInfo info = nowArgumentText.textInfo.linkInfo[hoverIndex];
         string id = info.GetLinkID();
         if (!id.StartsWith("cmd:")) return;
 
@@ -526,19 +556,19 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
 
         string formatted = ArgumentTextFormatter.Format(rawText);
-        argumentText.text = formatted.Replace(normal, hovered);
+        nowArgumentText.text = formatted.Replace(normal, hovered);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         Camera cam = null;
-        if (argumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            cam = argumentText.canvas.worldCamera;
+        if (nowArgumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            cam = nowArgumentText.canvas.worldCamera;
 
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(argumentText, eventData.position, cam);
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(nowArgumentText, eventData.position, cam);
         if (linkIndex == -1) return;
 
-        TMP_LinkInfo linkInfo = argumentText.textInfo.linkInfo[linkIndex];
+        TMP_LinkInfo linkInfo = nowArgumentText.textInfo.linkInfo[linkIndex];
         string id = linkInfo.GetLinkID();
 
         if (id.StartsWith("cmd:"))
@@ -556,7 +586,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #region Utils
     private void ClearUI()
     {
-        argumentText.text = "";
+        nowArgumentText.text = "";
         nameText.text = "";
         dialogueText.text = "";
         textSlider.value = 0f;
