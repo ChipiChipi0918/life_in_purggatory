@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 using static Unity.Collections.AllocatorManager;
 
 public static class ArgumentTextFormatter
@@ -212,19 +213,27 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public void MoveCam(string name,float addPosX)
     {
         float time = 0.5f;
-        if (name == "엘리나") argumentCamTransform.DOMoveX(0 + addPosX, time);
-        else if (name == "헤스터") argumentCamTransform.DOMoveX(-40 + addPosX, time);
-        else if (name == "미르엘") argumentCamTransform.DOMoveX(-20 + addPosX, time);
-        else if (name == "알베르트") argumentCamTransform.DOMoveX(40 + addPosX, time);
-        else if (name == "루카스") argumentCamTransform.DOMoveX(20 + addPosX, time);
+        if (name == "주인공")      argumentCamTransform.DOMoveX(0 + addPosX, time);
+        else if (name == "백현")   argumentCamTransform.DOMoveX(-80 + addPosX, time);
+        else if (name == "친구")   argumentCamTransform.DOMoveX(-60 + addPosX, time);
+        else if (name == "다니엘") argumentCamTransform.DOMoveX(-40 + addPosX, time);
+        else if (name == "정희영") argumentCamTransform.DOMoveX(-20 + addPosX, time);
+        else if (name == "장현우") argumentCamTransform.DOMoveX(20 + addPosX, time);
+        else if (name == "천주연") argumentCamTransform.DOMoveX(40 + addPosX, time);
+        else if (name == "정태준") argumentCamTransform.DOMoveX(60 + addPosX, time);
+        else if (name == "서진랑") argumentCamTransform.DOMoveX(80 + addPosX, time);
     }
     public void TpCam(string name)
     {
-        if (name == "엘리나") argumentCamTransform.position = new Vector3(0, 0, -10);
-        else if (name == "헤스터") argumentCamTransform.position = new Vector3(-40, 0, -10);
-        else if (name == "미르엘") argumentCamTransform.position = new Vector3(-20, 0, -10);
-        else if (name == "알베르트") argumentCamTransform.position = new Vector3(40, 0, -10);
-        else if (name == "루카스") argumentCamTransform.position = new Vector3(20, 0, -10);
+        if (name == "주인공")      argumentCamTransform.position = new Vector3(0, 0, -10);
+        else if (name == "백현")   argumentCamTransform.position = new Vector3(-80, 0, -10);
+        else if (name == "친구")   argumentCamTransform.position = new Vector3(-60, 0, -10);
+        else if (name == "다니엘") argumentCamTransform.position = new Vector3(-40, 0, -10);
+        else if (name == "정희영") argumentCamTransform.position = new Vector3(-20, 0, -10);
+        else if (name == "장현우") argumentCamTransform.position = new Vector3(20, 0, -10);
+        else if (name == "천주연") argumentCamTransform.position = new Vector3(40, 0, -10);
+        else if (name == "정태준") argumentCamTransform.position = new Vector3(60, 0, -10);
+        else if (name == "서진랑") argumentCamTransform.position = new Vector3(80, 0, -10);
     }
     private void PlayArgumentLine()
     {
@@ -401,7 +410,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void ShowDialogue(DialogueLine line)
     {
-
+        TpCam(line.speaker); //말하는 사람으로 카메라 이동
         nowArgumentText.text = "";
 
         // 🔥 증거 추가 처리
@@ -413,9 +422,20 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // --- 이름 ---
         nameImg.SetActive(line.speaker != "");
-        nameText.text = line.speaker;
+        string result = "이름";
 
-        TpCam(line.speaker);
+        if (line.speaker == "주인공") result = $"<size=180%><color=#FFE2A0>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "백현") result = $"<size=180%><color=#0E432D>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "친구") result = $"<size=180%><color=#260001>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "다니엘") result = $"<size=180%><color=#E7A300>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "정희영") result = $"<size=180%><color=#9B2BFF>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "장현우") result = $"<size=180%><color=#CB1B00>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "천주연") result = $"<size=180%><color=#FFE945>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "정태준") result = $"<size=180%><color=#1572FF>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "서진랑") result = $"<size=180%><color=#5E3200>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+
+        nameText.text = result;
+
 
 
         // --- dialogue 활성화 관리 ---

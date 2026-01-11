@@ -1,7 +1,9 @@
 ﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
@@ -21,6 +23,11 @@ public class UiManager : MonoBehaviour
     public float m_roughness;      // 거칠기 정도
     public float m_magnitude;      // 움직임 범위
     public float m_rotation = 1f;       // 회전 강도 (카메라 쉐이크 강도)
+
+    [Header("Evidence")]
+    public GameObject addEvidence;
+    public TextMeshProUGUI addEvidenceNameText;
+    public Image addEvidenceImage;
 
     private void Awake()
     {
@@ -42,6 +49,24 @@ public class UiManager : MonoBehaviour
             StartCoroutine(ArgumentUiOnCoroutine(argumentEndUi));
             camRotate(new Vector3(0, 0, 0f),1);
         }
+    }
+
+    public void AddEvidence(string name)
+    {
+        StartCoroutine(AddEvidenceCoroutine());
+        addEvidenceNameText.text = name;
+    }
+    public void EvidenceImageUpdate(Sprite image)
+    {
+        addEvidenceImage.sprite = image;
+    }
+    IEnumerator AddEvidenceCoroutine()
+    {
+        isUiAnim = true;
+        addEvidence.transform.DOMoveY(30, 1f).SetUpdate(true);
+        yield return new WaitForSecondsRealtime(2.3f);
+        addEvidence.transform.DOMoveY(58, 1f).SetUpdate(true);
+        isUiAnim = false;
     }
 
     public void camRotate(Vector3 a, float speed)
