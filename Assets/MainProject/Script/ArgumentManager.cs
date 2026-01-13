@@ -123,7 +123,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #region Core Flow
     private void PlayNext()
     {
-        if (UiManager.instance != null && UiManager.instance.isUiAnim)
+        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation)
             return;
 
         // 🔥 종료 후 대사 출력이 끝나고 유저가 클릭하면 다시 논의 시작

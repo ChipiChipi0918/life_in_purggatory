@@ -9,9 +9,13 @@ public class UiManager : MonoBehaviour
 {
     public static UiManager instance;
 
+    public bool isHotelInformation;
     public bool isUiAnim;
 
     public Transform camTransform;
+
+    [Header("Hotel information")]
+    public GameObject hotelInformation;
 
     [Header("논의 시작/종료")]
     public Transform argumentStartUi;
@@ -37,6 +41,36 @@ public class UiManager : MonoBehaviour
         argumentEndUi.localScale = new Vector3(1, 0, 1);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F2) && isUiAnim==false)
+        {
+            isHotelInformation = !isHotelInformation;
+            StartCoroutine(HotelInformationCoroutine(isHotelInformation));
+        }
+    }
+    private IEnumerator HotelInformationCoroutine(bool a)
+    {
+        isUiAnim = true;
+        if (a)
+        {
+            Time.timeScale = 0;
+
+            hotelInformation.SetActive(isHotelInformation);
+            hotelInformation.transform.DOMoveX(0, 1).SetUpdate(true);
+            yield return new WaitForSecondsRealtime(1f);
+        }
+        else
+        {
+            Time.timeScale = 1;
+
+            hotelInformation.transform.DOMoveX(-180, 1).SetUpdate(true);
+            yield return new WaitForSecondsRealtime(1f);
+            hotelInformation.SetActive(isHotelInformation);
+        }
+       
+        isUiAnim = false;
+    }
     public void ArgumentUiOn(bool isStart)
     {
         if (isStart)
