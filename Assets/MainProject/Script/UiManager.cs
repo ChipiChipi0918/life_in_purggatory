@@ -28,11 +28,6 @@ public class UiManager : MonoBehaviour
     public float m_magnitude;      // 움직임 범위
     public float m_rotation = 1f;       // 회전 강도 (카메라 쉐이크 강도)
 
-    [Header("Evidence")]
-    public GameObject addEvidence;
-    public TextMeshProUGUI addEvidenceNameText;
-    public Image addEvidenceImage;
-
     private void Awake()
     {
         if(instance == null) instance = this;
@@ -57,14 +52,14 @@ public class UiManager : MonoBehaviour
             Time.timeScale = 0;
 
             hotelInformation.SetActive(isHotelInformation);
-            hotelInformation.transform.DOMoveX(0, 1).SetUpdate(true);
+            hotelInformation.transform.DOMoveY(0, 1).SetUpdate(true);
             yield return new WaitForSecondsRealtime(1f);
         }
         else
         {
             Time.timeScale = 1;
 
-            hotelInformation.transform.DOMoveX(-180, 1).SetUpdate(true);
+            hotelInformation.transform.DOMoveY(-100, 1).SetUpdate(true);
             yield return new WaitForSecondsRealtime(1f);
             hotelInformation.SetActive(isHotelInformation);
         }
@@ -83,24 +78,6 @@ public class UiManager : MonoBehaviour
             StartCoroutine(ArgumentUiOnCoroutine(argumentEndUi));
             camRotate(new Vector3(0, 0, 0f),1);
         }
-    }
-
-    public void AddEvidence(string name)
-    {
-        StartCoroutine(AddEvidenceCoroutine());
-        addEvidenceNameText.text = name;
-    }
-    public void EvidenceImageUpdate(Sprite image)
-    {
-        addEvidenceImage.sprite = image;
-    }
-    IEnumerator AddEvidenceCoroutine()
-    {
-        isUiAnim = true;
-        addEvidence.transform.DOMoveY(30, 1f).SetUpdate(true);
-        yield return new WaitForSecondsRealtime(2.3f);
-        addEvidence.transform.DOMoveY(58, 1f).SetUpdate(true);
-        isUiAnim = false;
     }
 
     public void camRotate(Vector3 a, float speed)
