@@ -19,9 +19,13 @@ public class DialogueLine
 {
     public string speaker; //1
     public string text; //2
-    public float textTime; //3
-    public string camFormat; //4
-    public string addEvidence; //5
+    //3
+    public int effect;//4
+    //5
+    //6
+    public float textTime; //7
+    public string camFormat; //8
+    public string addEvidence; //9
     public DialogueType type;
 
     public bool isChoice;
@@ -60,10 +64,15 @@ public static class CSVParser
             string[] cols = row.Split(',');
             if (cols.Length < 2) continue;
 
-            string speaker = cols[0].Trim().Replace("\r", "");
-            string text = cols[1].Trim().Replace("\\n", "\n");
-            string camFormat = cols.Length > 3 ? cols[3].Trim().Replace("\r", "") : "";
-            string addEvidence = cols.Length > 4 ? cols[4].Trim().Replace("\r", "") : "";
+            string speaker = cols[0].Trim().Replace("\r", "");//1
+            string text = cols[1].Trim().Replace("\\n", "\n");//2
+            //3
+            //4-int
+            //5
+            //6
+            //7-float
+            string camFormat = cols.Length > 7 ? cols[7].Trim().Replace("\r", "") : "";//8
+            string addEvidence = cols.Length > 8 ? cols[8].Trim().Replace("\r", "") : "";//9
 
             // ============================
             // 🔥 선택지 처리
@@ -150,8 +159,9 @@ public static class CSVParser
                 addEvidence = addEvidence
             };
 
-
-            if (cols.Length >= 3 && float.TryParse(cols[2], out float dur))
+            if (cols.Length >= 3 && int.TryParse(cols[3], out int type)) //6
+                line.effect = type;
+            if (cols.Length >= 6 && float.TryParse(cols[6], out float dur)) //6
                 line.textTime = dur;
 
             if (inArgument)

@@ -22,7 +22,6 @@ public class UiManager : MonoBehaviour
     public Transform argumentEndUi;
 
     [Header("Shake")]
-    public GameObject hitUi;
     public bool usingShake = false;
     public float m_roughness;      // 거칠기 정도
     public float m_magnitude;      // 움직임 범위
@@ -106,9 +105,6 @@ public class UiManager : MonoBehaviour
     }
     IEnumerator Shake(float duration)
     {
-        hitUi.SetActive(true);
-        
-        
         Vector3 defotCamPos = camTransform.position;
 
         duration *= 1.5f;
@@ -130,8 +126,6 @@ public class UiManager : MonoBehaviour
 
             yield return null; // 중단
         }
-        hitUi.SetActive(false);
-
         camTransform.position = defotCamPos;
         camTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
         usingShake = false;

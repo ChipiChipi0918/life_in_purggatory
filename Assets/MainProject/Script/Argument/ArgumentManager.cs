@@ -78,6 +78,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public TMP_Text dialogueText;
     public Slider textSlider;
 
+    private bool isTyping;
+    private bool isSkipTyping;
+
     private List<DialogueLine> lines;
     private int index = 0;
 
@@ -419,10 +422,21 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             EvidenceManager.Instance.AddEvidence(line.addEvidence);
         }
 
+        if (line.effect == 1)
+            EffectManager.instance.CameraShake();
+        else if (line.effect == 2)
+            EffectManager.instance.Blood();
+        else if (line.effect == 3)
+            EffectManager.instance.ShakeAndBlood();
+        
+
 
         // --- 이름 ---
         nameImg.SetActive(line.speaker != "");
-        string result = "이름";
+
+        string result = $"<size=180%><color=#D9D9D9>이</color></size>름";
+
+        if (line.speaker != "") result = $"<size=180%><color=#D9D9D9>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
 
         if (line.speaker == "유은하") result = $"<size=180%><color=#FFE2A0>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
         else if (line.speaker == "백현") result = $"<size=180%><color=#0E432D>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
@@ -461,6 +475,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #region Typing Effect
     IEnumerator TypeCoroutine(string name, string text)
     {
+        yield return new WaitForSecondsRealtime(0.02f);
+
+        isTyping = true;
         int length = text.Length;
 
         textSlider.maxValue = 1f;
@@ -476,7 +493,16 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             dialogueText.text = text.Substring(0, i + 1);
             if (i % 2 == 1) VoiceSoundPlay(name);
             yield return new WaitForSeconds(timePerChar);
+
+            if (isSkipTyping)
+            {
+                isSkipTyping = false;
+                dialogueText.text = text;
+                break; //타이핑 탈출
+            }
         }
+        isTyping = false;
+
         yield return new WaitForSeconds(0.225f);
 
         textSlider.value = 1f;
@@ -540,6 +566,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             PlayNext();
         }
         CheckHover();
+    }
+
+    private void LateUpdate()
+    {
+        if (isTyping && Input.GetMouseButtonDown(0))
+        {
+            isSkipTyping = true;
+        }
     }
     #endregion
 

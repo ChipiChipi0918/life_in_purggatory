@@ -42,7 +42,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639027696642648648
+  lastModified: 639027382571191263
   FileSizes:
   - Name: Desktop
     Value: 810
@@ -71,7 +71,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639027696642648648
+  cacheTime: 639027382571356488
   SerializableEventsDict:
   - key: event:/Elina_Voice
     index: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639027696642629731
+  lastModified: 639027382571181262
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -110,7 +110,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639027696642629731
+  lastModified: 639027382571356488
   FileSizes:
   - Name: Desktop
     Value: 2304
