@@ -17,11 +17,11 @@ public enum DialogueType
 [System.Serializable]
 public class DialogueLine
 {
-    public string speaker;
-    public string text;
-    public float duration;
-    public string camFormat;
-    public string addEvidence;
+    public string speaker; //1
+    public string text; //2
+    public float textTime; //3
+    public string camFormat; //4
+    public string addEvidence; //5
     public DialogueType type;
 
     public bool isChoice;
@@ -130,7 +130,7 @@ public static class CSVParser
                     speaker = "엘리나",
                     text = text,
                     type = DialogueType.Dialogue,
-                    duration = 0
+                    textTime = 0
                 };
 
                 ArgumentManager.argumentBlocks.Add(currentBlock);
@@ -152,7 +152,7 @@ public static class CSVParser
 
 
             if (cols.Length >= 3 && float.TryParse(cols[2], out float dur))
-                line.duration = dur;
+                line.textTime = dur;
 
             if (inArgument)
                 currentBlock.lines.Add(line);

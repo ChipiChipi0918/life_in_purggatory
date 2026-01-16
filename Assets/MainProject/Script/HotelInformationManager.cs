@@ -13,10 +13,11 @@ public class HotelInformationManager : MonoBehaviour
 
     public TextMeshProUGUI bookmark;
 
-    [Header("증거/손님/지도")]
+    [Header("탭")]
     public GameObject evidenceTap; //0
     public GameObject guestTap; //1
     public GameObject mapTap; //2
+    public GameObject ruleTap;
 
     private void Awake()
     {
@@ -28,10 +29,11 @@ public class HotelInformationManager : MonoBehaviour
         evidenceTap.SetActive(false);
         guestTap.SetActive(false);
         mapTap.SetActive(false);
+        ruleTap.SetActive(false);
 
         if (informationTap < 0)
             informationTap = 2;
-        else if (informationTap > 2)
+        else if (informationTap > 3)
             informationTap = 0;
 
 
@@ -49,6 +51,11 @@ public class HotelInformationManager : MonoBehaviour
         {
             bookmark.text = "지도";
             mapTap.SetActive(true);
+        }
+        else if(informationTap == 3)
+        {
+            bookmark.text = "규칙";
+            ruleTap.SetActive(true);
         }
         page.text = "Page." + (informationTap + 1);
     }
