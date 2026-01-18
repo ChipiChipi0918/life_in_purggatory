@@ -59,12 +59,12 @@ public class EffectManager : MonoBehaviour
 
     public void FadeIn() //100
     {
-        
+        StartCoroutine(Fade(true));
     }
 
-    public void FadOut() //101
+    public void FadeOut() //101
     {
-
+        StartCoroutine(Fade(false));
     }
 
     private IEnumerator Fade(bool InOrOut)
@@ -74,13 +74,27 @@ public class EffectManager : MonoBehaviour
         fadeCanvasGroup.alpha = 0f;
         fade.SetActive(true);
 
-        float t = 0f;
-        while (t < 0.5f)
+        if (InOrOut)
         {
-            t += Time.deltaTime;
-            fadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f, t / 0.5f);
-            yield return null;
+            float t = 0f;
+            while (t < 1f)
+            {
+                t += Time.unscaledDeltaTime;
+                fadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f, t / 0.5f);
+                yield return null;
+            }
+            fadeCanvasGroup.alpha = 1f;
         }
-        fadeCanvasGroup.alpha = 1f;
+        else
+        {
+            float t = 0f;
+            while (t < 1f)
+            {
+                t += Time.unscaledDeltaTime;
+                fadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f,1 - ( t / 0.5f));
+                yield return null;
+            }
+            fadeCanvasGroup.alpha = 0f;
+        }
     }
 }

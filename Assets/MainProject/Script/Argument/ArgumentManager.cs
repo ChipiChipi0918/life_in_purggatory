@@ -422,6 +422,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             EvidenceManager.Instance.AddEvidence(line.addEvidence);
         }
 
+        // 🔥 증거 보이기 처리
+        if (!string.IsNullOrEmpty(line.showEvidence) && EvidenceManager.Instance != null)
+        {
+            EvidenceManager.Instance.ShowEvidence(line.showEvidence);
+        }
+
         if (line.effect == 1)
             EffectManager.instance.CameraShake();
         else if (line.effect == 2)
@@ -429,6 +435,10 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         else if (line.effect == 3)
             EffectManager.instance.ShakeAndBlood();
         
+        else if (line.effect == 100)
+            EffectManager.instance.FadeIn();
+        else if (line.effect == 101)
+            EffectManager.instance.FadeOut();
 
 
         // --- 이름 ---

@@ -39,6 +39,10 @@ public class EvidenceManager : MonoBehaviour
     public TextMeshProUGUI addEvidenceNameText;
     public Image addEvidenceImage;
 
+    [Header("Show Evidence UI")]
+    public GameObject showEvidence;
+    public Image showEvidenceImage;
+
     [Header("Evidence Buttons")]
     public GameObject evidenceButtonGroup;
     public GameObject evidenceButton;
@@ -130,5 +134,39 @@ public class EvidenceManager : MonoBehaviour
         if (name == "탄흔") return "땅에 박혀있던 총알의 흔적\n\n백현의 말에 따르면 발사된지 얼마 되지 않듯 하다.";
 
         return "설명이 존재하지 않는 증거다.";
+    }
+
+    // =============================
+    // 증거 보이기
+    // =============================
+    public void ShowEvidence(string name)
+    {
+        if (evidence.Exists(e => e.evidenceName == name))
+            return;
+
+        Sprite img = GetEvidenceImage(name);
+        string explanation = GetEvidenceExplanation(name);
+
+        Evidence newEvidence = new Evidence(name, explanation, img);
+        evidence.Add(newEvidence);
+
+        ShowShowEvidenceUI(newEvidence);
+
+        Debug.Log($"증거품 추가됨: {name}");
+    }
+
+    private void ShowShowEvidenceUI(Evidence data)
+    {
+        showEvidenceImage.sprite = data.evidenceImage;
+        StartCoroutine(ShowEvidenceCoroutine());
+    }
+
+    private IEnumerator ShowEvidenceCoroutine()
+    {
+        isUiAnim = true;
+        showEvidence.transform.DOScaleY(1, 0.75f).SetUpdate(true);
+        yield return new WaitForSecondsRealtime(5f);
+        showEvidence.transform.DOScaleY(0, 0.75f).SetUpdate(true);
+        isUiAnim = false;
     }
 }

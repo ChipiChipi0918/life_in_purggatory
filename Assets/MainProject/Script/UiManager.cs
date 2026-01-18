@@ -14,6 +14,9 @@ public class UiManager : MonoBehaviour
 
     public Transform camTransform;
 
+    [Header("Back Ui")]
+    public CanvasGroup backUi;
+
     [Header("Hotel information")]
     public GameObject hotelInformation;
 
@@ -43,11 +46,44 @@ public class UiManager : MonoBehaviour
             StartCoroutine(HotelInformationCoroutine(isHotelInformation));
         }
     }
+
+    private IEnumerator BackUiFade(bool InOrOut) //true 켜기 /false 끄기
+    {
+
+        backUi.alpha = 0f;
+        backUi.gameObject.SetActive(true);
+
+        if (InOrOut)
+        {
+            float t = 0f;
+            while (t < 1f)
+            {
+                t += Time.unscaledDeltaTime;
+                backUi.alpha = Mathf.Lerp(0f, 1f, t / 0.5f);
+                yield return null;
+            }
+            backUi.alpha = 1f;
+        }
+        else
+        {
+            float t = 0f;
+            while (t < 1f)
+            {
+                t += Time.unscaledDeltaTime;
+                backUi.alpha = Mathf.Lerp(0f, 1f, 1 - (t / 0.5f));
+                yield return null;
+            }
+            backUi.alpha = 0f;
+        }
+    }
+
     private IEnumerator HotelInformationCoroutine(bool a)
     {
         isUiAnim = true;
         if (a)
         {
+            StartCoroutine(BackUiFade(true));
+
             Time.timeScale = 0;
 
             hotelInformation.SetActive(isHotelInformation);
@@ -56,6 +92,8 @@ public class UiManager : MonoBehaviour
         }
         else
         {
+            StartCoroutine(BackUiFade(false));
+
             Time.timeScale = 1;
 
             hotelInformation.transform.DOMoveY(-100, 1).SetUpdate(true);
@@ -86,6 +124,8 @@ public class UiManager : MonoBehaviour
     
     IEnumerator ArgumentUiOnCoroutine(Transform startOrEnd)
     {
+        StartCoroutine(BackUiFade(true));
+
         startOrEnd.localScale = new Vector3(1, 0, 1);
         Time.timeScale = 0.01f;
         isUiAnim = true;
@@ -96,6 +136,8 @@ public class UiManager : MonoBehaviour
         isUiAnim = false;
         yield return new WaitForSecondsRealtime(1);
         startOrEnd.localScale = new Vector3(1, 0, 1);
+
+        StartCoroutine(BackUiFade(false));
     }
 
     public void Shaking(float parametersShakeTime) // 0.35는 작은 쉐이크 and 0.7은 큰 쉐이크

@@ -26,6 +26,7 @@ public class DialogueLine
     public float textTime; //7
     public string camFormat; //8
     public string addEvidence; //9
+    public string showEvidence; //10
     public DialogueType type;
 
     public bool isChoice;
@@ -73,6 +74,7 @@ public static class CSVParser
             //7-float
             string camFormat = cols.Length > 7 ? cols[7].Trim().Replace("\r", "") : "";//8
             string addEvidence = cols.Length > 8 ? cols[8].Trim().Replace("\r", "") : "";//9
+            string showEvidence = cols.Length > 9 ? cols[9].Trim().Replace("\r", "") : "";//10
 
             // ============================
             // 🔥 선택지 처리
@@ -156,7 +158,8 @@ public static class CSVParser
                 text = text,
                 camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue,
-                addEvidence = addEvidence
+                addEvidence = addEvidence,
+                showEvidence = showEvidence
             };
 
             if (cols.Length >= 3 && int.TryParse(cols[3], out int type)) //6
