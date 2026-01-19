@@ -134,10 +134,9 @@ public class UiManager : MonoBehaviour
         Time.timeScale = 1f;
         startOrEnd.DOScaleY(0, 1).SetUpdate(true);
         isUiAnim = false;
+        StartCoroutine(BackUiFade(false));
         yield return new WaitForSecondsRealtime(1);
         startOrEnd.localScale = new Vector3(1, 0, 1);
-
-        StartCoroutine(BackUiFade(false));
     }
 
     public void Shaking(float parametersShakeTime) // 0.35는 작은 쉐이크 and 0.7은 큰 쉐이크

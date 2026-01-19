@@ -59,11 +59,13 @@ public class EffectManager : MonoBehaviour
 
     public void FadeIn() //100
     {
+        StopCoroutine("Fade");
         StartCoroutine(Fade(true));
     }
 
     public void FadeOut() //101
     {
+        StopCoroutine("Fade");
         StartCoroutine(Fade(false));
     }
 

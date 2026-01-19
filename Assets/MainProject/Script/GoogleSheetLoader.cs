@@ -1,11 +1,12 @@
-﻿using System;
+﻿using KoreanTyper;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
+using System.Text.RegularExpressions;
 using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using KoreanTyper;
+using UnityEngine.Networking;
 
 #region Dialogue Data Class
 public enum DialogueType
@@ -43,6 +44,28 @@ public class ArgumentBlock
     public List<DialogueLine> lines = new List<DialogueLine>();
     public DialogueLine exitLine;   // 논의 종료 후 출력될 일반 대사
 }
+public static class CSVUtil
+{
+    // "안녕, 반가워" 처럼 콤마 포함 텍스트 대응
+    public static string[] SplitCSV(string line)
+    {
+        var pattern = @",(?=(?:[^""]*""[^""]*"")*[^""]*$)";
+        var values = Regex.Split(line, pattern);
+
+        for (int i = 0; i < values.Length; i++)
+        {
+            values[i] = values[i].Trim();
+
+            // 앞뒤 따옴표 제거
+            if (values[i].StartsWith("\"") && values[i].EndsWith("\""))
+            {
+                values[i] = values[i].Substring(1, values[i].Length - 2);
+            }
+        }
+        return values;
+    }
+}
+
 public static class CSVParser
 {
     public static List<DialogueLine> Parse(string csv)
@@ -62,7 +85,7 @@ public static class CSVParser
             string row = rows[i].Trim();
             if (string.IsNullOrWhiteSpace(row)) continue;
 
-            string[] cols = row.Split(',');
+            string[] cols = CSVUtil.SplitCSV(row);
             if (cols.Length < 2) continue;
 
             string speaker = cols[0].Trim().Replace("\r", "");//1

@@ -218,7 +218,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         float time = 0.5f;
         if (name == "유은하")      argumentCamTransform.DOMoveX(0 + addPosX, time);
         else if (name == "백현")   argumentCamTransform.DOMoveX(-80 + addPosX, time);
-        else if (name == "친구")   argumentCamTransform.DOMoveX(-60 + addPosX, time);
+        else if (name == "유설희")   argumentCamTransform.DOMoveX(-60 + addPosX, time);
         else if (name == "다니엘") argumentCamTransform.DOMoveX(-40 + addPosX, time);
         else if (name == "정희영") argumentCamTransform.DOMoveX(-20 + addPosX, time);
         else if (name == "장현우") argumentCamTransform.DOMoveX(20 + addPosX, time);
@@ -230,7 +230,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         if (name == "유은하")      argumentCamTransform.position = new Vector3(0, 0, -10);
         else if (name == "백현")   argumentCamTransform.position = new Vector3(-80, 0, -10);
-        else if (name == "친구")   argumentCamTransform.position = new Vector3(-60, 0, -10);
+        else if (name == "유설희")   argumentCamTransform.position = new Vector3(-60, 0, -10);
         else if (name == "다니엘") argumentCamTransform.position = new Vector3(-40, 0, -10);
         else if (name == "정희영") argumentCamTransform.position = new Vector3(-20, 0, -10);
         else if (name == "장현우") argumentCamTransform.position = new Vector3(20, 0, -10);
@@ -450,7 +450,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         if (line.speaker == "유은하") result = $"<size=180%><color=#FFE2A0>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
         else if (line.speaker == "백현") result = $"<size=180%><color=#0E432D>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "친구") result = $"<size=180%><color=#260001>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
+        else if (line.speaker == "유설희") result = $"<size=180%><color=#8F8F8F>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
         else if (line.speaker == "다니엘") result = $"<size=180%><color=#E7A300>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
         else if (line.speaker == "정희영") result = $"<size=180%><color=#9B2BFF>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
         else if (line.speaker == "장현우") result = $"<size=180%><color=#CB1B00>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
