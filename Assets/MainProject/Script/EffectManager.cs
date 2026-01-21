@@ -2,16 +2,22 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EffectManager : MonoBehaviour
 {
     public static EffectManager instance;
 
-    public GameObject fade;
-
+    [Header("피 2/3")]
     public GameObject blood;
 
+    [Header("이의제기(논파) 11~20")]
     public RectTransform objection;
+    public Image characterImage;
+    public List<Sprite> objectionCharacter = new List<Sprite>();
+
+    [Header("페이드 인아웃 100/101")]
+    public GameObject fade;
 
     private void Awake()
     {
@@ -60,31 +66,35 @@ public class EffectManager : MonoBehaviour
         StartCoroutine(BloodEffect());
     }
 
-    public void Objection() //11~20
+    public void Objection(int characterNumber) //11~20
     {
         StartCoroutine(ObjectionCoroutine());
+
+        characterImage.sprite = objectionCharacter[characterNumber];
     }
 
     IEnumerator ObjectionCoroutine()
     {
-        UiManager.instance.isUiAnim = true;
-        objection.DOAnchorPosY(0, 0.28f);
-        yield return new WaitForSeconds(2);
-
         CanvasGroup fadeCanvasGroup = objection.gameObject.GetComponent<CanvasGroup>();
-        float t = 0f;
         fadeCanvasGroup.alpha = 1f;
+        float t = 0f;
+
+        UiManager.instance.isUiAnim = true;
+        objection.DOAnchorPosY(0, 0.2f);
+        yield return new WaitForSeconds(2);
+        
         while (t < 2f)
         {
             t += Time.unscaledDeltaTime;
             fadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f, 1 - (t / 0.5f));
+            if(t>=1.2f && t<=1.3f) UiManager.instance.isUiAnim = false;
             yield return null;
         }
         fadeCanvasGroup.alpha = 0f;
 
-        yield return new WaitForSeconds(2f);
-        objection.DOAnchorPosY(500, 0f);
-        UiManager.instance.isUiAnim = false;
+        yield return new WaitForSeconds(1f);
+        objection.DOAnchorPosY(1222.426f, 0.01f);
+        
     }
 
     public void FadeIn() //100

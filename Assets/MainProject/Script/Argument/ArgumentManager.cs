@@ -441,8 +441,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         else if (line.effect == 3)
             EffectManager.instance.ShakeAndBlood();
 
-        else if (line.effect == 11)
-            EffectManager.instance.Objection();
+        else if (line.effect >= 10 && line.effect <= 20)
+            EffectManager.instance.Objection(line.effect-10);
 
 
         else if (line.effect == 100)
