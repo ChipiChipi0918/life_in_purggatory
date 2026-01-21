@@ -26,6 +26,8 @@ public class HotelInformationManager : MonoBehaviour
 
     private void InformationTapUpdate()
     {
+        SoundManager.instance.UiSelect();
+
         evidenceTap.SetActive(false);
         guestTap.SetActive(false);
         mapTap.SetActive(false);

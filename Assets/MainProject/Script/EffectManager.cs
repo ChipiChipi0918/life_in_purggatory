@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class EffectManager : MonoBehaviour
     public GameObject fade;
 
     public GameObject blood;
+
+    public RectTransform objection;
 
     private void Awake()
     {
@@ -55,6 +58,33 @@ public class EffectManager : MonoBehaviour
     {
         UiManager.instance.Shaking(0.3f);
         StartCoroutine(BloodEffect());
+    }
+
+    public void Objection() //11~20
+    {
+        StartCoroutine(ObjectionCoroutine());
+    }
+
+    IEnumerator ObjectionCoroutine()
+    {
+        UiManager.instance.isUiAnim = true;
+        objection.DOAnchorPosY(0, 0.28f);
+        yield return new WaitForSeconds(2);
+
+        CanvasGroup fadeCanvasGroup = objection.gameObject.GetComponent<CanvasGroup>();
+        float t = 0f;
+        fadeCanvasGroup.alpha = 1f;
+        while (t < 2f)
+        {
+            t += Time.unscaledDeltaTime;
+            fadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f, 1 - (t / 0.5f));
+            yield return null;
+        }
+        fadeCanvasGroup.alpha = 0f;
+
+        yield return new WaitForSeconds(2f);
+        objection.DOAnchorPosY(500, 0f);
+        UiManager.instance.isUiAnim = false;
     }
 
     public void FadeIn() //100

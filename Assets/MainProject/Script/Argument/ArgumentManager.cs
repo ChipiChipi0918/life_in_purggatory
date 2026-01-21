@@ -39,6 +39,10 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 {
     public static ArgumentManager instance;
 
+    public System.Action OnAllDialogueFinished;
+    public System.Action OnDialogueFinished;
+
+
     private bool _isArgumentActive = false;
     public bool isArgumentActive
     {
@@ -52,12 +56,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private int repeatIndex = 0;
     private bool waitingExitDialogue = false;
     private bool argumentForceEnded = false;
-    private bool waitingArgumentEndText = false;
+    public bool waitingArgumentEndText = false;
 
     [Header("Choice")]
     public GameObject choicePanel;      // 선택지 전체 패널
     public GameObject choiceButtonPrefab; // 버튼 프리팹
     public Transform choiceButtonParent;  // 버튼 배치될 위치
+    public bool isChoice;
 
     [Header("Argument Text")]
     public TMP_Text argumentText1;
@@ -69,7 +74,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public Transform argumentCamTransform;
     private string beforeSpeaker;
     private string beforeCamFormat;
-    private bool isChoice;
 
     [Header("Dialogue")]
     public GameObject dialogue;
@@ -78,8 +82,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public TMP_Text dialogueText;
     public Slider textSlider;
 
+    [Header("Typing")]
+    public bool isSkipTyping;
     private bool isTyping;
-    private bool isSkipTyping;
 
     private List<DialogueLine> lines;
     private int index = 0;
@@ -114,6 +119,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
 
         lines = dialogueLines;
+        Debug.Log(lines.Count);
         index = 0;
 
         StopAllCoroutines();
@@ -124,7 +130,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #endregion
 
     #region Core Flow
-    private void PlayNext()
+    public void PlayNext()
     {
         if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation)
             return;
@@ -434,7 +440,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             EffectManager.instance.Blood();
         else if (line.effect == 3)
             EffectManager.instance.ShakeAndBlood();
-        
+
+        else if (line.effect == 11)
+            EffectManager.instance.Objection();
+
+
         else if (line.effect == 100)
             EffectManager.instance.FadeIn();
         else if (line.effect == 101)
@@ -513,8 +523,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
         isTyping = false;
 
-        yield return new WaitForSeconds(0.225f);
-
         textSlider.value = 1f;
     }
 
@@ -522,8 +530,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         if (name == "") return;
 
-        if (name == "엘리나") SoundManager.instance.ElinaVoice();
-        else SoundManager.instance.ElinaVoice();
+        if (name == "유은하") SoundManager.instance.EunhaVoice();
+        else SoundManager.instance.EunhaVoice();
     }
     #endregion
 
@@ -667,6 +675,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         ClearUI();
         Debug.Log("전체 대사 종료");
+
+        OnAllDialogueFinished?.Invoke(); // 🔥 핵심
     }
+
     #endregion
 }

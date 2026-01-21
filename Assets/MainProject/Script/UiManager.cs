@@ -18,7 +18,7 @@ public class UiManager : MonoBehaviour
     public CanvasGroup backUi;
 
     [Header("Hotel information")]
-    public GameObject hotelInformation;
+    public RectTransform hotelInformation;
 
     [Header("논의 시작/종료")]
     public Transform argumentStartUi;
@@ -86,8 +86,8 @@ public class UiManager : MonoBehaviour
 
             Time.timeScale = 0;
 
-            hotelInformation.SetActive(isHotelInformation);
-            hotelInformation.transform.DOMoveY(0, 1).SetUpdate(true);
+            hotelInformation.gameObject.SetActive(isHotelInformation);
+            hotelInformation.DOAnchorPosY(0,1).SetUpdate(true);
             yield return new WaitForSecondsRealtime(1f);
         }
         else
@@ -96,9 +96,9 @@ public class UiManager : MonoBehaviour
 
             Time.timeScale = 1;
 
-            hotelInformation.transform.DOMoveY(-100, 1).SetUpdate(true);
+            hotelInformation.DOAnchorPosY(-1490, 1).SetUpdate(true);
             yield return new WaitForSecondsRealtime(1f);
-            hotelInformation.SetActive(isHotelInformation);
+            hotelInformation.gameObject.SetActive(isHotelInformation);
         }
        
         isUiAnim = false;

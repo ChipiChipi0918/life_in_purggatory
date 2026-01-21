@@ -19,6 +19,7 @@ public class EvidenceButton : MonoBehaviour
 
     public void Click()
     {
+        SoundManager.instance.UiSelect();
         EvidenceManager.Instance.EvidenceUpdate(data);
     }
 }

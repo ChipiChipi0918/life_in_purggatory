@@ -10,7 +10,9 @@ public class MapManager : MonoBehaviour
 
     public void OnFlor(int f)
     {
-        for(int i = 0; i < 4; i++)
+        SoundManager.instance.UiSelect();
+
+        for (int i = 0; i < 4; i++)
         {
             floor[i].SetActive(false);
         }

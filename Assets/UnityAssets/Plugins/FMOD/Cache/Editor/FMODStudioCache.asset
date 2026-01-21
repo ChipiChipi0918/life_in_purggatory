@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5708625063730938639
+--- !u!114 &-4541826960052089374
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Elina_Voice
+  m_Name: event:/eunha_Voice
   m_EditorClassIdentifier: 
-  Path: event:/Elina_Voice
+  Path: event:/eunha_Voice
   Guid:
     Data1: 1938771805
     Data2: 1147750332
@@ -42,10 +42,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639027696642648648
+  lastModified: 639046019307523786
   FileSizes:
   - Name: Desktop
-    Value: 810
+    Value: 942
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -63,18 +63,25 @@ MonoBehaviour:
   - {fileID: -1843200061435694460}
   - {fileID: 2888173182791625973}
   - {fileID: 891229174712809751}
+  - {fileID: 5691006403440385348}
   EditorEvents:
-  - {fileID: -5708625063730938639}
+  - {fileID: -4541826960052089374}
+  - {fileID: 4169819893709066972}
+  - {fileID: 2606992824668569623}
   EditorParameters: []
   MasterBanks:
   - {fileID: 891229174712809751}
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639027696642648648
+  cacheTime: 639046019308028361
   SerializableEventsDict:
-  - key: event:/Elina_Voice
+  - key: event:/eunha_Voice
     index: 0
+  - key: event:/Ui_Sound1
+    index: 1
+  - key: event:/Bell
+    index: 2
 --- !u!114 &891229174712809751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,11 +97,38 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639027696642629731
+  lastModified: 639046019307513825
   FileSizes:
   - Name: Desktop
-    Value: 1036
+    Value: 1074
   Exists: 1
+--- !u!114 &2606992824668569623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bell
+  m_EditorClassIdentifier: 
+  Path: event:/Bell
+  Guid:
+    Data1: 1780969444
+    Data2: 1230803274
+    Data3: 1420565903
+    Data4: 1601112642
+  Banks:
+  - {fileID: 5691006403440385348}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &2888173182791625973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,8 +144,55 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639027696642629731
+  lastModified: 639046019307403506
   FileSizes:
   - Name: Desktop
-    Value: 2304
+    Value: 2336
+  Exists: 1
+--- !u!114 &4169819893709066972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Ui_Sound1
+  m_EditorClassIdentifier: 
+  Path: event:/Ui_Sound1
+  Guid:
+    Data1: 1952185505
+    Data2: 1080677503
+    Data3: -454360397
+    Data4: -658745769
+  Banks:
+  - {fileID: 5691006403440385348}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &5691006403440385348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Ui.bank
+  m_EditorClassIdentifier: 
+  Path: Life-In-Purgatory_FMOD/Build/Desktop/Ui.bank
+  Name: Ui
+  StudioPath: bank:/Ui
+  lastModified: 639046019308028361
+  FileSizes:
+  - Name: Desktop
+    Value: 22944
   Exists: 1

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<objects serializationModel="Studio.02.02.00">
+<objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{738f4f5d-47bc-4469-a7df-c33a265677b9}">
 		<property name="name">
-			<value>Elina_Voice</value>
+			<value>eunha_Voice</value>
 		</property>
 		<property name="outputFormat">
 			<value>0</value>

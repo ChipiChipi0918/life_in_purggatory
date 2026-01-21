@@ -8,15 +8,23 @@ public class SoundManager : MonoBehaviour
     public static SoundManager instance;
 
     [Header("Dialouge Sound")]
-    public EventReference elinaVoice;
+    public EventReference eunhaVoice;
+
+    [Header("Ui")]
+    public EventReference uiSelect;
 
     private void Awake()
     {
         if(instance == null) instance = this;
     }
 
-    public void ElinaVoice()
+    public void EunhaVoice()
     {
-        RuntimeManager.CreateInstance(elinaVoice).start();
+        RuntimeManager.CreateInstance(eunhaVoice).start();
+    }
+
+    public void UiSelect()
+    {
+        RuntimeManager.CreateInstance(uiSelect).start();
     }
 }

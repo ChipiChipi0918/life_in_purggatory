@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{4ddce746-cd5e-46e6-92b0-42cab5feab72}">
+		<property name="assetPath">
+			<value>maou_se_system26.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.1306122448979592</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9207a6ee-e594-4434-9fa5-cf6600acedaa}</destination>
+		</relationship>
+	</object>
+</objects>

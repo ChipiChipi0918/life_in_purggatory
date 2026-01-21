@@ -208,20 +208,28 @@ public static class CSVParser
 
 public class GoogleSheetLoader : MonoBehaviour
 {
-    [Header("일상 URL")]
-    public string dialogueURL;
+    public int chapter = 1;
 
-    [Header("재판 URL")]
-    public string argumentURL;
+    [Header("Chapter1 URL")]
+    public string Chapter1_DailyURL;
+    public string Chapter1_JudgmentURL;
+
+    [Header("Chapter2 URL")]
+    public string Chapter2_DailyURL;
+    public string Chapter2_JudgmentURL;
+
+    [Header("Chapter3 URL")]
+    public string Chapter3_DailyURL;
+    public string Chapter3_JudgmentURL;
 
     public IEnumerator LoadDialogueCSV(Action<List<DialogueLine>> onLoaded)
     {
-        yield return LoadCSV(dialogueURL, onLoaded);
+        yield return LoadCSV(Chapter1_DailyURL, onLoaded);
     }
 
     public IEnumerator LoadArgumentCSV(Action<List<DialogueLine>> onLoaded)
     {
-        yield return LoadCSV(argumentURL, onLoaded);
+        yield return LoadCSV(Chapter1_JudgmentURL, onLoaded);
     }
 
     private IEnumerator LoadCSV(string url, Action<List<DialogueLine>> onLoaded)
