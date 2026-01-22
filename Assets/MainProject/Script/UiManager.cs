@@ -50,18 +50,7 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public void OnArgumentEvidence(bool On)
-    {
-        if (On)
-        {
-            argumentEvidenceUi.DOAnchorPosX(340f, 1).SetUpdate(true);
-        }
-        else
-        {
-            argumentEvidenceUi.DOAnchorPosX(760f, 1).SetUpdate(true);
-        }
-    }
-
+    
     private IEnumerator BackUiFade(bool InOrOut) //true 켜기 /false 끄기
     {
 
@@ -133,6 +122,18 @@ public class UiManager : MonoBehaviour
             camRotate(new Vector3(0, 0, 0f),1);
         }
     }
+    public void OnArgumentEvidence(bool On)
+    {
+        if (On)
+        {
+            argumentEvidenceUi.DOAnchorPosX(576f, 1).SetUpdate(false);
+        }
+        else
+        {
+            argumentEvidenceUi.DOAnchorPosX(760f, 1).SetUpdate(true);
+        }
+    }
+
 
     public void camRotate(Vector3 a, float speed)
     {

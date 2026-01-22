@@ -10,715 +10,773 @@ using UnityEngine.UI;
 using static System.Net.Mime.MediaTypeNames;
 using static Unity.Collections.AllocatorManager;
 
+using System.Text.RegularExpressions;
+
 public static class ArgumentTextFormatter
 {
+    // 정규식 캐싱 (성능 최적화)
+    private static readonly Regex KeywordRegex = new Regex(@"\*(.*?)\*");
+
     public static string Format(string text)
     {
-        while (true)
+        if (string.IsNullOrEmpty(text)) return text;
+
+        // *키워드* 패턴을 찾아서 링크 태그로 변환
+        return KeywordRegex.Replace(text, match =>
         {
-            int start = text.IndexOf('*');
-            if (start == -1) break;
-
-            int end = text.IndexOf('*', start + 1);
-            if (end == -1) break;
-
-            string keyword = text.Substring(start + 1, end - start - 1);
-
-            string replacement =
-                $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
-
-            text = text.Remove(start, end - start + 1)
-                       .Insert(start, replacement);
-        }
-
-        return text;
+            string keyword = match.Groups[1].Value;
+            return $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
+        });
     }
 }
+
 
 public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 {
     public static ArgumentManager instance;
 
-    public System.Action OnAllDialogueFinished;
-    public System.Action OnDialogueFinished;
-
-
-    private bool _isArgumentActive = false;
-    public bool isArgumentActive
+    #region Enums & Config
+    // 🔥 상태 관리: 현재 게임이 어떤 상태인지 명확히 정의
+    public enum FlowState
     {
-        get => _isArgumentActive;
-        set => _isArgumentActive = value; // ⚡ UI 제어 제거
+        Idle,               // 대기
+        Dialogue_Typing,    // 일반 대화 타이핑 중
+        Dialogue_Wait,      // 일반 대화 출력 완료 (클릭 대기)
+        Argument_Loop,      // 논의 진행 중 (자동 재생)
+        Argument_EndWait,   // 논의 한 사이클 종료 후 대기 (재시작 또는 진행)
+        Choice              // 선택지 화면
     }
 
+    // 캐릭터 설정 데이터 (하드코딩 제거용)
+    private readonly Dictionary<string, (float camPos, string colorCode)> characterConfig = new Dictionary<string, (float, string)>()
+    {
+        { "유은하", (0f, "#FFE2A0") },
+        { "백현",   (-80f, "#0E432D") },
+        { "유설희", (-60f, "#8F8F8F") },
+        { "다니엘", (-40f, "#E7A300") },
+        { "정희영", (-20f, "#9B2BFF") },
+        { "장현우", (20f, "#CB1B00") },
+        { "천주연", (40f, "#FFE945") },
+        { "정태준", (60f, "#1572FF") },
+        { "서진랑", (80f, "#5E3200") },
+        { "Default", (0f, "#D9D9D9") } // 기본값
+    };
+    #endregion
+
+    #region Variables
+    [Header("State Info")]
+    [SerializeField] private FlowState currentState = FlowState.Idle;
+
+    public FlowState CurrentState => currentState;
+    public bool IsArgumentMode => currentState == FlowState.Argument_Loop || currentState == FlowState.Argument_EndWait;
+
+    [Header("Events")]
+    public System.Action OnAllDialogueFinished;
+
+    [Header("Data")]
     public static List<ArgumentBlock> argumentBlocks;
+    private List<DialogueLine> currentLines;
+    private int lineIndex = 0;          // 전체 대화 인덱스
+    private int currentBlockIndex = 0;  // 논의 블록 인덱스
+    private int argumentLineIndex = 0;  // 논의 내부 라인 인덱스
 
-    private int currentBlockIndex = 0;
-    private int repeatIndex = 0;
-    private bool waitingExitDialogue = false;
-    private bool argumentForceEnded = false;
-    public bool waitingArgumentEndText = false;
+    [Header("Choice UI")]
+    public GameObject choicePanel;
+    public GameObject choiceButtonPrefab;
+    public Transform choiceButtonParent;
 
-    [Header("Choice")]
-    public GameObject choicePanel;      // 선택지 전체 패널
-    public GameObject choiceButtonPrefab; // 버튼 프리팹
-    public Transform choiceButtonParent;  // 버튼 배치될 위치
-    public bool isChoice;
-
-    [Header("Argument Text")]
-    public TMP_Text argumentText1;
-    public TMP_Text argumentText2;
-    private TMP_Text nowArgumentText;
-
-    [Header("Argument")]
+    [Header("Argument UI")]
+    public TMP_Text argumentTextLeft;
+    public TMP_Text argumentTextRight;
+    private TMP_Text activeArgumentText;
     public float argumentDuration = 0.5f;
     public Transform argumentCamTransform;
-    private string beforeSpeaker;
-    private string beforeCamFormat;
-
-    [Header("Argument Evidence")]
-    public string selectedEvidenceName;   // 🔥 플레이어가 고른 증거품
-    public string correctEvidenceName;    // 현재 논의의 정답 증거품
+    public Transform argumentEvidenceButtonParent;
 
 
+    [Header("Evidence Logic")]
+    public string selectedEvidenceName; // 플레이어가 선택한 증거
+    public string correctEvidenceName;  // 현재 정답 증거
 
-    [Header("Dialogue")]
-    public GameObject dialogue;
-    public GameObject nameImg;
+    [Header("Dialogue UI")]
+    public GameObject dialoguePanel;
+    public GameObject nameTagObj;
     public TMP_Text nameText;
     public TMP_Text dialogueText;
     public Slider textSlider;
 
-    [Header("Typing")]
-    public bool isSkipTyping;
-    private bool isTyping;
-
-    private List<DialogueLine> lines;
-    private int index = 0;
-
-    private Coroutine argumentRoutine;
+    [Header("Typing Settings")]
+    private bool isSkipTyping;
     private Coroutine typingRoutine;
+    private Coroutine argumentRoutine;
 
-    private string rawText = "";
-    private int hoverIndex = -1;
-
-    private bool lastUiAnim = false;
-    private bool shouldDialogueBeActive = false;
-
+    // 내부 변수
+    private string currentRawText = "";
+    private int currentLinkHoverIndex = -1;
+    private bool lastUiAnimState = false;
+    private bool isShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
+    private bool waitingExitDialogue = false;
+    private ArgumentEvidenceButton currentSelected;
+    #endregion
 
     private void Awake()
     {
         if (instance == null) instance = this;
 
-        nowArgumentText = argumentText1;
-
-        argumentText1.gameObject.SetActive(false);
-        argumentText2.gameObject.SetActive(false);
+        activeArgumentText = argumentTextLeft;
+        argumentTextLeft.gameObject.SetActive(false);
+        argumentTextRight.gameObject.SetActive(false);
+        choicePanel.SetActive(false);
     }
 
-    #region Public Entry
+    private void Update()
+    {
+        // UI 애니메이션 체크 후 다이얼로그 복구
+        HandleUiAnimationState();
+
+        // 마우스 호버 체크 (논의 중일 때만)
+        if (IsArgumentMode) CheckHover();
+
+        // 클릭 입력 처리
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleInput();
+        }
+    }
+
+    private void LateUpdate()
+    {
+        // 타이핑 스킵 처리
+        if (currentState == FlowState.Dialogue_Typing && Input.GetMouseButtonDown(0))
+        {
+            isSkipTyping = true;
+        }
+    }
+
+    #region Core Flow (State Machine)
+
     public void PlayLines(List<DialogueLine> dialogueLines)
     {
-        if (dialogueLines == null || dialogueLines.Count == 0)
-        {
-            Debug.LogWarning("대사 데이터 없음");
-            return;
-        }
+        if (dialogueLines == null || dialogueLines.Count == 0) return;
 
-        lines = dialogueLines;
-        Debug.Log(lines.Count);
-        index = 0;
+        currentLines = dialogueLines;
+        lineIndex = 0;
 
         StopAllCoroutines();
-        ClearUI();
+        ResetUI();
 
         PlayNext();
     }
-    #endregion
 
-    #region Core Flow
     public void PlayNext()
     {
-        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation)
-            return;
+        // UI 애니메이션 중이거나 호텔 정보 창이 켜져있으면 대기
+        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation) return;
 
-        // 🔥 종료 후 대사 출력이 끝나고 유저가 클릭하면 다시 논의 시작
-        if (waitingExitDialogue)
-        {
-
-            if (textSlider.value == 1) // 대사 타이핑 끝났고 → 클릭한 순간
-            {
-                waitingExitDialogue = false;
-                isArgumentActive = true;       // 다시 논의 모드 시작
-                UiManager.instance.ArgumentUiOn(true);
-
-                PlayArgumentLine();            // 0번 주장부터 재시작
-            }
-            return;
-        }
-
-        // 🔥 논의 반복 상태라면 계속 진행
-        if (isArgumentActive)
-        {
-            PlayArgumentLine();
-            return;
-        }
-
-        // 🔥 일반 Dialogue 진행
-        if (index >= lines.Count)
+        // 1. 전체 대화 종료 체크
+        if (lineIndex >= currentLines.Count)
         {
             EndAll();
             return;
         }
 
-        DialogueLine line = lines[index];
-        index++;
+        DialogueLine line = currentLines[lineIndex];
 
+        // 2. 대화 타입에 따른 분기
         if (line.type == DialogueType.Argument)
         {
-            if (argumentForceEnded)
-            {
-                PlayNext();
-                return;
-            }
-
-            isArgumentActive = true;
-            UiManager.instance.ArgumentUiOn(true);
-
-            PlayArgumentLine();
+            // 이미 논의 모드라면 계속 진행, 아니면 시작
+            if (!IsArgumentMode) StartArgumentMode();
+            else NextArgumentLine();
         }
-        else
+        else if (line.isChoice)
         {
-            // 🔥 선택지 처리 추가
-            if (line.isChoice)
-            {
-                ShowChoice(line);
-            }
-            else
-            {
-                ShowDialogue(line);
-            }
+            lineIndex++; // 인덱스 미리 증가
+            ShowChoice(line);
         }
-
-    }
-    private void ArgumentTextUpdate(DialogueLine line)
-    {
-        argumentText1.gameObject.SetActive(false);
-        argumentText2.gameObject.SetActive(false);
-
-        if (line.camFormat == "left")
+        else // 일반 Dialogue
         {
-            nowArgumentText = argumentText1;
-            MoveCam(line.speaker, 2.2f);
-
-            if (repeatIndex > 1 && repeatIndex != argumentBlocks[currentBlockIndex].lines.Count)
-                UiManager.instance.camRotate(new Vector3(0, 0, 2.5f), 0.5f);
-        }
-        else if (line.camFormat == "right")
-        {
-            nowArgumentText = argumentText2;
-            MoveCam(line.speaker, -2.2f);
-
-            if(repeatIndex > 1 && repeatIndex != argumentBlocks[currentBlockIndex].lines.Count)
-                UiManager.instance.camRotate(new Vector3(0, 0, -2.5f),0.5f);
-        }
-
-        nowArgumentText.gameObject.SetActive(true);
-    }
-
-    public void MoveCam(string name,float addPosX)
-    {
-        float time = 0.5f;
-        if (name == "유은하")      argumentCamTransform.DOMoveX(0 + addPosX, time);
-        else if (name == "백현")   argumentCamTransform.DOMoveX(-80 + addPosX, time);
-        else if (name == "유설희")   argumentCamTransform.DOMoveX(-60 + addPosX, time);
-        else if (name == "다니엘") argumentCamTransform.DOMoveX(-40 + addPosX, time);
-        else if (name == "정희영") argumentCamTransform.DOMoveX(-20 + addPosX, time);
-        else if (name == "장현우") argumentCamTransform.DOMoveX(20 + addPosX, time);
-        else if (name == "천주연") argumentCamTransform.DOMoveX(40 + addPosX, time);
-        else if (name == "정태준") argumentCamTransform.DOMoveX(60 + addPosX, time);
-        else if (name == "서진랑") argumentCamTransform.DOMoveX(80 + addPosX, time);
-    }
-    public void TpCam(string name)
-    {
-        if (name == "유은하")      argumentCamTransform.position = new Vector3(0, 0, -10);
-        else if (name == "백현")   argumentCamTransform.position = new Vector3(-80, 0, -10);
-        else if (name == "유설희")   argumentCamTransform.position = new Vector3(-60, 0, -10);
-        else if (name == "다니엘") argumentCamTransform.position = new Vector3(-40, 0, -10);
-        else if (name == "정희영") argumentCamTransform.position = new Vector3(-20, 0, -10);
-        else if (name == "장현우") argumentCamTransform.position = new Vector3(20, 0, -10);
-        else if (name == "천주연") argumentCamTransform.position = new Vector3(40, 0, -10);
-        else if (name == "정태준") argumentCamTransform.position = new Vector3(60, 0, -10);
-        else if (name == "서진랑") argumentCamTransform.position = new Vector3(80, 0, -10);
-    }
-    private void PlayArgumentLine()
-    {
-        dialogue.SetActive(false);
-
-        ArgumentBlock block = argumentBlocks[currentBlockIndex];
-
-        if (repeatIndex == 0)
-        {
-            correctEvidenceName = block.correctEvidence;
-            selectedEvidenceName = null;
-
-            Debug.Log("정답 증거품: " + correctEvidenceName);
-        }
-
-
-        // 🔥 반복 끝 → 종료 후 대사 출력
-        if (repeatIndex >= block.lines.Count)
-        {
-            isArgumentActive = false;
-            waitingExitDialogue = true;
-
-            UiManager.instance.ArgumentUiOn(false);
-            repeatIndex = 0;
-
-            // 🔥 자연 종료일 때만 exitLine 출력
-            if (!argumentForceEnded)
-            {
-                ShowDialogue(block.exitLine);
-                waitingArgumentEndText = true;   // 🔥 exitLine 출력 후 Hello World 단계로 진입
-            }
-
-            return;
-        }
-
-        // 🔥 반복 중
-        DialogueLine line = block.lines[repeatIndex];
-        repeatIndex++;
-
-        ArgumentTextUpdate(line);
-
-        if (argumentRoutine != null)
-            StopCoroutine(argumentRoutine);
-
-        argumentRoutine = StartCoroutine(PlayArgument(line));
-    }
-
-    IEnumerator PlayArgument(DialogueLine line)
-    {
-        rawText = line.text;
-        nowArgumentText.text = ArgumentTextFormatter.Format(rawText);
-
-        CanvasGroup argumentTextCanvasGroup = nowArgumentText.GetComponent<CanvasGroup>();
-
-        argumentTextCanvasGroup.alpha = 0f;
-        argumentTextCanvasGroup.interactable = false;
-        argumentTextCanvasGroup.blocksRaycasts = false;
-
-        if (beforeSpeaker == line.speaker && beforeCamFormat == line.camFormat)
-            yield return new WaitForSeconds(0.2f);
-        else
-            yield return new WaitForSeconds(0.5f);
-
-        float time = 0f;
-
-        while (time < argumentDuration)
-        {
-            time += Time.deltaTime;
-
-            argumentTextCanvasGroup.alpha = Mathf.Lerp(0f, 1f, time / argumentDuration);
-            yield return null;
-        }
-
-        argumentTextCanvasGroup.alpha = 1f;
-        argumentTextCanvasGroup.interactable = true;
-        argumentTextCanvasGroup.blocksRaycasts = true;
-
-        yield return new WaitForSeconds(line.textTime);
-
-        beforeSpeaker = line.speaker;
-        beforeCamFormat = line.camFormat;
-
-        PlayNext();
-    }
-    private void ShowChoice(DialogueLine line)
-    {
-        isChoice = true;
-        Debug.Log("선택지 발견!");
-
-        choicePanel.SetActive(true);
-
-        // 기존 버튼들 삭제
-        foreach (Transform child in choiceButtonParent)
-            Destroy(child.gameObject);
-
-        // 선택지 생성
-        for (int i = 0; i < line.choices.Count; i++)
-        {
-            int index = i;
-
-            GameObject btnObj = Instantiate(choiceButtonPrefab, choiceButtonParent);
-            btnObj.transform.localPosition += new Vector3(i * 50, i * 100);
-            TMP_Text btnText = btnObj.transform.GetChild(0).GetComponent<TMP_Text>();
-            btnText.text = line.choices[i];
-
-            btnObj.GetComponent<Button>().onClick.AddListener(() =>
-            {
-                OnChoiceSelected(line, index);
-            });
-        }
-    }
-
-    private void OnChoiceSelected(DialogueLine line, int choice)
-    {
-        // 정답
-        if (choice == line.correctIndex)
-        {
-            Debug.Log("정답 선택!");
-
-            isChoice = false;
-
-            choicePanel.SetActive(false);
-
-            // 다음 대사로 진행
-            PlayNext();
-        }
-        else
-        {
-            Debug.Log("오답 선택!");
-
-            // 지금은 오답이어도 그냥 다시 고르게 놔둠
-            UiManager.instance.Shaking(0.5f);
-            line.speaker = "유은하";
-            line.text = "(역시... 이건 아닌가봐... 다시 한번 생각해보자)";
+            lineIndex++;
             ShowDialogue(line);
         }
     }
 
-
-    public void ForceEndArgumentLoop()
+    private void HandleInput()
     {
-        ArgumentBlock block = ArgumentManager.argumentBlocks[currentBlockIndex];
+        switch (currentState)
+        {
+            case FlowState.Dialogue_Wait:
+                // 상황 A: 오답 피드백 중이었다면 선택지로 복귀
+                if (isShowingWrongFeedback)
+                {
+                    ReturnToChoice();
+                }
+                // 상황 B: "다시 들어보자" 대사가 끝난 후 클릭했다면 루프 재시작 🔥 (추가됨)
+                else if (waitingExitDialogue)
+                {
+                    waitingExitDialogue = false;
+                    RestartArgumentLoop();
+                }
+                // 상황 C: 일반적인 다음 대사 진행
+                else
+                {
+                    PlayNext();
+                }
+                break;
 
-        // 반복 인덱스를 끝까지 밀기
-        repeatIndex = block.lines.Count;
+            case FlowState.Argument_EndWait:
+                // 상황 D: 논의 한 사이클 종료(ExitLine 출력 완료) 후 클릭 시 🔥 (수정됨)
+                if (waitingArgumentEndText)
+                {
+                    waitingArgumentEndText = false;
 
-        // 논의 상태 종료 플래그
-        isArgumentActive = false;
-        waitingExitDialogue = true;
+                    // 재시작 전 안내 대사 출력
+                    ShowDialogue(new DialogueLine
+                    {
+                        speaker = "유은하",
+                        text = "(다시 한번 모두의 의견을 들어보자.)",
+                        type = DialogueType.Dialogue
+                    });
 
-        // UI 닫기
-        UiManager.instance.ArgumentUiOn(false);
-
-        // 종료 후 출력될 대사 즉시 재생
-        ShowDialogue(block.exitLine);
+                    // 이 대사가 끝나면 다시 클릭했을 때 루프가 돌도록 플래그 설정
+                    waitingExitDialogue = true;
+                }
+                break;
+        }
     }
-    private void SkipToAfterExitLine()
+
+    // 선택지로 다시 되돌리는 메서드
+    private void ReturnToChoice()
     {
-        if (lines == null || lines.Count == 0) return;
+        isShowingWrongFeedback = false;
+        dialoguePanel.SetActive(false); // 오답 메시지 창 닫기
+        choicePanel.SetActive(true);    // 다시 선택지 버튼들 보여주기
+        currentState = FlowState.Choice; // 상태를 다시 선택지로 변경
+    }
+    #endregion
 
-        DialogueLine exitLine = ArgumentManager.argumentBlocks[currentBlockIndex].exitLine;
+    #region Argument Logic (Non-stop Debate)
 
-        int exitIndex = lines.FindIndex(l =>
-            l.speaker == exitLine.speaker &&
-            l.text == exitLine.text);
+    private void StartArgumentMode()
+    {
+        // 1. 해당 논의 블록의 기초 데이터 세팅
+        ArgumentBlock block = argumentBlocks[currentBlockIndex];
+        correctEvidenceName = block.correctEvidence;
+        selectedEvidenceName = null;
 
-        if (exitIndex != -1)
-            index = exitIndex + 1;
+        Debug.Log($"논의 데이터 로드 완료! 정답: {correctEvidenceName}");
+
+        // 2. 루프 시작 (연출 포함)
+        RestartArgumentLoop();
     }
 
-    private void ArgumentCorrect()
+    private void RestartArgumentLoop()
     {
-        argumentForceEnded = true;
-        repeatIndex = 0;
-        isArgumentActive = false;
+        // 🔥 [추가] 논의 시작 UI 연출 실행 (Banner 애니메이션)
+        UiManager.instance.ArgumentUiOn(true);
+
+        // 대화창은 연출 중에 가려지도록 설정
+        dialoguePanel.SetActive(false);
+
+        // 상태 및 인덱스 초기화
+        currentState = FlowState.Argument_Loop;
+        argumentLineIndex = 0;
+        waitingArgumentEndText = false;
+
+        // 첫 번째 논의 대사 재생
+        NextArgumentLine();
+    }
+
+    // 논의가 끝난 후 Hello World(재시작 대기) 상태인지 체크하는 플래그
+    private bool waitingArgumentEndText = false;
+
+    private void NextArgumentLine()
+    {
+        ArgumentBlock block = argumentBlocks[currentBlockIndex];
+
+        // 🔥 논의 루프가 끝났을 때
+        if (argumentLineIndex >= block.lines.Count)
+        {
+            // 한 사이클 종료 -> Exit Line 출력 후 대기 상태로 전환
+            currentState = FlowState.Argument_EndWait;
+            UiManager.instance.ArgumentUiOn(false);
+
+            argumentTextLeft.gameObject.SetActive(false);
+            argumentTextRight.gameObject.SetActive(false);
+
+            // Exit Line 출력
+            ShowDialogue(block.exitLine);
+            waitingArgumentEndText = true;
+            return;
+        }
+
+        // 🔥 논의 진행 중
+        currentState = FlowState.Argument_Loop;
+        DialogueLine line = block.lines[argumentLineIndex];
+        argumentLineIndex++;
+
+        // 카메라 및 텍스트 위치 설정
+        SetupArgumentTextUI(line);
+
+        // 연출 코루틴 시작
+        if (argumentRoutine != null) StopCoroutine(argumentRoutine);
+        argumentRoutine = StartCoroutine(PlayArgumentRoutine(line));
+    }
+
+    private void SetupArgumentTextUI(DialogueLine line)
+    {
+        argumentTextLeft.gameObject.SetActive(false);
+        argumentTextRight.gameObject.SetActive(false);
+
+        float xOffset = 0;
+        float camZ = -10f; // 기본 Z값
+
+        if (line.camFormat == "left")
+        {
+            activeArgumentText = argumentTextLeft;
+            xOffset = 2.2f;
+            // 2번째 라인부터는 약간 회전 연출 (원래 코드 유지)
+            if (argumentLineIndex > 1) UiManager.instance.camRotate(new Vector3(0, 0, 2.5f), 0.5f);
+        }
+        else // right
+        {
+            activeArgumentText = argumentTextRight;
+            xOffset = -2.2f;
+            if (argumentLineIndex > 1) UiManager.instance.camRotate(new Vector3(0, 0, -2.5f), 0.5f);
+        }
+
+        MoveCam(line.speaker, xOffset);
+        activeArgumentText.gameObject.SetActive(true);
+    }
+
+    IEnumerator PlayArgumentRoutine(DialogueLine line)
+    {
+        currentRawText = line.text;
+        activeArgumentText.text = ArgumentTextFormatter.Format(currentRawText);
+
+        CanvasGroup cg = activeArgumentText.GetComponent<CanvasGroup>();
+        if (cg == null) cg = activeArgumentText.gameObject.AddComponent<CanvasGroup>();
+
+        // 초기화
+        cg.alpha = 0f;
+        cg.interactable = false;
+        cg.blocksRaycasts = false;
+
+        // 카메라 이동 대기 (이전 화자와 다르면 좀 더 기다림)
+        yield return new WaitForSeconds(0.2f); // 단순화
+
+        // 페이드 인
+        float elapsed = 0f;
+        while (elapsed < argumentDuration)
+        {
+            elapsed += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(0f, 1f, elapsed / argumentDuration);
+            yield return null;
+        }
+        cg.alpha = 1f;
+        cg.interactable = true;
+        cg.blocksRaycasts = true;
+
+        // 텍스트 유지 시간 대기
+        yield return new WaitForSeconds(line.textTime);
+
+        // 다음 라인으로 (자동 진행)
+        if (currentState == FlowState.Argument_Loop)
+        {
+            NextArgumentLine();
+        }
+    }
+
+    public void ArgumentCorrect()
+    {
+        waitingArgumentEndText = false;
         waitingExitDialogue = false;
+        isShowingWrongFeedback = false;
 
-        UiManager.instance.camRotate(new Vector3(0, 0, 0f), 1);
+        currentState = FlowState.Idle;
+
+        // 🔥 증거 버튼 전부 제거
+        ClearAllEvidenceButtons();
+
+        // UI 정리
+        UiManager.instance.camRotate(Vector3.zero, 1);
         UiManager.instance.OnArgumentEvidence(false);
 
+        argumentTextLeft.gameObject.SetActive(false);
+        argumentTextRight.gameObject.SetActive(false);
+
         SkipToAfterExitLine();
+
+        if (currentBlockIndex < argumentBlocks.Count - 1)
+        {
+            currentBlockIndex++;
+        }
+
+        PlayNext();
     }
 
 
-    private void ShowDialogue(DialogueLine line)
+    public void ArgumentSelectEvidence(ArgumentEvidenceButton button)
     {
-        TpCam(line.speaker); //말하는 사람으로 카메라 이동
-        nowArgumentText.text = "";
-
-        // 🔥 증거 추가 처리
-        if (!string.IsNullOrEmpty(line.addEvidence) && EvidenceManager.Instance != null)
+        // 이미 다른 게 선택되어 있으면 해제
+        if (currentSelected != null && currentSelected != button)
         {
-            EvidenceManager.Instance.AddEvidence(line.addEvidence);
+            currentSelected.Deselect();
         }
 
-        // 🔥 증거 보이기 처리
-        if (!string.IsNullOrEmpty(line.showEvidence) && EvidenceManager.Instance != null)
+        currentSelected = button;
+    }
+
+    private void ClearAllEvidenceButtons()
+    {
+        if (argumentEvidenceButtonParent == null) return;
+
+        foreach (Transform child in argumentEvidenceButtonParent)
         {
-            EvidenceManager.Instance.ShowEvidence(line.showEvidence);
+            Destroy(child.gameObject);
         }
 
-        if (line.effect == 1)
-            EffectManager.instance.CameraShake();
-        else if (line.effect == 2)
-            EffectManager.instance.Blood();
-        else if (line.effect == 3)
-            EffectManager.instance.ShakeAndBlood();
-
-        else if (line.effect >= 10 && line.effect <= 20)
-            EffectManager.instance.Objection(line.effect-10);
+        currentSelected = null;
+        selectedEvidenceName = null;
+    }
 
 
-        else if (line.effect == 100)
-            EffectManager.instance.FadeIn();
-        else if (line.effect == 101)
-            EffectManager.instance.FadeOut();
+    private void SkipToAfterExitLine()
+    {
+        if (currentLines == null) return;
 
+        DialogueLine exitLine = argumentBlocks[currentBlockIndex].exitLine;
 
-        // --- 이름 ---
-        nameImg.SetActive(line.speaker != "");
+        int exitIndex = currentLines.FindIndex(lineIndex, l =>
+            l.speaker == exitLine.speaker && l.text == exitLine.text);
 
-        string result = $"<size=180%><color=#D9D9D9>이</color></size>름";
-
-        if (line.speaker != "") result = $"<size=180%><color=#D9D9D9>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-
-        if (line.speaker == "유은하") result = $"<size=180%><color=#FFE2A0>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "백현") result = $"<size=180%><color=#0E432D>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "유설희") result = $"<size=180%><color=#8F8F8F>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "다니엘") result = $"<size=180%><color=#E7A300>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "정희영") result = $"<size=180%><color=#9B2BFF>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "장현우") result = $"<size=180%><color=#CB1B00>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "천주연") result = $"<size=180%><color=#FFE945>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "정태준") result = $"<size=180%><color=#1572FF>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-        else if (line.speaker == "서진랑") result = $"<size=180%><color=#5E3200>{line.speaker[0]}</color></size>{line.speaker.Substring(1)}";
-
-        nameText.text = result;
-
-
-
-        // --- dialogue 활성화 관리 ---
-        if (UiManager.instance.isUiAnim)
+        if (exitIndex != -1)
         {
-            shouldDialogueBeActive = true;
+            lineIndex = exitIndex + 1;
+            Debug.Log($"점프 성공! 새로운 인덱스: {lineIndex}");
         }
         else
         {
-            dialogue.SetActive(true);
-            shouldDialogueBeActive = false;
+            Debug.LogWarning("ExitLine을 찾지 못해 강제 탐색을 시도합니다.");
+            while (lineIndex < currentLines.Count && currentLines[lineIndex].type == DialogueType.Argument)
+            {
+                lineIndex++;
+            }
+        }
+    }
+
+    #endregion
+
+    #region Dialogue System (General)
+
+    private void ShowDialogue(DialogueLine line)
+    {
+        currentState = FlowState.Dialogue_Typing;
+        dialoguePanel.SetActive(true);
+
+        // 1. 카메라 & 증거품 처리
+        TpCam(line.speaker);
+        ProcessEvidenceEffects(line);
+        ProcessScreenEffects(line);
+
+        // 2. UI 텍스트 설정
+        UpdateNameTag(line.speaker);
+
+        // 3. 타이핑 시작
+        if (typingRoutine != null) StopCoroutine(typingRoutine);
+        typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text));
+    }
+
+    IEnumerator TypeRoutine(string speaker, string text)
+    {
+        yield return new WaitForSecondsRealtime(0.02f);
+
+        dialogueText.text = "";
+        isSkipTyping = false;
+        textSlider.maxValue = 1f;
+        textSlider.value = 0f;
+
+        // 타이핑 속도 계산
+        float timePerChar = Mathf.Clamp(1.0f / text.Length, 0.015f, 0.05f);
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            dialogueText.text = text.Substring(0, i + 1);
+            if (i % 2 == 1) SoundManager.instance.EunhaVoice(); // 보이스 재생 (간소화)
+
+            yield return new WaitForSeconds(timePerChar);
+
+            if (isSkipTyping)
+            {
+                dialogueText.text = text;
+                break;
+            }
         }
 
-        // 타이핑
-        if (typingRoutine != null)
-            StopCoroutine(typingRoutine);
+        // 타이핑 완료
+        textSlider.value = 1f;
 
-        typingRoutine = StartCoroutine(TypeCoroutine(line.speaker, line.text));
+        // 만약 논의 종료 대기 상태였다면 상태 변경하지 않음 (Argument_EndWait 유지)
+        if (waitingArgumentEndText)
+        {
+            currentState = FlowState.Argument_EndWait;
+        }
+        else
+        {
+            currentState = FlowState.Dialogue_Wait;
+        }
+    }
+    public void ForceSkip()
+    {
+        // 타이핑 중이면 타이핑 즉시 완료
+        if (currentState == FlowState.Dialogue_Typing)
+        {
+            isSkipTyping = true;
+        }
+        // 대기 중이면 다음 대사로 넘김
+        else if (currentState == FlowState.Dialogue_Wait)
+        {
+            PlayNext();
+        }
+    }
+    #endregion
+
+    #region Interaction (Hover & Click)
+
+    private void CheckHover()
+    {
+        if (activeArgumentText == null || activeArgumentText.text == "") return;
+
+        Camera cam = (activeArgumentText.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            ? null : activeArgumentText.canvas.worldCamera;
+
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(activeArgumentText, Input.mousePosition, cam);
+
+        if (linkIndex != currentLinkHoverIndex)
+        {
+            currentLinkHoverIndex = linkIndex;
+            UpdateHoverTextEffect();
+        }
+    }
+
+    private void UpdateHoverTextEffect()
+    {
+        // 원본 텍스트 복구 후 하이라이트 적용
+        string formattedText = ArgumentTextFormatter.Format(currentRawText);
+
+        if (currentLinkHoverIndex != -1)
+        {
+            TMP_LinkInfo info = activeArgumentText.textInfo.linkInfo[currentLinkHoverIndex];
+            string id = info.GetLinkID();
+
+            if (id.StartsWith("cmd:"))
+            {
+                string keyword = id.Substring(4);
+                // 일반 태그 -> 호버 태그로 교체 (색상 변경 등)
+                string normalTag = $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
+                string hoverTag = $"<link=\"cmd:{keyword}\"><b><color=#CC0000>{keyword}</color></b></link>"; // 진한 색
+
+                formattedText = formattedText.Replace(normalTag, hoverTag);
+            }
+        }
+        activeArgumentText.text = formattedText;
+    }
+
+    // IPointerClickHandler 인터페이스 구현
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // 논의 모드가 아니면 무시
+        if (!IsArgumentMode) return;
+
+        Camera cam = (activeArgumentText.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            ? null : activeArgumentText.canvas.worldCamera;
+
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(activeArgumentText, eventData.position, cam);
+        if (linkIndex == -1) return;
+
+        string id = activeArgumentText.textInfo.linkInfo[linkIndex].GetLinkID();
+        if (id.StartsWith("cmd:"))
+        {
+            // 키워드 클릭 로직
+            ProcessKeywordClick();
+        }
+    }
+
+    private void ProcessKeywordClick()
+    {
+        if (string.IsNullOrEmpty(selectedEvidenceName))
+        {
+            Debug.Log("증거품을 먼저 선택하세요.");
+            UiManager.instance.Shaking(0.3f);
+            return;
+        }
+
+        if (selectedEvidenceName == correctEvidenceName)
+        {
+            Debug.Log("이의 있음! (정답)");
+            ArgumentCorrect();
+        }
+        else
+        {
+            Debug.Log("틀렸습니다.");
+            UiManager.instance.Shaking(0.4f);
+        }
+    }
+
+    #endregion
+
+    #region Helper Methods (Camera, Effect, Data)
+
+    private void MoveCam(string name, float xOffset)
+    {
+        float baseX = GetCharacterPos(name);
+        argumentCamTransform.DOMoveX(baseX + xOffset, 0.5f);
+    }
+
+    private void TpCam(string name)
+    {
+        float baseX = GetCharacterPos(name);
+        argumentCamTransform.position = new Vector3(baseX, 0, -10);
+    }
+
+    private float GetCharacterPos(string name)
+    {
+        if (characterConfig.ContainsKey(name)) return characterConfig[name].camPos;
+        return 0f;
+    }
+
+    private void UpdateNameTag(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            nameTagObj.SetActive(false);
+            return;
+        }
+
+        nameTagObj.SetActive(true);
+        string colorCode = characterConfig.ContainsKey(name) ? characterConfig[name].colorCode : characterConfig["Default"].colorCode;
+
+        // 첫 글자 색상 처리
+        string firstChar = name.Substring(0, 1);
+        string restName = name.Substring(1);
+
+        nameText.text = $"<size=180%><color={colorCode}>{firstChar}</color></size>{restName}";
+    }
+
+    private void ProcessEvidenceEffects(DialogueLine line)
+    {
+        if (EvidenceManager.Instance == null) return;
+
+        if (!string.IsNullOrEmpty(line.addEvidence))
+            EvidenceManager.Instance.AddEvidence(line.addEvidence);
+
+        if (!string.IsNullOrEmpty(line.showEvidence))
+            EvidenceManager.Instance.ShowEvidence(line.showEvidence);
+    }
+
+    private void ProcessScreenEffects(DialogueLine line)
+    {
+        // 이펙트 ID에 따른 처리 (Switch 문 추천)
+        if (line.effect == 1) EffectManager.instance.CameraShake();
+        else if (line.effect == 2) EffectManager.instance.Blood();
+        else if (line.effect == 3) EffectManager.instance.ShakeAndBlood();
+        else if (line.effect >= 10 && line.effect <= 20) EffectManager.instance.Objection(line.effect - 10);
+        else if (line.effect == 100) EffectManager.instance.FadeIn();
+        else if (line.effect == 101) EffectManager.instance.FadeOut();
+    }
+
+    private void HandleUiAnimationState()
+    {
+        // UI 애니메이션이 끝난 직후 다이얼로그가 꺼져있으면 켜주기
+        if (lastUiAnimState && !UiManager.instance.isUiAnim)
+        {
+            if (currentState == FlowState.Dialogue_Typing || currentState == FlowState.Dialogue_Wait)
+            {
+                dialoguePanel.SetActive(true);
+            }
+        }
+        lastUiAnimState = UiManager.instance.isUiAnim;
+    }
+
+    private void ResetUI()
+    {
+        activeArgumentText.text = "";
+        nameText.text = "";
+        dialogueText.text = "";
+        textSlider.value = 0f;
+
+        // 플래그 전면 초기화
+        waitingArgumentEndText = false;
+        waitingExitDialogue = false;
+        isShowingWrongFeedback = false;
+        selectedEvidenceName = null;
+        currentSelected = null;
+    }
+
+    private void EndAll()
+    {
+        ResetUI();
+        currentState = FlowState.Idle;
+        OnAllDialogueFinished?.Invoke();
     }
 
     public void SetSelectedEvidence(string evidenceName)
     {
         selectedEvidenceName = evidenceName;
-        Debug.Log("선택한 증거품: " + selectedEvidenceName);
-
-       
-    }
-
-    #endregion
-
-    #region Typing Effect
-    IEnumerator TypeCoroutine(string name, string text)
-    {
-        yield return new WaitForSecondsRealtime(0.02f);
-
-        isTyping = true;
-        int length = text.Length;
-
-        textSlider.maxValue = 1f;
-        textSlider.value = 0f;
-
-        float totalTime = 1.0f;
-        float timePerChar = totalTime / length;
-        if (timePerChar < 0.015f) timePerChar = 0.015f;
-        else if (timePerChar > 0.05f) timePerChar = 0.05f;
-
-        for (int i = 0; i < length; i++)
-        {
-            dialogueText.text = text.Substring(0, i + 1);
-            if (i % 2 == 1) VoiceSoundPlay(name);
-            yield return new WaitForSeconds(timePerChar);
-
-            if (isSkipTyping)
-            {
-                isSkipTyping = false;
-                dialogueText.text = text;
-                break; //타이핑 탈출
-            }
-        }
-        isTyping = false;
-
-        textSlider.value = 1f;
-    }
-
-    private void VoiceSoundPlay(string name)
-    {
-        if (name == "") return;
-
-        if (name == "유은하") SoundManager.instance.EunhaVoice();
-        else SoundManager.instance.EunhaVoice();
     }
     #endregion
 
-    #region Update & Input
-    private void Update()
+    #region Choice System
+    private void ShowChoice(DialogueLine line)
     {
-        if (lines == null) return;
+        currentState = FlowState.Choice;
+        choicePanel.SetActive(true);
 
-        // 🔥 UI 애니메이션 끝난 순간
-        if (lastUiAnim == true && UiManager.instance.isUiAnim == false)
+        foreach (Transform child in choiceButtonParent) Destroy(child.gameObject);
+
+        for (int i = 0; i < line.choices.Count; i++)
         {
-            if (shouldDialogueBeActive)
-            {
-                dialogue.SetActive(true);
-                shouldDialogueBeActive = false;
-            }
+            int index = i;
+            GameObject btnObj = Instantiate(choiceButtonPrefab, choiceButtonParent);
+            // 위치 조정 로직은 필요에 따라 Grid Layout Group 컴포넌트로 대체 권장
+            btnObj.transform.localPosition += new Vector3(i * 50, i * 100);
+
+            TMP_Text btnText = btnObj.transform.GetChild(0).GetComponent<TMP_Text>();
+            btnText.text = line.choices[i];
+
+            btnObj.GetComponent<Button>().onClick.AddListener(() => OnChoiceSelected(line, index));
         }
+    }
 
-        
-        lastUiAnim = UiManager.instance.isUiAnim;
-
-        if (Input.GetMouseButtonDown(0) && isArgumentActive == false && isChoice == false && textSlider.value == 1)
+    private void OnChoiceSelected(DialogueLine line, int choiceIndex)
+    {
+        if (choiceIndex == line.correctIndex)
         {
-            if (waitingArgumentEndText)
-            {
-                waitingArgumentEndText = false;
-                
-                ShowDialogue(new DialogueLine
-                {
-                    speaker = "유은하",
-                    text = "(다시 한번 모두의 의견을 들어보자.)",
-                    type = DialogueType.Dialogue
-                });
-                
-                waitingExitDialogue = true;
-                return;
-            }
-
-            if (waitingExitDialogue)
-            {
-                waitingExitDialogue = false;
-                isArgumentActive = true;
-                UiManager.instance.ArgumentUiOn(true);
-
-                PlayArgumentLine();
-                return;
-            }
-
-            // 3) 기본적인 흐름
+            Debug.Log("정답!");
+            isShowingWrongFeedback = false;
+            choicePanel.SetActive(false);
             PlayNext();
         }
-        CheckHover();
-    }
-
-    private void LateUpdate()
-    {
-        if (isTyping && Input.GetMouseButtonDown(0))
+        else
         {
-            isSkipTyping = true;
-        }
-    }
-    #endregion
+            Debug.Log("오답!");
+            UiManager.instance.Shaking(0.5f);
 
-    #region Hover & Click
+            // 플래그 설정: 다음 클릭 시 PlayNext()가 아닌 선택지로 돌아가게 함
+            isShowingWrongFeedback = true;
 
-    private void CheckHover()
-    {
-        if (nowArgumentText.text == "") return;
+            // 대화창이 뜰 때 선택지 버튼이 가려지도록 잠시 비활성화 (선택 사항)
+            choicePanel.SetActive(false);
 
-        Camera cam = null;
-        if (nowArgumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            cam = nowArgumentText.canvas.worldCamera;
-
-        int link = TMP_TextUtilities.FindIntersectingLink(nowArgumentText, Input.mousePosition, cam);
-
-        if (link != hoverIndex)
-        {
-            hoverIndex = link;
-            ApplyHoverEffect();
-        }
-    }
-
-    private void ApplyHoverEffect()
-    {
-        if (hoverIndex == -1)
-        {
-            nowArgumentText.text = ArgumentTextFormatter.Format(rawText);
-            return;
-        }
-
-        TMP_LinkInfo info = nowArgumentText.textInfo.linkInfo[hoverIndex];
-        string id = info.GetLinkID();
-        if (!id.StartsWith("cmd:")) return;
-
-        string keyword = id.Substring(4);
-
-        string hovered =
-            $"<link=\"cmd:{keyword}\"><b><color=#CC0000>{keyword}</color></b></link>";
-
-        string normal =
-            $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
-
-        string formatted = ArgumentTextFormatter.Format(rawText);
-        nowArgumentText.text = formatted.Replace(normal, hovered);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Camera cam = null;
-        if (nowArgumentText.canvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            cam = nowArgumentText.canvas.worldCamera;
-
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(nowArgumentText, eventData.position, cam);
-        if (linkIndex == -1) return;
-
-        TMP_LinkInfo linkInfo = nowArgumentText.textInfo.linkInfo[linkIndex];
-        string id = linkInfo.GetLinkID();
-
-        if (id.StartsWith("cmd:"))
-        {
-            string keyword = id.Substring(4);
-
-            // 1️⃣ 증거품 선택 안 함
-            if (string.IsNullOrEmpty(selectedEvidenceName))
+            DialogueLine wrongLine = new DialogueLine
             {
-                Debug.Log("증거품을 먼저 선택하세요.");
-                UiManager.instance.Shaking(0.3f);
-                return;
-            }
+                speaker = "유은하",
+                text = "(이건 아닌 것 같아... 다시 한번 생각해보자.)",
+                type = DialogueType.Dialogue
+            };
 
-            // 2️⃣ 증거품이 정답인가?
-            if (selectedEvidenceName == correctEvidenceName)
-            {
-                Debug.Log("정답 증거품 + 키워드 클릭!");
-                ArgumentCorrect();
-            }
-            else
-            {
-                Debug.Log("오답 증거품");
-
-                UiManager.instance.Shaking(0.4f);
-            }
+            ShowDialogue(wrongLine);
         }
     }
-
-    #endregion
-
-    #region Utils
-    private void ClearUI()
-    {
-        nowArgumentText.text = "";
-        nameText.text = "";
-        dialogueText.text = "";
-        textSlider.value = 0f;
-    }
-
-    private void EndAll()
-    {
-        ClearUI();
-        Debug.Log("전체 대사 종료");
-
-        OnAllDialogueFinished?.Invoke(); // 🔥 핵심
-    }
-
     #endregion
 }

@@ -4,84 +4,112 @@ using UnityEngine;
 
 public class DoubleSpeed : MonoBehaviour
 {
-    [Header("Ui")]
+    [Header("UI Components")]
     public GameObject doubleSpeedUi;
-
-    [Header("속도선")]
     public GameObject speedLine1;
     public GameObject speedLine2;
 
-    [Header("프레임 카운트")]
-    public const int FRAME_INTERVAL = 13;
+    [Header("Settings")]
+    private const int FRAME_INTERVAL = 13; // 스킵 속도 조절용 프레임 간격
     private int frameCount = 0;
 
+    // DoubleSpeed.cs 수정본
     void Update()
     {
-        HandleDoubleSpeed();
-
-        if (UiManager.instance.isUiAnim)
+        // 1. UI 애니메이션 중일 때는 DoubleSpeed 로직을 완전히 중단합니다.
+        // 여기서 ResetSpeed()를 호출하면 그 안의 Time.timeScale = 1 때문에 
+        // UiManager의 0.01 설정이 무시됩니다.
+        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation)
         {
-            Nomal();
-        }
-    }
-
-    void HandleDoubleSpeed()
-    {
-        if (ArgumentManager.instance.waitingArgumentEndText) return;
-
-        if (!Input.GetKey(KeyCode.LeftControl))
-        {
-            // Ctrl 안 누르면 정상 속도로 복귀
-            Nomal();
+            // 시각적인 UI만 끄고, Time.timeScale은 건드리지 않고 리턴합니다.
+            doubleSpeedUi.SetActive(false);
+            speedLine1.SetActive(false);
+            speedLine2.SetActive(false);
             return;
         }
 
-        if (ArgumentManager.instance.isArgumentActive)
+        // 2. Ctrl 키 입력 처리
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            // 🔥 여기서는 프레임 제한 없음
-            if (!UiManager.instance.isUiAnim)
-            {
-                doubleSpeedUi.SetActive(true);
-                speedLine1.SetActive(true);
-                speedLine2.SetActive(true);
-                Time.timeScale = 2;
-            }
-            else if (Time.timeScale == 2)
-            {
-                Nomal();
-            }
+            ProcessSpeedUp();
         }
         else
         {
+            ResetSpeed(); // 여기서 비로소 평상시 scale 1로 복구
+        }
+    }
+
+    private void ProcessSpeedUp()
+    {
+        var am = ArgumentManager.instance;
+
+        // 1. 종료 대기 상태이거나 선택지 상태라면 스킵 방지
+        if (am.CurrentState == ArgumentManager.FlowState.Argument_EndWait ||
+            am.CurrentState == ArgumentManager.FlowState.Choice)
+        {
+            ResetSpeed();
+            return;
+        }
+
+        // 2. 논의 모드 (Argument Mode) -> 타임스케일 2배
+        if (am.IsArgumentMode)
+        {
+            SetTimeScale(2.0f);
+            ToggleVisuals(isArgument: true);
+        }
+        // 3. 일반 대화 모드 (Normal Dialogue) -> 빠르게 넘기기
+        else
+        {
+            // 일반 대화에서는 타임스케일은 1로 유지하되, 대사만 빠르게 넘김
+            if (Time.timeScale != 1.0f) SetTimeScale(1.0f);
+
+            ToggleVisuals(isArgument: false);
+
             frameCount++;
-
-            if (frameCount % FRAME_INTERVAL != 0)
-                return;
-
-            if (!ArgumentManager.instance.isChoice)
+            if (frameCount >= FRAME_INTERVAL)
             {
-                doubleSpeedUi.SetActive(true);
-                
-                ArgumentManager.instance.PlayNext();
-                ArgumentManager.instance.isSkipTyping = true;
-            }
-            
-
-            if (Time.timeScale == 2)
-            {
-                Nomal();
+                frameCount = 0;
+                am.ForceSkip(); // ArgumentManager에 추가한 메서드 호출
             }
         }
     }
 
-    void Nomal()
+    private void SetTimeScale(float scale)
     {
-        doubleSpeedUi.SetActive(false);
-        if (Time.timeScale == 2)
+        if (Time.timeScale != scale)
+        {
+            Time.timeScale = scale;
+        }
+    }
+
+    private void ToggleVisuals(bool isArgument)
+    {
+        doubleSpeedUi.SetActive(true);
+
+        // 논의(Argument) 중에만 집중선 효과 켜기
+        if (isArgument)
+        {
+            speedLine1.SetActive(true);
+            speedLine2.SetActive(true);
+        }
+        else
         {
             speedLine1.SetActive(false);
             speedLine2.SetActive(false);
-            Time.timeScale = 1;
         }
+    }
+
+    private void ResetSpeed()
+    {
+        doubleSpeedUi.SetActive(false);
+        speedLine1.SetActive(false);
+        speedLine2.SetActive(false);
+
+        if (Time.timeScale != 1.0f)
+        {
+            Time.timeScale = 1.0f;
+        }
+
+        frameCount = 0; // 프레임 카운트 초기화
     }
 }
