@@ -14,6 +14,9 @@ public class UiManager : MonoBehaviour
 
     public Transform camTransform;
 
+    [Header("논의 증거탭")]
+    public RectTransform argumentEvidenceUi;
+
     [Header("Back Ui")]
     public CanvasGroup backUi;
 
@@ -44,6 +47,18 @@ public class UiManager : MonoBehaviour
         {
             isHotelInformation = !isHotelInformation;
             StartCoroutine(HotelInformationCoroutine(isHotelInformation));
+        }
+    }
+
+    public void OnArgumentEvidence(bool On)
+    {
+        if (On)
+        {
+            argumentEvidenceUi.DOAnchorPosX(340f, 1).SetUpdate(true);
+        }
+        else
+        {
+            argumentEvidenceUi.DOAnchorPosX(760f, 1).SetUpdate(true);
         }
     }
 
@@ -105,6 +120,8 @@ public class UiManager : MonoBehaviour
     }
     public void ArgumentUiOn(bool isStart)
     {
+        OnArgumentEvidence(isStart);
+
         if (isStart)
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentStartUi));

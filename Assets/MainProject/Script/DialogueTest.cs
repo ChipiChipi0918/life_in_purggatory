@@ -11,7 +11,7 @@ public class DialogueTest : MonoBehaviour
     public enum Phase
     {
         Daily,
-        Argument,
+        Judgment,
         End
     }
 
@@ -33,7 +33,7 @@ public class DialogueTest : MonoBehaviour
         {
             yield return loader.LoadDialogueCSV(OnLoaded);
         }
-        else if (currentPhase == Phase.Argument)
+        else if (currentPhase == Phase.Judgment)
         {
             yield return loader.LoadArgumentCSV(OnLoaded);
         }
@@ -49,10 +49,10 @@ public class DialogueTest : MonoBehaviour
     {
         if (currentPhase == Phase.Daily)
         {
-            currentPhase = Phase.Argument;
+            currentPhase = Phase.Judgment;
             StartCoroutine(StartNextPhase());
         }
-        else if (currentPhase == Phase.Argument)
+        else if (currentPhase == Phase.Judgment)
         {
             Debug.Log("모든 파트 종료");
         }

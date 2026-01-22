@@ -42,8 +42,12 @@ public class DialogueLine
 public class ArgumentBlock
 {
     public List<DialogueLine> lines = new List<DialogueLine>();
-    public DialogueLine exitLine;   // 논의 종료 후 출력될 일반 대사
+    public DialogueLine exitLine;
+
+    public string correctEvidence;              // 🔥 정답
+    public List<string> evidenceCandidates;     // (선택) 후보들
 }
+
 public static class CSVUtil
 {
     // "안녕, 반가워" 처럼 콤마 포함 텍스트 대응
@@ -149,8 +153,32 @@ public static class CSVParser
             {
                 inArgument = true;
                 currentBlock = new ArgumentBlock();
+
+                if (!string.IsNullOrEmpty(text))
+                {
+                    string[] raw = text.Split('/');
+                    currentBlock.evidenceCandidates = new List<string>();
+
+                    foreach (string r in raw)
+                    {
+                        string ev = r.Trim();
+
+                        if (ev.StartsWith("*") && ev.EndsWith("*"))
+                        {
+                            ev = ev.Substring(1, ev.Length - 2);
+                            currentBlock.correctEvidence = ev;
+                        }
+
+                        currentBlock.evidenceCandidates.Add(ev);
+                    }
+
+                    if (string.IsNullOrEmpty(currentBlock.correctEvidence))
+                        Debug.LogWarning("정답 증거품이 지정되지 않았습니다.");
+                }
+
                 continue;
             }
+
 
             // ============================
             // 🔥 논의 종료
@@ -161,7 +189,7 @@ public static class CSVParser
 
                 currentBlock.exitLine = new DialogueLine
                 {
-                    speaker = "엘리나",
+                    speaker = "유은하",
                     text = text,
                     type = DialogueType.Dialogue,
                     textTime = 0

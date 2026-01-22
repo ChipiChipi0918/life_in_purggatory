@@ -75,6 +75,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private string beforeSpeaker;
     private string beforeCamFormat;
 
+    [Header("Argument Evidence")]
+    public string selectedEvidenceName;   // 🔥 플레이어가 고른 증거품
+    public string correctEvidenceName;    // 현재 논의의 정답 증거품
+
+
+
     [Header("Dialogue")]
     public GameObject dialogue;
     public GameObject nameImg;
@@ -246,10 +252,18 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     }
     private void PlayArgumentLine()
     {
-        
         dialogue.SetActive(false);
 
         ArgumentBlock block = argumentBlocks[currentBlockIndex];
+
+        if (repeatIndex == 0)
+        {
+            correctEvidenceName = block.correctEvidence;
+            selectedEvidenceName = null;
+
+            Debug.Log("정답 증거품: " + correctEvidenceName);
+        }
+
 
         // 🔥 반복 끝 → 종료 후 대사 출력
         if (repeatIndex >= block.lines.Count)
@@ -367,6 +381,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
             // 지금은 오답이어도 그냥 다시 고르게 놔둠
             UiManager.instance.Shaking(0.5f);
+            line.speaker = "유은하";
             line.text = "(역시... 이건 아닌가봐... 다시 한번 생각해보자)";
             ShowDialogue(line);
         }
@@ -412,6 +427,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         waitingExitDialogue = false;
 
         UiManager.instance.camRotate(new Vector3(0, 0, 0f), 1);
+        UiManager.instance.OnArgumentEvidence(false);
 
         SkipToAfterExitLine();
     }
@@ -488,6 +504,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             StopCoroutine(typingRoutine);
 
         typingRoutine = StartCoroutine(TypeCoroutine(line.speaker, line.text));
+    }
+
+    public void SetSelectedEvidence(string evidenceName)
+    {
+        selectedEvidenceName = evidenceName;
+        Debug.Log("선택한 증거품: " + selectedEvidenceName);
+
+       
     }
 
     #endregion
@@ -653,10 +677,27 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (id.StartsWith("cmd:"))
         {
             string keyword = id.Substring(4);
-            Debug.Log("클릭된 키워드: " + keyword);
 
-            // ⬇ 논의 종료 처리 (exitLine 스킵)
-            ArgumentCorrect();
+            // 1️⃣ 증거품 선택 안 함
+            if (string.IsNullOrEmpty(selectedEvidenceName))
+            {
+                Debug.Log("증거품을 먼저 선택하세요.");
+                UiManager.instance.Shaking(0.3f);
+                return;
+            }
+
+            // 2️⃣ 증거품이 정답인가?
+            if (selectedEvidenceName == correctEvidenceName)
+            {
+                Debug.Log("정답 증거품 + 키워드 클릭!");
+                ArgumentCorrect();
+            }
+            else
+            {
+                Debug.Log("오답 증거품");
+
+                UiManager.instance.Shaking(0.4f);
+            }
         }
     }
 
