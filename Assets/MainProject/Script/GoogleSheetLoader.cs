@@ -94,11 +94,11 @@ public static class CSVParser
 
             string speaker = cols[0].Trim().Replace("\r", "");//1
             string text = cols[1].Trim().Replace("\\n", "\n");//2
-            //3
-            //4-int
-            //5
-            //6
-            //7-float
+            //3 캐릭터 상태 들어갈 예정
+            //4-int effect
+            //5 효과음 들어갈 예정
+            //6 미정
+            //7-float 논의 텍스트 시간(길이)
             string camFormat = cols.Length > 7 ? cols[7].Trim().Replace("\r", "") : "";//8
             string addEvidence = cols.Length > 8 ? cols[8].Trim().Replace("\r", "") : "";//9
             string showEvidence = cols.Length > 9 ? cols[9].Trim().Replace("\r", "") : "";//10
