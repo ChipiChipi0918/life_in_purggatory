@@ -35,9 +35,8 @@ public class EvidenceManager : MonoBehaviour
     public TextMeshProUGUI evidenceExplanationText;
 
     [Header("Add Evidence UI")]
-    public GameObject addEvidence;
-    public TextMeshProUGUI addEvidenceNameText;
-    public Image addEvidenceImage;
+    public GameObject addEvidencePrefab; // RectTransform 대신 프리팹 GameObject로 변경
+    public Transform uiCanvasParent;    // 프리팹이 생성될 부모 캔버스 또는 Panel
 
     [Header("Show Evidence UI")]
     public GameObject showEvidence;
@@ -93,17 +92,37 @@ public class EvidenceManager : MonoBehaviour
     // =============================
     private void ShowAddEvidenceUI(Evidence data)
     {
-        addEvidenceNameText.text = data.evidenceName;
-        addEvidenceImage.sprite = data.evidenceImage;
-        StartCoroutine(AddEvidenceCoroutine());
+        // 프리팹 생성
+        GameObject go = Instantiate(addEvidencePrefab, uiCanvasParent);
+        StartCoroutine(AddEvidenceCoroutine(go, data));
     }
 
-    private IEnumerator AddEvidenceCoroutine()
+    private IEnumerator AddEvidenceCoroutine(GameObject go, Evidence data)
     {
         isUiAnim = true;
-        addEvidence.transform.DOMoveY(30, 1f).SetUpdate(true);
+
+        // 프리팹 내의 컴포넌트 찾아오기
+        RectTransform rect = go.GetComponent<RectTransform>();
+        // 만약 프리팹 전용 스크립트가 없다면 직접 UI 컴포넌트 참조 (자식 오브젝트 이름 기준)
+        TextMeshProUGUI nameText = go.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
+        Image evidenceImg = go.transform.Find("EvidenceImage").GetComponent<Image>();
+
+        // 데이터 설정
+        nameText.text = data.evidenceName;
+        evidenceImg.sprite = data.evidenceImage;
+
+
+        // 연출 시작
+        rect.DOAnchorPosY(-162, 1).SetUpdate(true);
+
         yield return new WaitForSecondsRealtime(2.3f);
-        addEvidence.transform.DOMoveY(58, 1f).SetUpdate(true);
+
+        // 원래 위치로 돌아가는 연출 (또는 사라지는 연출)
+        yield return rect.DOAnchorPosY(232, 1).SetUpdate(true).WaitForCompletion();
+
+        // 프리팹 삭제
+        Destroy(go);
+
         isUiAnim = false;
     }
 
@@ -119,18 +138,23 @@ public class EvidenceManager : MonoBehaviour
     // =============================
     // 데이터 매핑
     // =============================
-    private Sprite GetEvidenceImage(string name)
+    public Sprite GetEvidenceImage(string name)
     {
         if (name == "Add Evidence") return ch1_evidence[0];
-        if (name == "권총") return ch1_evidence[1];
-        if (name == "탄흔") return ch1_evidence[2];
+        if (name == "백현이 남긴 쪽지") return ch1_evidence[1];
+        if (name == "김태준의 시체 사진") return ch1_evidence[2];
+        if (name == "권총") return ch1_evidence[3];
+        if (name == "탄흔") return ch1_evidence[4];
 
         return ch1_evidence[0];
     }
 
-    private string GetEvidenceExplanation(string name)
+    public string GetEvidenceExplanation(string name)
     {
-        if (name == "권총") return "사건 현장에서 발견된 권총\n\n피해자의 권총으로 기존에 2발 장전 되어 있었으나\n현장에서 발견 당시 탄환 2발이 전부 사라져있었다.";
+        if (name == "백현이 남긴 쪽지") return "백현이 은하에게 남긴 쪽지.\n직접 쓴 손글씨로 쓰여있다.\n\n언제쯤 볼지는 모르겠지만\n만약에 이 쪽지를 보고 있다는 거라면 테라스로 잘 와 주었겠구나.\n미안하지만 탐정으로써 처리해야할 일이 생겨서 말이야.\n직접 얼굴 보지 못해서 아쉽네.\n내가 나중에 따로 찾아갈 테니 여기 호텔도 좀 둘러보고.\n다른 사람들과 인사라도 나눠둬.\n-최고의 명탐정 백현이-";
+        if (name == "김태준의 시체 사진") return "사건 현장에서 찍은 김태준의 시체 사진\n피해자 왼쪽 머리에 총상이 있다.\n그 외의 자세한 특징은 없다.";
+        if (name == "권총") return "피해자의 시체 왼쪽에서 발견된 권총\n\n피해자의 권총으로 기존에 2발 장전 되어 있었으나\n현장에서 발견 당시 탄환 2발이 전부 사라져있었다.";
+        if (name == "백현의 부검 기록") return "피해자가 살해된 시각은 시체 발견 시각과 거의 동일하다.\n즉 시체 발견 직전 들린 총성에 의해 살해당한 모양.\n때문에 총상으로 인한 즉사로 추정.";
         if (name == "탄흔") return "땅에 박혀있던 총알의 흔적\n\n백현의 말에 따르면 발사된지 얼마 되지 않듯 하다.";
 
         return "설명이 존재하지 않는 증거다.";

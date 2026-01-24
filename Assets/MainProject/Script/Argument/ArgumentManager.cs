@@ -7,26 +7,37 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 using static Unity.Collections.AllocatorManager;
 
 using System.Text.RegularExpressions;
 
 public static class ArgumentTextFormatter
 {
-    // 정규식 캐싱 (성능 최적화)
-    private static readonly Regex KeywordRegex = new Regex(@"\*(.*?)\*");
+    // 정답 키워드: |*내용*|
+    private static readonly Regex CorrectKeywordRegex = new Regex(@"\|\*(.*?)\*\|");
+    // 일반 키워드: |내용|
+    private static readonly Regex NormalKeywordRegex = new Regex(@"\|(.*?)\|");
 
     public static string Format(string text)
     {
         if (string.IsNullOrEmpty(text)) return text;
 
-        // *키워드* 패턴을 찾아서 링크 태그로 변환
-        return KeywordRegex.Replace(text, match =>
+        // 1. 정답 키워드 먼저 처리
+        string formatted = CorrectKeywordRegex.Replace(text, match =>
         {
             string keyword = match.Groups[1].Value;
+            // 클릭 가능한 타겟임을 알리기 위해 cmd: 접두사 유지
             return $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
         });
+
+        // 2. 남은 일반 키워드 처리
+        formatted = NormalKeywordRegex.Replace(formatted, match =>
+        {
+            string keyword = match.Groups[1].Value;
+            return $"<link=\"cmd2:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
+        });
+
+        return formatted;
     }
 }
 
@@ -92,6 +103,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public float argumentDuration = 0.5f;
     public Transform argumentCamTransform;
     public Transform argumentEvidenceButtonParent;
+    public GameObject argumentEvidenceButtonPrefab;
 
 
     [Header("Evidence Logic")]
@@ -226,6 +238,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
             case FlowState.Argument_EndWait:
                 // 상황 D: 논의 한 사이클 종료(ExitLine 출력 완료) 후 클릭 시 🔥 (수정됨)
+                if (argumentEvidenceButtonParent == null) return;
+
                 if (waitingArgumentEndText)
                 {
                     waitingArgumentEndText = false;
@@ -266,7 +280,10 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         Debug.Log($"논의 데이터 로드 완료! 정답: {correctEvidenceName}");
 
-        // 2. 루프 시작 (연출 포함)
+        // 🔥 [추가] 증거품 버튼 생성 호출
+        CreateArgumentEvidenceButtons(block);
+
+        // 2. 루프 시작
         RestartArgumentLoop();
     }
 
@@ -297,16 +314,18 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 🔥 논의 루프가 끝났을 때
         if (argumentLineIndex >= block.lines.Count)
         {
-            // 한 사이클 종료 -> Exit Line 출력 후 대기 상태로 전환
-            currentState = FlowState.Argument_EndWait;
+            foreach (Transform child in argumentEvidenceButtonParent)
+            {
+                child.GetComponent<ArgumentEvidenceButton>().Deselect(); //논의 증거품 Ui 자식(버튼)들 전부 선택 취소
+            }
+
             UiManager.instance.ArgumentUiOn(false);
 
             argumentTextLeft.gameObject.SetActive(false);
             argumentTextRight.gameObject.SetActive(false);
 
-            // Exit Line 출력
-            ShowDialogue(block.exitLine);
-            waitingArgumentEndText = true;
+
+            StartCoroutine(ArgumentEndUIEndShowDialogue(block));
             return;
         }
 
@@ -317,10 +336,24 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // 카메라 및 텍스트 위치 설정
         SetupArgumentTextUI(line);
+        
 
         // 연출 코루틴 시작
         if (argumentRoutine != null) StopCoroutine(argumentRoutine);
         argumentRoutine = StartCoroutine(PlayArgumentRoutine(line));
+    }
+
+    IEnumerator ArgumentEndUIEndShowDialogue(ArgumentBlock b)
+    {
+        yield return new WaitForSecondsRealtime(4.35f);
+
+        // 한 사이클 종료 -> Exit Line 출력 후 대기 상태로 전환
+        currentState = FlowState.Argument_EndWait;
+
+        
+        // Exit Line 출력
+        waitingArgumentEndText = true;
+        ShowDialogue(b.exitLine);
     }
 
     private void SetupArgumentTextUI(DialogueLine line)
@@ -465,6 +498,68 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    private void CreateArgumentEvidenceButtons(ArgumentBlock block)
+    {
+        // 기존에 생성된 버튼 제거
+        ClearAllEvidenceButtons();
+
+        if (block.evidenceCandidates == null || block.evidenceCandidates.Count == 0) return;
+
+        foreach (string evName in block.evidenceCandidates)
+        {
+            // 1. EvidenceManager에서 이름에 맞는 데이터 찾기
+            EvidenceManager.Evidence data = EvidenceManager.Instance.evidence.Find(e => e.evidenceName == evName);
+
+            // 만약 리스트에 없다면(획득하지 않은 증거라면) 새로 데이터를 생성하거나 스킵
+            if (data == null)
+            {
+                Debug.LogWarning($"{evName} 데이터를 EvidenceManager에서 찾을 수 없습니다. 기본 이미지로 생성합니다.");
+                // 선택 사항: 임시 데이터 생성
+                Sprite img = EvidenceManager.Instance.GetEvidenceImage(evName);
+                string desc = EvidenceManager.Instance.GetEvidenceExplanation(evName);
+                data = new EvidenceManager.Evidence(evName, desc, img);
+            }
+
+            // 2. 프리팹 생성
+            GameObject btnObj = Instantiate(argumentEvidenceButtonPrefab, argumentEvidenceButtonParent);
+
+            // 3. ArgumentEvidenceButton 컴포넌트 가져와서 초기화 (중요: 여기서 이미지와 이름이 설정됨)
+            ArgumentEvidenceButton evidenceBtn = btnObj.GetComponent<ArgumentEvidenceButton>();
+            if (evidenceBtn != null)
+            {
+                evidenceBtn.Init(data);
+            }
+
+            // 4. 클릭 이벤트 연결
+            Button btn = btnObj.GetComponent<Button>();
+            string s = evName;
+            btn.onClick.AddListener(() => {
+                OnArgumentEvidenceButtonClicked(s, btnObj);
+                // ArgumentEvidenceButton 내부의 Select를 호출하기 위해
+                evidenceBtn.OnPointerClick(null);
+            });
+        }
+    }
+    // 🔥 [신규 함수] 증거 버튼 클릭 시 실행될 로직
+    private void OnArgumentEvidenceButtonClicked(string evidenceName, GameObject buttonObj)
+    {
+        // 현재 선택된 증거 이름 저장
+        selectedEvidenceName = evidenceName;
+        Debug.Log($"증거 선택됨: {selectedEvidenceName}");
+
+        // 시각적 피드백: 모든 버튼의 색상을 원래대로 돌리고 클릭한 것만 강조
+        foreach (Transform child in argumentEvidenceButtonParent)
+        {
+            Image img = child.GetComponent<Image>();
+            if (img != null) img.color = Color.white;
+        }
+
+        Image selectedImg = buttonObj.GetComponent<Image>();
+        if (selectedImg != null) selectedImg.color = Color.yellow; // 선택된 버튼 강조
+
+        // (선택 사항) 사운드 효과
+        // SoundManager.instance.PlaySE("Click");
+    }
     #endregion
 
     #region Dialogue System (General)
@@ -561,20 +656,31 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void UpdateHoverTextEffect()
     {
-        // 원본 텍스트 복구 후 하이라이트 적용
         string formattedText = ArgumentTextFormatter.Format(currentRawText);
 
         if (currentLinkHoverIndex != -1)
         {
+            // textInfo에서 현재 호버된 링크 정보를 가져옴
             TMP_LinkInfo info = activeArgumentText.textInfo.linkInfo[currentLinkHoverIndex];
             string id = info.GetLinkID();
 
             if (id.StartsWith("cmd:"))
             {
-                string keyword = id.Substring(4);
-                // 일반 태그 -> 호버 태그로 교체 (색상 변경 등)
+                string keyword = info.GetLinkText(); // 링크에 걸린 텍스트 직접 추출
+
+                // 호버 시 시각적 변화 (더 진한 빨간색으로 변경)
                 string normalTag = $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
-                string hoverTag = $"<link=\"cmd:{keyword}\"><b><color=#CC0000>{keyword}</color></b></link>"; // 진한 색
+                string hoverTag = $"<link=\"cmd:{keyword}\"><b><color=#CC0000>{keyword}</color></b></link>";
+
+                formattedText = formattedText.Replace(normalTag, hoverTag);
+            }
+            else if (id.StartsWith("cmd2:"))
+            {
+                string keyword = info.GetLinkText(); // 링크에 걸린 텍스트 직접 추출
+
+                // 호버 시 시각적 변화 (더 진한 빨간색으로 변경)
+                string normalTag = $"<link=\"cmd2:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
+                string hoverTag = $"<link=\"cmd2:{keyword}\"><b><color=#CC0000>{keyword}</color></b></link>";
 
                 formattedText = formattedText.Replace(normalTag, hoverTag);
             }
@@ -598,11 +704,16 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (id.StartsWith("cmd:"))
         {
             // 키워드 클릭 로직
-            ProcessKeywordClick();
+            CorrectProcessKeywordClick();
+        }
+        if (id.StartsWith("cmd2:"))
+        {
+            // 키워드 클릭 로직
+            WorngProcessKeywordClick();
         }
     }
 
-    private void ProcessKeywordClick()
+    private void CorrectProcessKeywordClick()
     {
         if (string.IsNullOrEmpty(selectedEvidenceName))
         {
@@ -621,6 +732,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             Debug.Log("틀렸습니다.");
             UiManager.instance.Shaking(0.4f);
         }
+    }
+
+    private void WorngProcessKeywordClick()
+    {
+        Debug.Log("틀렸습니다.");
+        UiManager.instance.Shaking(0.4f);
     }
 
     #endregion

@@ -73,18 +73,25 @@ public class ArgumentEvidenceButton : MonoBehaviour,
         rect.DOAnchorPosX(SHOW_X, 0.25f).SetUpdate(true);
     }
 
-    private void Hide()
+    public void Hide()
     {
         rect.DOAnchorPosX(HIDE_X, 0.25f).SetUpdate(true);
     }
 
     public void Select()
     {
-        isSelected = true;
-        bg.color = Color.red;
+        if (isSelected)
+        {
+            Deselect();
+        }
+        else
+        {
+            isSelected = true;
+            bg.color = Color.red;
 
-        SoundManager.instance.UiSelect();
-        ArgumentManager.instance.SetSelectedEvidence(argumentEvidenceName.text);
+            SoundManager.instance.UiSelect();
+            ArgumentManager.instance.SetSelectedEvidence(argumentEvidenceName.text);
+        }
     }
 
     public void Deselect()
