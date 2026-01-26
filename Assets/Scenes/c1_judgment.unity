@@ -249,7 +249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1573,7 +1573,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.50980395}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2397,9 +2397,9 @@ RectTransform:
   m_Father: {fileID: 1689428914}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &212390718
 MonoBehaviour:
@@ -2570,7 +2570,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 224295117}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -4880,7 +4880,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 383745036}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -8138,7 +8138,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 611773925}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -8837,7 +8837,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 718329928}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -11560,7 +11560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.95068645, b: 0.76792455, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -12379,7 +12379,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 965793275}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -12794,7 +12794,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 983470640}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -15632,7 +15632,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 141, y: 68.000015}
+  m_AnchoredPosition: {x: 141, y: 68.00003}
   m_SizeDelta: {x: 440.824, y: 35.629}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1090711178
@@ -15649,7 +15649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.08679241, g: 0.08560797, b: 0.08302595, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -19086,7 +19086,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000091552734}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 7}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1260040104
 MonoBehaviour:
@@ -20296,8 +20296,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 4.069}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 332.13528, y: 63}
-  m_SizeDelta: {x: 752.957, y: 622.094}
+  m_AnchoredPosition: {x: 297.29077, y: 63}
+  m_SizeDelta: {x: 686.97, y: 622.094}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1325811053
 MonoBehaviour:
@@ -20685,7 +20685,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 357.71, y: -18.995}
-  m_SizeDelta: {x: 715.42, y: 0}
+  m_SizeDelta: {x: 715.42, y: 37.99}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1354229023
 MonoBehaviour:
@@ -21438,7 +21438,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1379919771}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -23506,7 +23506,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1507246215}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -24383,8 +24383,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4.069}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -239.265, y: 16}
-  m_SizeDelta: {x: 926.166, y: 622.094}
+  m_AnchoredPosition: {x: -211.058, y: 16}
+  m_SizeDelta: {x: 872.188, y: 622.094}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1558247077
 CanvasGroup:
@@ -24626,7 +24626,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1566658399}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -25553,7 +25553,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1644828331}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -25618,7 +25618,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -0.000030517578, y: 0.00004053116}
-  m_SizeDelta: {x: 715.42, y: 0}
+  m_SizeDelta: {x: 715.42, y: 37.99}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1649688191
 MonoBehaviour:
@@ -27868,7 +27868,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1730830705}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -29372,7 +29372,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1785320931}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -33774,7 +33774,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -35017,6 +35017,7 @@ RectTransform:
   - {fileID: 865237262}
   - {fileID: 1998018686}
   - {fileID: 1045821969}
+  - {fileID: 1182472132}
   - {fileID: 936172710}
   - {fileID: 726585280}
   - {fileID: 2027858619}
@@ -35024,7 +35025,6 @@ RectTransform:
   - {fileID: 242542180}
   - {fileID: 1361664489}
   - {fileID: 1270877367}
-  - {fileID: 1182472132}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -35071,7 +35071,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -35197,7 +35197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -35233,8 +35233,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -29.071045, y: 127}
-  m_SizeDelta: {x: -286.142, y: 244.45}
+  m_AnchoredPosition: {x: -29.071045, y: 137.88098}
+  m_SizeDelta: {x: -286.142, y: 189.569}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &4242410441503736069
 MonoBehaviour:
@@ -35273,7 +35273,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -35342,7 +35342,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 243.9339, y: 26.875435, z: 228.7591, w: 0}
+  m_margin: {x: 243.9339, y: 71.20219, z: 228.7591, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
