@@ -2464,6 +2464,7 @@ GameObject:
   - component: {fileID: 224295118}
   - component: {fileID: 224295117}
   - component: {fileID: 224295119}
+  - component: {fileID: 224295120}
   m_Layer: 5
   m_Name: Image (8)
   m_TagString: Untagged
@@ -2572,7 +2573,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 224295120}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &224295120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224295115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 403
 --- !u!1 &226865433
 GameObject:
   m_ObjectHideFlags: 0
@@ -3000,11 +3026,11 @@ RectTransform:
   - {fileID: 270308799}
   m_Father: {fileID: 1528876102405380987}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00012207031, y: 0}
-  m_SizeDelta: {x: 271.316, y: 0}
-  m_Pivot: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &242542181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3018,7 +3044,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5396226, g: 0.41452616, b: 0.09265217, a: 0.39215687}
+  m_Color: {r: 0.5396226, g: 0.41452616, b: 0.09265217, a: 0.09411765}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3135,6 +3161,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 270308799}
+  - component: {fileID: 270308800}
   m_Layer: 5
   m_Name: GameObject (1)
   m_TagString: Untagged
@@ -3158,9 +3185,35 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -323}
+  m_AnchoredPosition: {x: 0.000061035156, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &270308800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270308798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 35.49
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &281850006
 GameObject:
   m_ObjectHideFlags: 0
@@ -4366,6 +4419,7 @@ GameObject:
   - component: {fileID: 359255482}
   - component: {fileID: 359255481}
   - component: {fileID: 359255480}
+  - component: {fileID: 359255483}
   m_Layer: 5
   m_Name: Image (2)
   m_TagString: Untagged
@@ -4436,7 +4490,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 359255481}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 359255483}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &359255481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4475,6 +4541,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 359255478}
   m_CullTransparentMesh: 1
+--- !u!114 &359255483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359255478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uC815\uC6D0 \uB9C8\uB2F9"
 --- !u!1 &362949163
 GameObject:
   m_ObjectHideFlags: 0
@@ -4695,6 +4774,7 @@ GameObject:
   - component: {fileID: 383745037}
   - component: {fileID: 383745036}
   - component: {fileID: 383745038}
+  - component: {fileID: 383745039}
   m_Layer: 5
   m_Name: Image (4)
   m_TagString: Untagged
@@ -4803,7 +4883,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 383745039}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &383745039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 383745034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 405
 --- !u!1 &388694449
 GameObject:
   m_ObjectHideFlags: 0
@@ -5796,6 +5901,7 @@ GameObject:
   - component: {fileID: 435503708}
   - component: {fileID: 435503707}
   - component: {fileID: 435503706}
+  - component: {fileID: 435503709}
   m_Layer: 5
   m_Name: Image (3)
   m_TagString: Untagged
@@ -5866,7 +5972,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 435503707}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 435503709}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &435503707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5905,6 +6023,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 435503704}
   m_CullTransparentMesh: 1
+--- !u!114 &435503709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 435503704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uC624\uB450\uB9C9"
 --- !u!1 &439545153
 GameObject:
   m_ObjectHideFlags: 0
@@ -6069,6 +6200,7 @@ GameObject:
   - component: {fileID: 489326481}
   - component: {fileID: 489326480}
   - component: {fileID: 489326482}
+  - component: {fileID: 489326483}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -6174,10 +6306,35 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 489326480}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 489326483}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &489326483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489326478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uC2DD\uB2F9"
 --- !u!1 &498920126
 GameObject:
   m_ObjectHideFlags: 0
@@ -7875,6 +8032,7 @@ GameObject:
   - component: {fileID: 611773926}
   - component: {fileID: 611773925}
   - component: {fileID: 611773927}
+  - component: {fileID: 611773928}
   m_Layer: 5
   m_Name: Image (7)
   m_TagString: Untagged
@@ -7983,7 +8141,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 611773928}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &611773928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611773923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 402
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -8548,6 +8731,7 @@ GameObject:
   - component: {fileID: 718329929}
   - component: {fileID: 718329928}
   - component: {fileID: 718329930}
+  - component: {fileID: 718329931}
   m_Layer: 5
   m_Name: Image (6)
   m_TagString: Untagged
@@ -8656,7 +8840,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 718329931}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &718329931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718329926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 401
 --- !u!1 &726585279
 GameObject:
   m_ObjectHideFlags: 0
@@ -12064,6 +12273,7 @@ GameObject:
   - component: {fileID: 965793276}
   - component: {fileID: 965793275}
   - component: {fileID: 965793277}
+  - component: {fileID: 965793278}
   m_Layer: 5
   m_Name: Image (2)
   m_TagString: Untagged
@@ -12172,7 +12382,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 965793278}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &965793278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965793273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 303
 --- !u!1 &974159999
 GameObject:
   m_ObjectHideFlags: 0
@@ -12453,6 +12688,7 @@ GameObject:
   - component: {fileID: 983470641}
   - component: {fileID: 983470640}
   - component: {fileID: 983470642}
+  - component: {fileID: 983470643}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -12561,7 +12797,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 983470643}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &983470643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983470638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 304
 --- !u!1 &986185333
 GameObject:
   m_ObjectHideFlags: 0
@@ -13515,12 +13776,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71f77aa1bfcf9674bb9d15f434453f43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHotelInformation: 0
   isUiAnim: 0
   camTransform: {fileID: 519420032}
   argumentEvidenceUi: {fileID: 2121797298}
   backUi: {fileID: 1998018689}
   hotelInformation: {fileID: 1270877367}
+  isHotelInformation: 0
+  mapPointOut: {fileID: 1182472132}
+  isMapPointOut: 0
   argumentStartUi: {fileID: 1339710087}
   argumentEndUi: {fileID: 229128779}
   usingShake: 0
@@ -17373,7 +17636,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -48}
+  m_AnchoredPosition: {x: 0, y: -1495}
   m_SizeDelta: {x: 1673.6221, y: 941.412}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1182472133
@@ -18366,6 +18629,7 @@ GameObject:
   - component: {fileID: 1238243981}
   - component: {fileID: 1238243980}
   - component: {fileID: 1238243979}
+  - component: {fileID: 1238243982}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -18436,7 +18700,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1238243980}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1238243982}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1238243980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18475,6 +18751,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1238243977}
   m_CullTransparentMesh: 1
+--- !u!114 &1238243982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1238243977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uB85C\uBE44"
 --- !u!1 &1240147789
 GameObject:
   m_ObjectHideFlags: 0
@@ -18894,6 +19183,7 @@ MonoBehaviour:
   argumentCamTransform: {fileID: 519420032}
   argumentEvidenceButtonParent: {fileID: 446720465}
   argumentEvidenceButtonPrefab: {fileID: 1212543919051573990, guid: 48dc60ae75dd9e54aa4267027e2b1203, type: 3}
+  currentSelectedPlaceName: 
   selectedEvidenceName: 
   correctEvidenceName: 
   dialoguePanel: {fileID: 936172709}
@@ -20006,8 +20296,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 4.069}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400.003, y: 63}
-  m_SizeDelta: {x: 882.538, y: 622.094}
+  m_AnchoredPosition: {x: 332.13528, y: 63}
+  m_SizeDelta: {x: 752.957, y: 622.094}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1325811053
 MonoBehaviour:
@@ -20056,8 +20346,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 75
-  m_fontSizeBase: 75
+  m_fontSize: 65
+  m_fontSizeBase: 65
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -21042,6 +21332,7 @@ GameObject:
   - component: {fileID: 1379919772}
   - component: {fileID: 1379919771}
   - component: {fileID: 1379919773}
+  - component: {fileID: 1379919774}
   m_Layer: 5
   m_Name: Image (3)
   m_TagString: Untagged
@@ -21150,7 +21441,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1379919774}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1379919774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379919769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 404
 --- !u!1 &1412856363
 GameObject:
   m_ObjectHideFlags: 0
@@ -23084,6 +23400,7 @@ GameObject:
   - component: {fileID: 1507246216}
   - component: {fileID: 1507246215}
   - component: {fileID: 1507246217}
+  - component: {fileID: 1507246218}
   m_Layer: 5
   m_Name: Image (2)
   m_TagString: Untagged
@@ -23192,7 +23509,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1507246218}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1507246218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507246213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 306
 --- !u!1 &1509691164
 GameObject:
   m_ObjectHideFlags: 0
@@ -24041,8 +24383,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4.069}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -358.331, y: 16}
-  m_SizeDelta: {x: 1156.099, y: 622.094}
+  m_AnchoredPosition: {x: -239.265, y: 16}
+  m_SizeDelta: {x: 926.166, y: 622.094}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1558247077
 CanvasGroup:
@@ -24116,8 +24458,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 75
-  m_fontSizeBase: 75
+  m_fontSize: 65
+  m_fontSizeBase: 65
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -24134,7 +24476,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
@@ -24178,6 +24520,7 @@ GameObject:
   - component: {fileID: 1566658400}
   - component: {fileID: 1566658399}
   - component: {fileID: 1566658401}
+  - component: {fileID: 1566658402}
   m_Layer: 5
   m_Name: Image (5)
   m_TagString: Untagged
@@ -24286,7 +24629,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1566658402}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1566658402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566658397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 406
 --- !u!1 &1577410385
 GameObject:
   m_ObjectHideFlags: 0
@@ -25079,6 +25447,7 @@ GameObject:
   - component: {fileID: 1644828332}
   - component: {fileID: 1644828331}
   - component: {fileID: 1644828333}
+  - component: {fileID: 1644828334}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -25187,7 +25556,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1644828334}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1644828334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644828329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 302
 --- !u!1 &1649688189
 GameObject:
   m_ObjectHideFlags: 0
@@ -25790,6 +26184,7 @@ GameObject:
   - component: {fileID: 1677365407}
   - component: {fileID: 1677365406}
   - component: {fileID: 1677365405}
+  - component: {fileID: 1677365408}
   m_Layer: 5
   m_Name: Image (5)
   m_TagString: Untagged
@@ -25860,7 +26255,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1677365406}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1677365408}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1677365406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25899,6 +26306,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1677365403}
   m_CullTransparentMesh: 1
+--- !u!114 &1677365408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677365403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uD654\uC7A5\uC2E4"
 --- !u!1 &1681283198
 GameObject:
   m_ObjectHideFlags: 0
@@ -27342,6 +27762,7 @@ GameObject:
   - component: {fileID: 1730830706}
   - component: {fileID: 1730830705}
   - component: {fileID: 1730830707}
+  - component: {fileID: 1730830708}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -27450,7 +27871,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1730830708}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1730830708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730830703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 305
 --- !u!1 &1742715524
 GameObject:
   m_ObjectHideFlags: 0
@@ -28295,6 +28741,7 @@ GameObject:
   - component: {fileID: 1777954313}
   - component: {fileID: 1777954312}
   - component: {fileID: 1777954314}
+  - component: {fileID: 1777954315}
   m_Layer: 5
   m_Name: Image (2)
   m_TagString: Untagged
@@ -28400,10 +28847,35 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1777954312}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1777954315}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1777954315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777954310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uD14C\uB77C\uC2A4"
 --- !u!1 &1779730038
 GameObject:
   m_ObjectHideFlags: 0
@@ -28794,6 +29266,7 @@ GameObject:
   - component: {fileID: 1785320932}
   - component: {fileID: 1785320931}
   - component: {fileID: 1785320933}
+  - component: {fileID: 1785320934}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -28902,7 +29375,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1785320934}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1785320934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785320929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: 301
 --- !u!1 &1786232166
 GameObject:
   m_ObjectHideFlags: 0
@@ -29562,6 +30060,7 @@ GameObject:
   - component: {fileID: 1808143906}
   - component: {fileID: 1808143905}
   - component: {fileID: 1808143904}
+  - component: {fileID: 1808143907}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -29632,7 +30131,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1808143905}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1808143907}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1808143905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29671,6 +30182,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1808143902}
   m_CullTransparentMesh: 1
+--- !u!114 &1808143907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808143902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uB77C\uC6B4\uC9C0"
 --- !u!1 &1809525769
 GameObject:
   m_ObjectHideFlags: 0
@@ -30599,6 +31123,7 @@ GameObject:
   - component: {fileID: 1897968618}
   - component: {fileID: 1897968617}
   - component: {fileID: 1897968619}
+  - component: {fileID: 1897968620}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -30704,10 +31229,35 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 1897968617}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1897968620}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1897968620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897968615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uC624\uB77D\uC2E4"
 --- !u!1 &1912761888
 GameObject:
   m_ObjectHideFlags: 0
@@ -32045,6 +32595,7 @@ GameObject:
   - component: {fileID: 2004709631}
   - component: {fileID: 2004709630}
   - component: {fileID: 2004709632}
+  - component: {fileID: 2004709633}
   m_Layer: 5
   m_Name: Image (3)
   m_TagString: Untagged
@@ -32150,10 +32701,35 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1808143905}
+  m_TargetGraphic: {fileID: 2004709630}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2004709633}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2004709633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2004709628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uC8FC\uBC29"
 --- !u!1 &2021902981
 GameObject:
   m_ObjectHideFlags: 0
@@ -33315,6 +33891,7 @@ GameObject:
   - component: {fileID: 2073672112}
   - component: {fileID: 2073672111}
   - component: {fileID: 2073672110}
+  - component: {fileID: 2073672113}
   m_Layer: 5
   m_Name: Image (4)
   m_TagString: Untagged
@@ -33385,7 +33962,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2073672111}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2073672113}
+        m_TargetAssemblyTypeName: MapPointOutButton, Assembly-CSharp
+        m_MethodName: SelectPlace
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2073672111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33424,6 +34013,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2073672108}
   m_CullTransparentMesh: 1
+--- !u!114 &2073672113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073672108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5ced83a81407e40b64e313ebe03ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeName: "\uAD00\uB9AC\uC790\uC2E4"
 --- !u!1 &2080994454
 GameObject:
   m_ObjectHideFlags: 0

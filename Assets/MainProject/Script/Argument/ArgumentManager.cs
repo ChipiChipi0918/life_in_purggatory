@@ -55,7 +55,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         Dialogue_Wait,      // 일반 대화 출력 완료 (클릭 대기)
         Argument_Loop,      // 논의 진행 중 (자동 재생)
         Argument_EndWait,   // 논의 한 사이클 종료 후 대기 (재시작 또는 진행)
-        Choice              // 선택지 화면
+        Choice,           // 선택지 화면
+        PlaceSelection // 🔥 [추가] 장소 지적 상태
     }
 
     // 캐릭터 설정 데이터 (하드코딩 제거용)
@@ -105,6 +106,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public Transform argumentEvidenceButtonParent;
     public GameObject argumentEvidenceButtonPrefab;
 
+    [Header("Place Selection Logic")]
+    public string currentSelectedPlaceName; // 🔥 [추가] 플레이어가 클릭한 장소 이름
+    private string currentPlaceAnswer;      // 🔥 [추가] 현재 문제의 정답 장소 이름
 
     [Header("Evidence Logic")]
     public string selectedEvidenceName; // 플레이어가 선택한 증거
@@ -126,7 +130,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private string currentRawText = "";
     private int currentLinkHoverIndex = -1;
     private bool lastUiAnimState = false;
-    private bool isShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
+    private bool isChoiceShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
+    private bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
     private bool waitingExitDialogue = false;
     private ArgumentEvidenceButton currentSelected;
     #endregion
@@ -197,13 +202,17 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 2. 대화 타입에 따른 분기
         if (line.type == DialogueType.Argument)
         {
-            // 이미 논의 모드라면 계속 진행, 아니면 시작
             if (!IsArgumentMode) StartArgumentMode();
             else NextArgumentLine();
         }
+        else if (line.type == DialogueType.PlaceSelection) // 🔥 [추가] 장소 지적 처리
+        {
+            lineIndex++; // 인덱스 증가
+            StartPlaceSelection(line);
+        }
         else if (line.isChoice)
         {
-            lineIndex++; // 인덱스 미리 증가
+            lineIndex++;
             ShowChoice(line);
         }
         else // 일반 Dialogue
@@ -218,18 +227,23 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         switch (currentState)
         {
             case FlowState.Dialogue_Wait:
-                // 상황 A: 오답 피드백 중이었다면 선택지로 복귀
-                if (isShowingWrongFeedback)
+                // 상황 A: 선택지 오답 피드백 중이었다면 선택지로 복귀
+                if (isChoiceShowingWrongFeedback)
                 {
                     ReturnToChoice();
                 }
-                // 상황 B: "다시 들어보자" 대사가 끝난 후 클릭했다면 루프 재시작 🔥 (추가됨)
+                // 상황 B: 장소 지적 피드백 중이었다면 선택지로 복귀
+                if (isMapPointOutShowingWrongFeedback)
+                {
+                    ReturnToMapPointOut();
+                }
+                // 상황 C: "다시 들어보자" 대사가 끝난 후 클릭했다면 루프 재시작 🔥 (추가됨)
                 else if (waitingExitDialogue)
                 {
                     waitingExitDialogue = false;
                     RestartArgumentLoop();
                 }
-                // 상황 C: 일반적인 다음 대사 진행
+                // 상황 D: 일반적인 다음 대사 진행
                 else
                 {
                     PlayNext();
@@ -262,10 +276,17 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     // 선택지로 다시 되돌리는 메서드
     private void ReturnToChoice()
     {
-        isShowingWrongFeedback = false;
+        isChoiceShowingWrongFeedback = false;
         dialoguePanel.SetActive(false); // 오답 메시지 창 닫기
         choicePanel.SetActive(true);    // 다시 선택지 버튼들 보여주기
         currentState = FlowState.Choice; // 상태를 다시 선택지로 변경
+    }
+
+    // 장소 지적으로 다시 되돌리는 메서드
+    private void ReturnToMapPointOut()
+    {
+        isMapPointOutShowingWrongFeedback = false;
+        currentState = FlowState.PlaceSelection; // 상태를 다시 장소 지적으로 변경
     }
     #endregion
 
@@ -280,13 +301,26 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         Debug.Log($"논의 데이터 로드 완료! 정답: {correctEvidenceName}");
 
+        // 🔥 [추가/수정] 첫 번째 대사의 방향에 따라 초기 카메라 회전 결정
+        float initialRotation = 2.5f; // 기본값 (left)
+        if (block.lines.Count > 0)
+        {
+            // 첫 번째 라인이 "right"라면 -2.5도로 시작
+            if (block.lines[0].camFormat == "right")
+            {
+                initialRotation = -2.5f;
+            }
+        }
+
+        // UiManager 호출 시 계산된 회전값 전달
+        UiManager.instance.ArgumentUiOn(true, initialRotation);
+
         // 🔥 [추가] 증거품 버튼 생성 호출
         CreateArgumentEvidenceButtons(block);
 
         // 2. 루프 시작
         RestartArgumentLoop();
     }
-
     private void RestartArgumentLoop()
     {
         // 🔥 [추가] 논의 시작 UI 연출 실행 (Banner 애니메이션)
@@ -424,7 +458,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         waitingArgumentEndText = false;
         waitingExitDialogue = false;
-        isShowingWrongFeedback = false;
+        isChoiceShowingWrongFeedback = false;
 
         currentState = FlowState.Idle;
 
@@ -825,7 +859,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 플래그 전면 초기화
         waitingArgumentEndText = false;
         waitingExitDialogue = false;
-        isShowingWrongFeedback = false;
+        isChoiceShowingWrongFeedback = false;
         selectedEvidenceName = null;
         currentSelected = null;
     }
@@ -856,7 +890,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             int index = i;
             GameObject btnObj = Instantiate(choiceButtonPrefab, choiceButtonParent);
             // 위치 조정 로직은 필요에 따라 Grid Layout Group 컴포넌트로 대체 권장
-            btnObj.transform.localPosition += new Vector3(i * 50, i * 100);
 
             TMP_Text btnText = btnObj.transform.GetChild(0).GetComponent<TMP_Text>();
             btnText.text = line.choices[i];
@@ -870,7 +903,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (choiceIndex == line.correctIndex)
         {
             Debug.Log("정답!");
-            isShowingWrongFeedback = false;
+            isChoiceShowingWrongFeedback = false;
             choicePanel.SetActive(false);
             PlayNext();
         }
@@ -880,7 +913,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             UiManager.instance.Shaking(0.5f);
 
             // 플래그 설정: 다음 클릭 시 PlayNext()가 아닌 선택지로 돌아가게 함
-            isShowingWrongFeedback = true;
+            isChoiceShowingWrongFeedback = true;
 
             // 대화창이 뜰 때 선택지 버튼이 가려지도록 잠시 비활성화 (선택 사항)
             choicePanel.SetActive(false);
@@ -895,5 +928,78 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             ShowDialogue(wrongLine);
         }
     }
+    #endregion
+
+    #region Place Selection Logic (장소 지적)
+
+    private void StartPlaceSelection(DialogueLine line)
+    {
+        currentState = FlowState.PlaceSelection;
+
+        // CSV의 두 번째 열(text)에 있는 값이 정답 장소 이름
+        currentPlaceAnswer = line.text.Trim();
+        currentSelectedPlaceName = "";
+
+        Debug.Log($"[장소 지적 시작] 정답: {currentPlaceAnswer}");
+
+        // 2. 🔥 [추가] UiManager를 통해 장소 지적 UI(지도 등)를 켬
+        UiManager.instance.MapPointOutUiOn(true);
+    }
+
+    public void OnPlaceClicked(string placeName)
+    {
+        if (currentState != FlowState.PlaceSelection) return;
+
+        // 현재 UI 애니메이션 중이면 클릭 방지
+        if (UiManager.instance.isUiAnim) return;
+
+        currentSelectedPlaceName = placeName;
+        CheckPlaceAnswer();
+    }
+
+    private void CheckPlaceAnswer()
+    {
+        if (string.IsNullOrEmpty(currentSelectedPlaceName)) return;
+
+        if (currentSelectedPlaceName.Trim() == currentPlaceAnswer)
+        {
+            Debug.Log("장소 지적 정답!");
+
+            // 1. 🔥 [추가] 정답일 경우 UiManager를 통해 장소 지적 UI를 끔
+            UiManager.instance.MapPointOutUiOn(false);
+
+            isMapPointOutShowingWrongFeedback = false;
+
+            // 2. 상태 초기화 및 다음 대사 진행
+            currentState = FlowState.Idle;
+
+            // UI가 들어가는 시간(약 1초)을 고려하여 약간의 딜레이 후 다음 대사 재생
+            StartCoroutine(WaitAndPlayNext(1.1f));
+        }
+        else
+        {
+            Debug.Log("오답!");
+            UiManager.instance.Shaking(0.5f);
+
+            isMapPointOutShowingWrongFeedback = true;
+
+            DialogueLine wrongLine = new DialogueLine
+            {
+                speaker = "유은하",
+                text = "(여기는 아닌가봐... 다시 한번 생각해보자.)",
+                type = DialogueType.Dialogue
+            };
+
+            ShowDialogue(wrongLine);
+        }
+    }
+
+    // UI 연출이 끝난 뒤 대화를 이어가기 위한 헬퍼 코루틴
+    private IEnumerator WaitAndPlayNext(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        PlayNext();
+    }
+
     #endregion
 }

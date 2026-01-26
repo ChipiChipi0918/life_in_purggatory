@@ -12,7 +12,8 @@ using UnityEngine.Networking;
 public enum DialogueType
 {
     Dialogue,
-    Argument
+    Argument,
+    PlaceSelection // 🔥 [추가] 장소 지적 타입
 }
 
 [System.Serializable]
@@ -144,7 +145,24 @@ public static class CSVParser
                 continue;
             }
 
+            // ============================
+            // 🔥 장소 지적 처리
+            // ============================
+            if (speaker == "장소 지적")
+            {
+                Debug.Log($"장소 지적 CSV 발견! 정답: {text}");
 
+                DialogueLine placeLine = new DialogueLine
+                {
+                    speaker = "",       // 시스템 메시지 혹은 공란
+                    text = text.Trim(),       // 🔥 CSV 2열(text) 값을 정답으로 저장
+                    type = DialogueType.PlaceSelection, // 타입 설정
+                    textTime = 0              // 즉시 처리되도록 0 설정 (필요시 조절)
+                };
+
+                resultLines.Add(placeLine);
+                continue; // 다음 루프로 이동
+            }
 
             // ============================
             // 🔥 논의 시작

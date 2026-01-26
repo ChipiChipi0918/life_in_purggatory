@@ -9,7 +9,6 @@ public class UiManager : MonoBehaviour
 {
     public static UiManager instance;
 
-    public bool isHotelInformation;
     public bool isUiAnim;
 
     public Transform camTransform;
@@ -22,6 +21,11 @@ public class UiManager : MonoBehaviour
 
     [Header("Hotel information")]
     public RectTransform hotelInformation;
+    public bool isHotelInformation;
+
+    [Header("맵 지적")]
+    public RectTransform mapPointOut;
+    public bool isMapPointOut;
 
     [Header("논의 시작/종료")]
     public Transform argumentStartUi;
@@ -107,17 +111,51 @@ public class UiManager : MonoBehaviour
        
         isUiAnim = false;
     }
-    public void ArgumentUiOn(bool isStart)
+
+    public void MapPointOutUiOn(bool a)
+    {
+        StartCoroutine(MapPointOutUiCoroutine(a));
+    }
+
+    private IEnumerator MapPointOutUiCoroutine(bool a)
+    {
+        isUiAnim = true;
+        if (a)
+        {
+            StartCoroutine(BackUiFade(true));
+
+            Time.timeScale = 0;
+
+            mapPointOut.DOAnchorPosY(0, 1).SetUpdate(true);
+            yield return new WaitForSecondsRealtime(1f);
+        }
+        else
+        {
+            StartCoroutine(BackUiFade(false));
+
+            Time.timeScale = 1;
+
+            mapPointOut.DOAnchorPosY(-1490, 1).SetUpdate(true);
+            yield return new WaitForSecondsRealtime(1f);
+        }
+
+        isUiAnim = false;
+    }
+
+    // ArgumentUiOn 메서드를 아래와 같이 수정하세요.
+    public void ArgumentUiOn(bool isStart, float rotationZ = 2.5f)
     {
         OnArgumentEvidence(isStart);
 
         if (isStart)
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentStartUi));
+            camRotate(new Vector3(0, 0, rotationZ), 1);
         }
         else
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentEndUi));
+            camRotate(new Vector3(0, 0, 0), 1);
         }
     }
     public void OnArgumentEvidence(bool On)
