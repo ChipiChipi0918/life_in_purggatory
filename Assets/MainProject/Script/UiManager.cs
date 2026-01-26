@@ -114,12 +114,10 @@ public class UiManager : MonoBehaviour
         if (isStart)
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentStartUi));
-            camRotate(new Vector3(0, 0, 2.5f),1);
         }
         else
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentEndUi));
-            camRotate(new Vector3(0, 0, 0f),1);
         }
     }
     public void OnArgumentEvidence(bool On)
