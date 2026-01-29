@@ -139,7 +139,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         if (instance == null) instance = this;
-
         activeArgumentText = argumentTextLeft;
         argumentTextLeft.gameObject.SetActive(false);
         argumentTextRight.gameObject.SetActive(false);
@@ -155,10 +154,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (IsArgumentMode) CheckHover();
 
         // 클릭 입력 처리
-        if (Input.GetMouseButtonDown(0))
-        {
-            HandleInput();
-        }
+        if (Input.GetMouseButtonDown(0)) HandleInput();
     }
 
     private void LateUpdate()
@@ -389,7 +385,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         waitingArgumentEndText = true;
         ShowDialogue(b.exitLine);
     }
-
     private void SetupArgumentTextUI(DialogueLine line)
     {
         argumentTextLeft.gameObject.SetActive(false);
@@ -412,7 +407,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             if (argumentLineIndex > 1) UiManager.instance.camRotate(new Vector3(0, 0, -2.5f), 0.5f);
         }
 
-        MoveCam(line.speaker, xOffset);
+        // 🔥 [수정] 직접 정의했던 MoveCam 대신 DialogueDirector를 호출합니다.
+        DialogueDirector.instance.MoveCam(line.speaker, xOffset);
         activeArgumentText.gameObject.SetActive(true);
     }
 
@@ -604,19 +600,22 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         dialoguePanel.SetActive(true);
 
         // 1. 카메라 & 증거품 처리
-        TpCam(line.speaker);
-        ProcessEvidenceEffects(line);
-        ProcessScreenEffects(line);
+        // 🔥 [수정] TpCam, Process 관련 메서드들을 DialogueDirector 호출로 변경
+        if (DialogueFlowManager.instance.currentPhase == DialogueFlowManager.Phase.Judgment)
+            DialogueDirector.instance.TpCam(line.speaker);
+
+        DialogueDirector.instance.ProcessEvidenceEffects(line.addEvidence, line.showEvidence);
+        DialogueDirector.instance.ProcessScreenEffects(line.effect);
 
         // 2. UI 텍스트 설정
-        UpdateNameTag(line.speaker);
+        // 🔥 [수정] UpdateNameTag를 DialogueDirector 호출로 변경
+        DialogueDirector.instance.UpdateNameTag(line.speaker);
 
         // 3. 타이핑 시작
         if (typingRoutine != null) StopCoroutine(typingRoutine);
-        typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text));
+        typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text, line.textTime));
     }
-
-    IEnumerator TypeRoutine(string speaker, string text)
+    IEnumerator TypeRoutine(string speaker, string text, float time)
     {
         yield return new WaitForSecondsRealtime(0.02f);
 
@@ -641,6 +640,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
                 break;
             }
         }
+
+        yield return new WaitForSecondsRealtime(time);//텍스트 재생 끝나고 추가적으로 time 값 동안 기다리기
 
         // 타이핑 완료
         textSlider.value = 1f;
@@ -778,64 +779,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     #region Helper Methods (Camera, Effect, Data)
 
-    private void MoveCam(string name, float xOffset)
-    {
-        float baseX = GetCharacterPos(name);
-        argumentCamTransform.DOMoveX(baseX + xOffset, 0.5f);
-    }
-
-    private void TpCam(string name)
-    {
-        float baseX = GetCharacterPos(name);
-        argumentCamTransform.position = new Vector3(baseX, 0, -10);
-    }
-
-    private float GetCharacterPos(string name)
-    {
-        if (characterConfig.ContainsKey(name)) return characterConfig[name].camPos;
-        return 0f;
-    }
-
-    private void UpdateNameTag(string name)
-    {
-        if (string.IsNullOrEmpty(name))
-        {
-            nameTagObj.SetActive(false);
-            return;
-        }
-
-        nameTagObj.SetActive(true);
-        string colorCode = characterConfig.ContainsKey(name) ? characterConfig[name].colorCode : characterConfig["Default"].colorCode;
-
-        // 첫 글자 색상 처리
-        string firstChar = name.Substring(0, 1);
-        string restName = name.Substring(1);
-
-        nameText.text = $"<size=180%><color={colorCode}>{firstChar}</color></size>{restName}";
-    }
-
-    private void ProcessEvidenceEffects(DialogueLine line)
-    {
-        if (EvidenceManager.Instance == null) return;
-
-        if (!string.IsNullOrEmpty(line.addEvidence))
-            EvidenceManager.Instance.AddEvidence(line.addEvidence);
-
-        if (!string.IsNullOrEmpty(line.showEvidence))
-            EvidenceManager.Instance.ShowEvidence(line.showEvidence);
-    }
-
-    private void ProcessScreenEffects(DialogueLine line)
-    {
-        // 이펙트 ID에 따른 처리 (Switch 문 추천)
-        if (line.effect == 1) EffectManager.instance.CameraShake();
-        else if (line.effect == 2) EffectManager.instance.Blood();
-        else if (line.effect == 3) EffectManager.instance.ShakeAndBlood();
-        else if (line.effect >= 10 && line.effect <= 20) EffectManager.instance.Objection(line.effect - 10);
-        else if (line.effect == 100) EffectManager.instance.FadeIn();
-        else if (line.effect == 101) EffectManager.instance.FadeOut();
-    }
-
     private void HandleUiAnimationState()
     {
         // UI 애니메이션이 끝난 직후 다이얼로그가 꺼져있으면 켜주기
@@ -900,6 +843,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void OnChoiceSelected(DialogueLine line, int choiceIndex)
     {
+        SoundManager.instance.UiSelect();
+
         if (choiceIndex == line.correctIndex)
         {
             Debug.Log("정답!");

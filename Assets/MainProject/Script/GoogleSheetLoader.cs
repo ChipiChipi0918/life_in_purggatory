@@ -21,14 +21,15 @@ public class DialogueLine
 {
     public string speaker; //1
     public string text; //2
-    //3
-    public int effect;//4
-    //5
+    public Vector3 characterPos; //3
+    //4
+    public int effect;//5
     //6
-    public float textTime; //7
-    public string camFormat; //8
-    public string addEvidence; //9
-    public string showEvidence; //10
+    //7
+    public float textTime; //8
+    public string camFormat; //9
+    public string addEvidence; //10
+    public string showEvidence; //11
     public DialogueType type;
 
     public bool isChoice;
@@ -95,14 +96,29 @@ public static class CSVParser
 
             string speaker = cols[0].Trim().Replace("\r", "");//1
             string text = cols[1].Trim().Replace("\\n", "\n");//2
-            //3 캐릭터 상태 들어갈 예정
-            //4-int effect
-            //5 효과음 들어갈 예정
-            //6 미정
-            //7-float 논의 텍스트 시간(길이)
-            string camFormat = cols.Length > 7 ? cols[7].Trim().Replace("\r", "") : "";//8
-            string addEvidence = cols.Length > 8 ? cols[8].Trim().Replace("\r", "") : "";//9
-            string showEvidence = cols.Length > 9 ? cols[9].Trim().Replace("\r", "") : "";//10
+            #region 3열 (캐릭터 위치)값 파싱
+            Vector3 charPos = Vector3.zero;
+            if (cols.Length > 2 && !string.IsNullOrEmpty(cols[2]))
+            {
+                string[] posValues = cols[2].Split('/');
+                if (posValues.Length == 3)
+                {
+                    float.TryParse(posValues[0], out float x);
+                    float.TryParse(posValues[1], out float y);
+                    float.TryParse(posValues[2], out float z);
+                    //charPos = new Vector3(x, y, z);
+                    charPos = new Vector3(x, y, z)/100;
+                }
+            }
+            #endregion //3
+            //4 캐릭터 상태 들어갈 예정
+            //5-int effect
+            //6 효과음 들어갈 예정
+            //7 미정
+            //8-float 논의 텍스트 시간(길이)
+            string camFormat = cols.Length > 8 ? cols[8].Trim().Replace("\r", "") : "";//9
+            string addEvidence = cols.Length > 9 ? cols[9].Trim().Replace("\r", "") : "";//10
+            string showEvidence = cols.Length > 10 ? cols[10].Trim().Replace("\r", "") : "";//11
 
             // ============================
             // 🔥 선택지 처리
@@ -115,6 +131,7 @@ public static class CSVParser
                 {
                     speaker = "",              // 선택지는 발화자 없음
                     text = "",                 // 텍스트 없음
+                    characterPos = charPos,
                     type = DialogueType.Dialogue,
                     isChoice = true,
                     choices = new List<string>()
@@ -231,9 +248,9 @@ public static class CSVParser
                 showEvidence = showEvidence
             };
 
-            if (cols.Length >= 3 && int.TryParse(cols[3], out int type)) //6
+            if (cols.Length >= 4 && int.TryParse(cols[4], out int type)) //5
                 line.effect = type;
-            if (cols.Length >= 6 && float.TryParse(cols[6], out float dur)) //6
+            if (cols.Length >= 7 && float.TryParse(cols[7], out float dur)) //8
                 line.textTime = dur;
 
             if (inArgument)

@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class BackgroundManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static BackgroundManager instance;
+
+    public GameObject tribunalBackground;
+    public GameObject nomalBackground;
+
+    private void Awake()
     {
-        
+        if (instance == null) instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DailyMapUpdate()
     {
-        
+
+    }
+
+    public void ChangeNomalToTribunal()
+    {
+        tribunalBackground.SetActive(true);
+        nomalBackground.SetActive(false);
     }
 }

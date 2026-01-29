@@ -8,6 +8,7 @@ public class MapPointOutButton : MonoBehaviour
 
     public void SelectPlace()
     {
+        SoundManager.instance.UiSelect();
         ArgumentManager.instance.OnPlaceClicked(placeName);
     }
 }
