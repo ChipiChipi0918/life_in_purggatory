@@ -57,7 +57,6 @@ public class DialogueFlowManager : MonoBehaviour
         if (currentPhase == Phase.Daily)
         {
             currentPhase = Phase.Judgment;
-            BackgroundManager.instance.ChangeNomalToTribunal();
             StartCoroutine(StartNextPhase());
         }
         else if (currentPhase == Phase.Judgment)

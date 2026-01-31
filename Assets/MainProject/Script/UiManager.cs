@@ -23,6 +23,10 @@ public class UiManager : MonoBehaviour
     public RectTransform hotelInformation;
     public bool isHotelInformation;
 
+    [Header("로그")]
+    public GameObject logue;
+    public bool isLogue;
+
     [Header("맵 지적")]
     public RectTransform mapPointOut;
     public bool isMapPointOut;
@@ -51,6 +55,11 @@ public class UiManager : MonoBehaviour
         {
             isHotelInformation = !isHotelInformation;
             StartCoroutine(HotelInformationCoroutine(isHotelInformation));
+        }
+        if(Input.GetKeyDown(KeyCode.F1) && isUiAnim == false)
+        {
+            isLogue = !isLogue;
+            StartCoroutine(LogueCoroutine(isLogue));
         }
     }
 
@@ -110,6 +119,31 @@ public class UiManager : MonoBehaviour
         }
        
         isUiAnim = false;
+    }
+
+    private IEnumerator LogueCoroutine(bool a)
+    {
+        isUiAnim = true;
+        if (a)
+        {
+            StartCoroutine(BackUiFade(true));
+            logue.SetActive(true);
+            Time.timeScale = 0;
+
+            yield return new WaitForSecondsRealtime(1f);
+        }
+        else
+        {
+            StartCoroutine(BackUiFade(false));
+            logue.SetActive(false);
+            Time.timeScale = 1;
+
+            yield return new WaitForSecondsRealtime(1f);
+        }
+
+        isUiAnim = false;
+
+        yield return null;
     }
 
     public void MapPointOutUiOn(bool a)

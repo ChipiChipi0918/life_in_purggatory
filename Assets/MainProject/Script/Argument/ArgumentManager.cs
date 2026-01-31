@@ -184,7 +184,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public void PlayNext()
     {
         // UI 애니메이션 중이거나 호텔 정보 창이 켜져있으면 대기
-        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation) return;
+        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation || UiManager.instance.isLogue) return;
 
         // 1. 전체 대화 종료 체크
         if (lineIndex >= currentLines.Count)
@@ -600,16 +600,16 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         dialoguePanel.SetActive(true);
 
         // 1. 카메라 & 증거품 처리
-        // 🔥 [수정] TpCam, Process 관련 메서드들을 DialogueDirector 호출로 변경
         if (DialogueFlowManager.instance.currentPhase == DialogueFlowManager.Phase.Judgment)
             DialogueDirector.instance.TpCam(line.speaker);
 
         DialogueDirector.instance.ProcessEvidenceEffects(line.addEvidence, line.showEvidence);
         DialogueDirector.instance.ProcessScreenEffects(line.effect);
 
+
         // 2. UI 텍스트 설정
-        // 🔥 [수정] UpdateNameTag를 DialogueDirector 호출로 변경
         DialogueDirector.instance.UpdateNameTag(line.speaker);
+
 
         // 3. 캐릭터 무브 & 캐릭터 스테이트 설정
         if(line.characterPos!=Vector3.zero)
@@ -617,7 +617,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         DialogueDirector.instance.CharacterState(line.speaker, line.charState);
 
-        // 4. 타이핑 시작
+
+        // 4. 배경 업데이트
+        BackgroundManager.instance.DailyMapUpdate(line.background);
+
+
+        // 5. 타이핑 시작
         if (typingRoutine != null) StopCoroutine(typingRoutine);
         typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text, line.textTime));
     }

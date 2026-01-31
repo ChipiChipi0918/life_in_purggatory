@@ -10,7 +10,7 @@ public class DoubleSpeed : MonoBehaviour
     public GameObject speedLine2;
 
     [Header("Settings")]
-    private const int FRAME_INTERVAL = 13; // 스킵 속도 조절용 프레임 간격
+    private const int FRAME_INTERVAL = 26; // 스킵 속도 조절용 프레임 간격
     private int frameCount = 0;
 
     // DoubleSpeed.cs 수정본
@@ -19,7 +19,7 @@ public class DoubleSpeed : MonoBehaviour
         // 1. UI 애니메이션 중일 때는 DoubleSpeed 로직을 완전히 중단합니다.
         // 여기서 ResetSpeed()를 호출하면 그 안의 Time.timeScale = 1 때문에 
         // UiManager의 0.01 설정이 무시됩니다.
-        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation)
+        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation || UiManager.instance.isLogue)
         {
             // 시각적인 UI만 끄고, Time.timeScale은 건드리지 않고 리턴합니다.
             doubleSpeedUi.SetActive(false);
@@ -60,8 +60,7 @@ public class DoubleSpeed : MonoBehaviour
         // 3. 일반 대화 모드 (Normal Dialogue) -> 빠르게 넘기기
         else
         {
-            // 일반 대화에서는 타임스케일은 1로 유지하되, 대사만 빠르게 넘김
-            if (Time.timeScale != 1.0f) SetTimeScale(1.0f);
+            SetTimeScale(2.0f);
 
             ToggleVisuals(isArgument: false);
 

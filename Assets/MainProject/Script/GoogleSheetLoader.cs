@@ -30,6 +30,9 @@ public class DialogueLine
     public string camFormat; //9
     public string addEvidence; //10
     public string showEvidence; //11
+
+
+    public string background; //15
     public DialogueType type;
 
     public bool isChoice;
@@ -120,6 +123,8 @@ public static class CSVParser
             string addEvidence = cols.Length > 9 ? cols[9].Trim().Replace("\r", "") : "";//10
             string showEvidence = cols.Length > 10 ? cols[10].Trim().Replace("\r", "") : "";//11
 
+            string background = cols.Length > 14 ? cols[14].Trim().Replace("\n", "") : "";//15
+
             // ============================
             // 🔥 선택지 처리
             // ============================
@@ -135,7 +140,8 @@ public static class CSVParser
                     charState = charState,
                     type = DialogueType.Dialogue,
                     isChoice = true,
-                    choices = new List<string>()
+                    choices = new List<string>(),
+                    background = ""
                 };
 
                 // 🔥 2열 텍스트: 선택1/선택2/선택3
@@ -248,7 +254,8 @@ public static class CSVParser
                 camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue,
                 addEvidence = addEvidence,
-                showEvidence = showEvidence
+                showEvidence = showEvidence,
+                background = background
             };
 
             if (cols.Length >= 4 && int.TryParse(cols[4], out int type)) //5
