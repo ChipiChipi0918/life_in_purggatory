@@ -13,6 +13,9 @@ public class DialogueDirector : MonoBehaviour
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private GameObject dialoguePanel;
 
+    [Header("characterObj")]
+    public List<GameObject> character = new List<GameObject>();
+
     // 캐릭터 설정 데이터 (Director가 관리하는 것이 자연스러움)
     private readonly Dictionary<string, (float camPos, string colorCode)> characterConfig = new Dictionary<string, (float, string)>()
     {
@@ -49,9 +52,14 @@ public class DialogueDirector : MonoBehaviour
         return 0f;
     }
 
-    public void MoveCharacter(string name, Vector3 pos)
+    public void MoveCharacter(string name, float speed , Vector3 pos)
     {
-        // 캐릭터 이동 로직 구현
+        Debug.Log(name + "가" + pos +"로 이동");
+
+        if (name == "유은하")
+        {
+            character[0].transform.DOLocalMove(pos,speed);
+        }
     }
     #endregion
 

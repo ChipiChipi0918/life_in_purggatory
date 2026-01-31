@@ -242,6 +242,7 @@ public static class CSVParser
             {
                 speaker = speaker,
                 text = text,
+                characterPos = charPos,
                 camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue,
                 addEvidence = addEvidence,

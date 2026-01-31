@@ -611,7 +611,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 🔥 [수정] UpdateNameTag를 DialogueDirector 호출로 변경
         DialogueDirector.instance.UpdateNameTag(line.speaker);
 
-        // 3. 타이핑 시작
+        // 3. 캐릭터 무브
+        if(line.characterPos!=Vector3.zero)
+            DialogueDirector.instance.MoveCharacter(line.speaker, 1 ,line.characterPos);
+
+        // 4. 타이핑 시작
         if (typingRoutine != null) StopCoroutine(typingRoutine);
         typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text, line.textTime));
     }
