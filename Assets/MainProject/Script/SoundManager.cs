@@ -1,30 +1,69 @@
 using FMODUnity;
-using System.Collections;
-using System.Collections.Generic;
+using FMOD.Studio; // 인스턴스 관리를 위해 필요합니다.
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance;
 
-    [Header("Dialouge Sound")]
+    [Header("Dialogue Sound")]
     public EventReference eunhaVoice;
 
-    [Header("Ui")]
+    [Header("UI")]
     public EventReference uiSelect;
+
+    [Header("BGM")]
+    public EventReference daily_01;
+    public EventReference daily_04;
+
+    // 현재 재생 중인 BGM 인스턴스를 저장할 변수
+    private EventInstance bgmInstance;
 
     private void Awake()
     {
-        if(instance == null) instance = this;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void EunhaVoice()
     {
-        RuntimeManager.CreateInstance(eunhaVoice).start();
+        RuntimeManager.PlayOneShot(eunhaVoice);
     }
 
     public void UiSelect()
     {
-        RuntimeManager.CreateInstance(uiSelect).start();
+        RuntimeManager.PlayOneShot(uiSelect);
+    }
+
+    public void BgmDaily_01()
+    {
+        PlayBGM(daily_01);
+    }
+
+    public void PlayBGM(EventReference bgmEvent)
+    {
+        if (bgmInstance.isValid())
+        {
+            bgmInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            bgmInstance.release();
+        }
+
+        // 2. 새로운 인스턴스 생성 및 시작
+        bgmInstance = RuntimeManager.CreateInstance(bgmEvent);
+        bgmInstance.start();
+    }
+    public void StopBGM()
+    {
+        if (bgmInstance.isValid())
+        {
+            bgmInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        }
     }
 }

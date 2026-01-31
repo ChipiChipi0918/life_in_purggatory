@@ -42,10 +42,30 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639046019307523786
+  lastModified: 639054683140640524
   FileSizes:
   - Name: Desktop
-    Value: 942
+    Value: 1028
+  Exists: 1
+--- !u!114 &-925525731721845435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/BGM.bank
+  m_EditorClassIdentifier: 
+  Path: Life-In-Purgatory_FMOD/Build/Desktop/BGM.bank
+  Name: BGM
+  StudioPath: bank:/BGM
+  lastModified: 639054683151679153
+  FileSizes:
+  - Name: Desktop
+    Value: 1021216
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -64,17 +84,19 @@ MonoBehaviour:
   - {fileID: 2888173182791625973}
   - {fileID: 891229174712809751}
   - {fileID: 5691006403440385348}
+  - {fileID: -925525731721845435}
   EditorEvents:
   - {fileID: -4541826960052089374}
   - {fileID: 4169819893709066972}
   - {fileID: 2606992824668569623}
+  - {fileID: 7258599793778436561}
   EditorParameters: []
   MasterBanks:
   - {fileID: 891229174712809751}
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639046019308028361
+  cacheTime: 639054683151679153
   SerializableEventsDict:
   - key: event:/eunha_Voice
     index: 0
@@ -82,6 +104,8 @@ MonoBehaviour:
     index: 1
   - key: event:/Bell
     index: 2
+  - key: event:/BGM_daily01
+    index: 3
 --- !u!114 &891229174712809751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,7 +121,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639046019307513825
+  lastModified: 639054683140630465
   FileSizes:
   - Name: Desktop
     Value: 1074
@@ -144,7 +168,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639046019307403506
+  lastModified: 639054683140566582
   FileSizes:
   - Name: Desktop
     Value: 2336
@@ -191,8 +215,35 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639046019308028361
+  lastModified: 639054683141704254
   FileSizes:
   - Name: Desktop
     Value: 22944
   Exists: 1
+--- !u!114 &7258599793778436561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM_daily01
+  m_EditorClassIdentifier: 
+  Path: event:/BGM_daily01
+  Guid:
+    Data1: 169968390
+    Data2: 1194599477
+    Data3: -600441422
+    Data4: 1600553429
+  Banks:
+  - {fileID: -925525731721845435}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0

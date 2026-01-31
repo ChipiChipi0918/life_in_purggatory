@@ -13,31 +13,50 @@ public class DialogueDirector : MonoBehaviour
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private GameObject dialoguePanel;
 
-    [Header("characterObj")]
+    [Header("Character List (Assign in Inspector)")]
     public List<GameObject> character = new List<GameObject>();
 
-    // 캐릭터 설정 데이터 (Director가 관리하는 것이 자연스러움)
-    private readonly Dictionary<string, (float camPos, string colorCode)> characterConfig = new Dictionary<string, (float, string)>()
+    // 튜플 구조: (카메라X위치, 이름색상코드, 실제게임오브젝트)
+    private Dictionary<string, (float camPos, string colorCode, GameObject obj)> characterConfig =
+        new Dictionary<string, (float, string, GameObject)>()
     {
-        { "유은하", (0f, "#FFE2A0") },
-        { "백현",   (-80f, "#0E432D") },
-        { "유설희", (-60f, "#8F8F8F") },
-        { "다니엘", (-40f, "#E7A300") },
-        { "정희영", (-20f, "#9B2BFF") },
-        { "장현우", (20f, "#CB1B00") },
-        { "천주연", (40f, "#FFE945") },
-        { "정태준", (60f, "#1572FF") },
-        { "서진랑", (80f, "#5E3200") },
-        { "Default", (0f, "#D9D9D9") }
+        { "유은하", (0f, "#FFE2A0", null) },
+        { "백현",   (-80f, "#0E432D", null) },
+        { "유설희", (-60f, "#8F8F8F", null) },
+        { "다니엘", (-40f, "#E7A300", null) },
+        { "정희영", (-20f, "#9B2BFF", null) },
+        { "장현우", (20f, "#CB1B00", null) },
+        { "천주연", (40f, "#FFE945", null) },
+        { "정태준", (60f, "#1572FF", null) },
+        { "서진랑", (80f, "#5E3200", null) },
+        { "Default", (0f, "#D9D9D9", null) }
     };
 
-    private void Awake() => instance = this;
+    private void Awake()
+    {
+        instance = this;
+        InitCharacterDictionary();
+    }
 
-    #region Camera & Character Position
+    // 리스트의 오브젝트들을 이름에 맞춰 딕셔너리에 매칭
+    private void InitCharacterDictionary()
+    {
+        foreach (GameObject go in character)
+        {
+            if (go != null && characterConfig.ContainsKey(go.name))
+            {
+                var config = characterConfig[go.name];
+                config.obj = go;
+                characterConfig[go.name] = config;
+            }
+        }
+    }
+
+    #region Camera & Character Control
     public void MoveCam(string name, float xOffset, float duration = 0.5f)
     {
         float baseX = GetCharacterPos(name);
-        argumentCamTransform.DOMoveX(baseX + xOffset, duration);
+        argumentCamTransform.DOMoveX(baseX + xOffset, duration).SetEase(Ease.OutCubic);
     }
 
     public void TpCam(string name)
@@ -52,13 +71,36 @@ public class DialogueDirector : MonoBehaviour
         return 0f;
     }
 
-    public void MoveCharacter(string name, float speed , Vector3 pos)
+    public void MoveCharacter(string name, float duration, Vector3 targetPos)
     {
-        Debug.Log(name + "가" + pos +"로 이동");
-
-        if (name == "유은하")
+        if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
         {
-            character[0].transform.DOLocalMove(pos,speed);
+            Debug.Log($"{name} 이동: {targetPos}");
+            GameObject target = characterConfig[name].obj;
+
+            // 기존 애니메이션 중복 방지를 위해 Kill 후 실행
+            target.transform.DOKill();
+            target.transform.DOLocalMove(targetPos, duration).SetEase(Ease.OutQuad);
+        }
+    }
+
+    public void CharacterState(string name, string state)
+    {
+        if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
+        {
+            Debug.Log($"{name} 상태 변경: {state}");
+            GameObject target = characterConfig[name].obj;
+
+            if(state == "Off")
+            {
+                target.gameObject.SetActive(false);
+            }
+            else if(state == "Nomal")
+            {
+                target.gameObject.SetActive(true);
+                //기본이라 뭐 없음
+            }
+            //추후 표정, 행동 추가 예정
         }
     }
     #endregion
@@ -76,19 +118,26 @@ public class DialogueDirector : MonoBehaviour
         string colorCode = characterConfig.ContainsKey(name) ? characterConfig[name].colorCode : characterConfig["Default"].colorCode;
 
         string firstChar = name.Substring(0, 1);
-        string restName = name.Substring(1);
+        string restName = name.Length > 1 ? name.Substring(1) : "";
 
         nameText.text = $"<size=180%><color={colorCode}>{firstChar}</color></size>{restName}";
     }
 
     public void ProcessScreenEffects(int effectId)
     {
-        if (effectId == 1) EffectManager.instance.CameraShake();
-        else if (effectId == 2) EffectManager.instance.Blood();
-        else if (effectId == 3) EffectManager.instance.ShakeAndBlood();
-        else if (effectId >= 10 && effectId <= 20) EffectManager.instance.Objection(effectId - 10);
-        else if (effectId == 100) EffectManager.instance.FadeIn();
-        else if (effectId == 101) EffectManager.instance.FadeOut();
+        if (EffectManager.instance == null) return;
+
+        switch (effectId)
+        {
+            case 1: EffectManager.instance.CameraShake(); break;
+            case 2: EffectManager.instance.Blood(); break;
+            case 3: EffectManager.instance.ShakeAndBlood(); break;
+            case 100: EffectManager.instance.FadeIn(); break;
+            case 101: EffectManager.instance.FadeOut(); break;
+            default:
+                if (effectId >= 10 && effectId <= 20) EffectManager.instance.Objection(effectId - 10);
+                break;
+        }
     }
 
     public void ProcessEvidenceEffects(string addEv, string showEv)

@@ -22,7 +22,7 @@ public class DialogueLine
     public string speaker; //1
     public string text; //2
     public Vector3 characterPos; //3
-    //4
+    public string charState;//4
     public int effect;//5
     //6
     //7
@@ -86,7 +86,7 @@ public static class CSVParser
         if (ArgumentManager.argumentBlocks == null)
             ArgumentManager.argumentBlocks = new List<ArgumentBlock>();
 
-        for (int i = 0; i < rows.Length; i++)
+        for (int i = 1; i < rows.Length; i++)
         {
             string row = rows[i].Trim();
             if (string.IsNullOrWhiteSpace(row)) continue;
@@ -111,7 +111,7 @@ public static class CSVParser
                 }
             }
             #endregion //3
-            //4 캐릭터 상태 들어갈 예정
+            string charState = cols[3].Trim().Replace("\\n", "\n");//4
             //5-int effect
             //6 효과음 들어갈 예정
             //7 미정
@@ -132,6 +132,7 @@ public static class CSVParser
                     speaker = "",              // 선택지는 발화자 없음
                     text = "",                 // 텍스트 없음
                     characterPos = charPos,
+                    charState = charState,
                     type = DialogueType.Dialogue,
                     isChoice = true,
                     choices = new List<string>()
@@ -243,6 +244,7 @@ public static class CSVParser
                 speaker = speaker,
                 text = text,
                 characterPos = charPos,
+                charState = charState,
                 camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue,
                 addEvidence = addEvidence,
