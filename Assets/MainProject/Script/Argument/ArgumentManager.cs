@@ -120,6 +120,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public TMP_Text nameText;
     public TMP_Text dialogueText;
     public Slider textSlider;
+    public GameObject NextImg;
+
+    [Header("Logue")]
+    public GameObject logueParent;
+    public GameObject logueBox;
 
     [Header("Typing Settings")]
     private bool isSkipTyping;
@@ -621,8 +626,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 4. 배경 업데이트
         BackgroundManager.instance.DailyMapUpdate(line.background);
 
+        // 5 로그 박스 생성
+        GameObject logue = Instantiate(logueBox,logueParent.transform);
+        logue.GetComponent<LogueBox>().LogueBoxUpdate(line.speaker,line.text);
 
-        // 5. 타이핑 시작
+        // 6. 타이핑 시작
         if (typingRoutine != null) StopCoroutine(typingRoutine);
         typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text, line.textTime));
     }
@@ -638,10 +646,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 타이핑 속도 계산
         float timePerChar = Mathf.Clamp(1.0f / text.Length, 0.015f, 0.05f);
 
+        NextImg.SetActive(false);
+
         for (int i = 0; i < text.Length; i++)
         {
             dialogueText.text = text.Substring(0, i + 1);
-            if (i % 2 == 1) SoundManager.instance.EunhaVoice(); // 보이스 재생 (간소화)
+            if (i % 2 == 1 && speaker!="") SoundManager.instance.EunhaVoice(); // 보이스 재생
 
             yield return new WaitForSeconds(timePerChar);
 
@@ -656,6 +666,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // 타이핑 완료
         textSlider.value = 1f;
+        NextImg.SetActive(true);
 
         // 만약 논의 종료 대기 상태였다면 상태 변경하지 않음 (Argument_EndWait 유지)
         if (waitingArgumentEndText)

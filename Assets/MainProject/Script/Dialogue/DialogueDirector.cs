@@ -17,7 +17,7 @@ public class DialogueDirector : MonoBehaviour
     public List<GameObject> character = new List<GameObject>();
 
     // 튜플 구조: (카메라X위치, 이름색상코드, 실제게임오브젝트)
-    private Dictionary<string, (float camPos, string colorCode, GameObject obj)> characterConfig =
+    public Dictionary<string, (float camPos, string colorCode, GameObject obj)> characterConfig =
         new Dictionary<string, (float, string, GameObject)>()
     {
         { "유은하", (0f, "#FFE2A0", null) },
@@ -93,14 +93,26 @@ public class DialogueDirector : MonoBehaviour
 
             if(state == "Off")
             {
-                target.gameObject.SetActive(false);
+                ChatactorOnOff(target,false);
             }
             else if(state == "Nomal")
             {
-                target.gameObject.SetActive(true);
+                ChatactorOnOff(target,true);
                 //기본이라 뭐 없음
             }
             //추후 표정, 행동 추가 예정
+        }
+    }
+
+    private void ChatactorOnOff(GameObject target ,bool a)
+    {
+        if (a)
+        {
+            target.gameObject.GetComponent<SpriteRenderer>().DOFade(1f, 0.35f);
+        }
+        else
+        {
+            target.gameObject.GetComponent<SpriteRenderer>().DOFade(0f, 0.35f);
         }
     }
     #endregion

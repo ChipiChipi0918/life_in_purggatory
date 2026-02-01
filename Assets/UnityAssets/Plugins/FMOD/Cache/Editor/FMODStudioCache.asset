@@ -96,7 +96,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639054683151679153
+  cacheTime: 639055783162700413
   SerializableEventsDict:
   - key: event:/eunha_Voice
     index: 0
@@ -168,10 +168,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639054683140566582
+  lastModified: 639055783162700413
   FileSizes:
   - Name: Desktop
-    Value: 2336
+    Value: 3168
   Exists: 1
 --- !u!114 &4169819893709066972
 MonoBehaviour:

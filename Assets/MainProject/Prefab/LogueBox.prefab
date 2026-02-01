@@ -304,7 +304,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -7, y: 11}
+  m_AnchoredPosition: {x: -7, y: -76}
   m_SizeDelta: {x: 440.824, y: 35.629}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &2257464410612792015
@@ -431,6 +431,7 @@ GameObject:
   - component: {fileID: 7640446994258280812}
   - component: {fileID: 6376029357649744060}
   - component: {fileID: 7249787270975437506}
+  - component: {fileID: 6494900144244206428}
   m_Layer: 5
   m_Name: LogueBox
   m_TagString: Untagged
@@ -456,8 +457,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1160.1, y: 92.686}
+  m_AnchoredPosition: {x: 0, y: 46.50711}
+  m_SizeDelta: {x: 1160.1, y: 185.7002}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6376029357649744060
 CanvasRenderer:
@@ -497,3 +498,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6494900144244206428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5326941325098951523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7612fb670b995164fb44f2d2f55d76d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameTagObj: {fileID: 2180051945656587253}
+  nameText: {fileID: 896208936916205884}
+  dialogueText: {fileID: 6723228030978270508}

@@ -5,7 +5,7 @@
 			<value>eunha_Voice</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{40cb6ce8-e81c-412b-877b-061b4ec9f19a}</destination>
@@ -72,9 +72,6 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{2b80515b-80a7-48c0-b4bb-6faedf66d71c}">
-		<property name="volume">
-			<value>-19</value>
-		</property>
 		<relationship name="effectChain">
 			<destination>{c01e9e36-cd88-487e-9edf-e4010d97c31a}</destination>
 		</relationship>
@@ -87,7 +84,7 @@
 	</object>
 	<object class="MultiSound" id="{44e5d5cf-daf8-4f2d-95ce-12055fd1989b}">
 		<relationship name="sounds">
-			<destination>{bd572bb7-a165-498e-8dc1-aea5a0440171}</destination>
+			<destination>{bcf5ae11-a38b-498d-9a71-77e797238b8c}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{1a8d41ef-f9c8-4b96-9d0c-d0941d942a04}">
@@ -99,20 +96,14 @@
 	<object class="MixerBusEffectChain" id="{c01e9e36-cd88-487e-9edf-e4010d97c31a}">
 		<relationship name="effects">
 			<destination>{c1c2b7c8-90ce-4d94-a920-87a5341130c9}</destination>
-			<destination>{f736ca45-df71-419f-9c9a-fcc1389623dd}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{1d92473f-fcfb-4b40-8c29-1da7c50be2a7}" />
-	<object class="SingleSound" id="{bd572bb7-a165-498e-8dc1-aea5a0440171}">
+	<object class="SingleSound" id="{bcf5ae11-a38b-498d-9a71-77e797238b8c}">
 		<relationship name="audioFile">
-			<destination>{77f5ed4f-5a37-402a-a421-5545df6252ee}</destination>
+			<destination>{ec607b97-13cb-4fa0-af22-f470ce8d2147}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusFader" id="{eb3b130f-5c9a-4eed-b0e0-51e7409e35dc}" />
 	<object class="MixerBusFader" id="{c1c2b7c8-90ce-4d94-a920-87a5341130c9}" />
-	<object class="PitchShifterEffect" id="{f736ca45-df71-419f-9c9a-fcc1389623dd}">
-		<property name="pitch">
-			<value>1.38999999</value>
-		</property>
-	</object>
 </objects>
