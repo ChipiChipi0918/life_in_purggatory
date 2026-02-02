@@ -1,5 +1,32 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5435479400132772590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM_judgment02
+  m_EditorClassIdentifier: 
+  Path: event:/BGM_judgment02
+  Guid:
+    Data1: -182736537
+    Data2: 1302219831
+    Data3: 933486245
+    Data4: 2039801830
+  Banks:
+  - {fileID: -925525731721845435}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-4541826960052089374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,10 +69,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639054683140640524
+  lastModified: 639056734724512047
   FileSizes:
   - Name: Desktop
-    Value: 1028
+    Value: 1126
   Exists: 1
 --- !u!114 &-925525731721845435
 MonoBehaviour:
@@ -62,10 +89,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 639054683151679153
+  lastModified: 639056734724476938
   FileSizes:
   - Name: Desktop
-    Value: 1021216
+    Value: 3274432
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -90,13 +117,15 @@ MonoBehaviour:
   - {fileID: 4169819893709066972}
   - {fileID: 2606992824668569623}
   - {fileID: 7258599793778436561}
+  - {fileID: 2574302234419922000}
+  - {fileID: -5435479400132772590}
   EditorParameters: []
   MasterBanks:
   - {fileID: 891229174712809751}
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639055783162700413
+  cacheTime: 639056734724512047
   SerializableEventsDict:
   - key: event:/eunha_Voice
     index: 0
@@ -106,6 +135,10 @@ MonoBehaviour:
     index: 2
   - key: event:/BGM_daily01
     index: 3
+  - key: event:/BGM_daily04
+    index: 4
+  - key: event:/BGM_judgment02
+    index: 5
 --- !u!114 &891229174712809751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,11 +154,38 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639054683140630465
+  lastModified: 639056734724502002
   FileSizes:
   - Name: Desktop
     Value: 1074
   Exists: 1
+--- !u!114 &2574302234419922000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM_daily04
+  m_EditorClassIdentifier: 
+  Path: event:/BGM_daily04
+  Guid:
+    Data1: 879945456
+    Data2: 1306938510
+    Data3: -976734063
+    Data4: -1594133078
+  Banks:
+  - {fileID: -925525731721845435}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &2606992824668569623
 MonoBehaviour:
   m_ObjectHideFlags: 0

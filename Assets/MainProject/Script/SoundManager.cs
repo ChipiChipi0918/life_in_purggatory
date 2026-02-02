@@ -16,6 +16,8 @@ public class SoundManager : MonoBehaviour
     public EventReference daily_01;
     public EventReference daily_04;
 
+    public EventReference judgment_02;
+
     // 현재 재생 중인 BGM 인스턴스를 저장할 변수
     private EventInstance bgmInstance;
 
@@ -45,6 +47,16 @@ public class SoundManager : MonoBehaviour
     public void BgmDaily_01()
     {
         PlayBGM(daily_01);
+    }
+
+    public void BgmDaily_04()
+    {
+        PlayBGM(daily_04);
+    }
+
+    public void BgmJudgment_02()
+    {
+        PlayBGM(judgment_02);
     }
 
     public void PlayBGM(EventReference bgmEvent)

@@ -623,8 +623,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         DialogueDirector.instance.CharacterState(line.speaker, line.charState);
 
 
-        // 4. 배경 업데이트
+        // 4. 배경 & BGM 업데이트
         BackgroundManager.instance.DailyMapUpdate(line.background);
+
+        if(line.bgm=="None")
+            SoundManager.instance.StopBGM();
+        else if(line.bgm== "bgm_daily01")
+            SoundManager.instance.BgmDaily_01();
+
 
         // 5 로그 박스 생성
         GameObject logue = Instantiate(logueBox,logueParent.transform);

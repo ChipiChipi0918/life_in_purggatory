@@ -3006,12 +3006,19 @@ MonoBehaviour:
     Path: event:/Ui_Sound1
   daily_01:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 169968390
+      Data2: 1194599477
+      Data3: -600441422
+      Data4: 1600553429
+    Path: event:/BGM_daily01
   daily_04:
+    Guid:
+      Data1: 879945456
+      Data2: 1306938510
+      Data3: -976734063
+      Data4: -1594133078
+    Path: event:/BGM_daily04
+  judgment_02:
     Guid:
       Data1: 0
       Data2: 0
@@ -16189,10 +16196,11 @@ MonoBehaviour:
   camTransform: {fileID: 519420032}
   argumentEvidenceUi: {fileID: 2121797298}
   backUi: {fileID: 1998018689}
-  hotelInformation: {fileID: 1270877367}
-  isHotelInformation: 0
   logue: {fileID: 2067059437}
   isLogue: 0
+  hotelInformation: {fileID: 1270877367}
+  isHotelInformation: 0
+  allUi: {fileID: 5432504978678866526}
   mapPointOut: {fileID: 1182472132}
   isMapPointOut: 0
   argumentStartUi: {fileID: 1339710087}

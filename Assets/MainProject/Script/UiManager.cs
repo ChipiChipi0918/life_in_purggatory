@@ -19,13 +19,17 @@ public class UiManager : MonoBehaviour
     [Header("Back Ui")]
     public CanvasGroup backUi;
 
-    [Header("Hotel information")]
+    [Header("로그")] //f1
+    public GameObject logue;
+    public bool isLogue;
+
+    [Header("Hotel information")] //f2
     public RectTransform hotelInformation;
     public bool isHotelInformation;
 
-    [Header("로그")]
-    public GameObject logue;
-    public bool isLogue;
+    [Header("Ui Off")] //f3
+    public GameObject allUi; //캔버스
+    private bool isUiOff;
 
     [Header("맵 지적")]
     public RectTransform mapPointOut;
@@ -51,15 +55,26 @@ public class UiManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F1) && isUiAnim == false)
+        {
+            isLogue = !isLogue;
+            StartCoroutine(LogueCoroutine(isLogue));
+        }
         if (Input.GetKeyDown(KeyCode.F2) && isUiAnim==false)
         {
             isHotelInformation = !isHotelInformation;
             StartCoroutine(HotelInformationCoroutine(isHotelInformation));
         }
-        if(Input.GetKeyDown(KeyCode.F1) && isUiAnim == false)
+        if (Input.GetKeyDown(KeyCode.F3) && isUiOff==false)
         {
-            isLogue = !isLogue;
-            StartCoroutine(LogueCoroutine(isLogue));
+            Debug.Log("DW");
+            isUiOff = true;
+            allUi.SetActive(false);
+        }
+        if ((Input.GetKeyDown(KeyCode.F3) || Input.GetMouseButtonDown(0)) && isUiOff==true)
+        {
+            isUiOff = false;
+            allUi.SetActive(true);
         }
     }
 
