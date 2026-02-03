@@ -622,8 +622,19 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         DialogueDirector.instance.CharacterState(line.speaker, line.charState);
 
+        // 4. 캐릭터 켜기 & 끄기
+        if (line.charOnList != null && line.charOnList.Count > 0)
+        {
+            DialogueDirector.instance.CharacterOn(line.charOnList);
+        }
 
-        // 4. 배경 & BGM 업데이트
+        if (line.charOffList != null && line.charOffList.Count > 0)
+        {
+            DialogueDirector.instance.CharacterOff(line.charOffList);
+        }
+
+
+        // 5. 배경 & BGM 업데이트
         BackgroundManager.instance.DailyMapUpdate(line.background);
 
         if(line.bgm=="None")
@@ -632,11 +643,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             SoundManager.instance.BgmDaily_01();
 
 
-        // 5 로그 박스 생성
+        // 6 로그 박스 생성
         GameObject logue = Instantiate(logueBox,logueParent.transform);
         logue.GetComponent<LogueBox>().LogueBoxUpdate(line.speaker,line.text);
 
-        // 6. 타이핑 시작
+        // 7. 타이핑 시작
         if (typingRoutine != null) StopCoroutine(typingRoutine);
         typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text, line.textTime));
     }

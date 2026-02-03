@@ -69,12 +69,12 @@ public class UiManager : MonoBehaviour
         {
             Debug.Log("DW");
             isUiOff = true;
-            allUi.SetActive(false);
+            allUi.gameObject.SetActive(false);
         }
         if ((Input.GetKeyDown(KeyCode.F3) || Input.GetMouseButtonDown(0)) && isUiOff==true)
         {
             isUiOff = false;
-            allUi.SetActive(true);
+            allUi.gameObject.SetActive(true);
         }
     }
 

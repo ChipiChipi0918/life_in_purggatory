@@ -21,19 +21,28 @@ public class DialogueLine
 {
     public string speaker; //1
     public string text; //2
+
     public Vector3 characterPos; //3
     public string charState;//4
-    public int effect;//5
-    //6
-    //7
-    public float textTime; //8
-    public string camFormat; //9
-    public string addEvidence; //10
-    public string showEvidence; //11
 
+    public string charOn;//5
+    public string charOff;//6
+    public List<string> charOnList = new List<string>();
+    public List<string> charOffList = new List<string>();
 
-    public string background; //15
-    public string bgm; //16
+    public int effect;//7
+
+    //8
+    //9
+
+    public float textTime; //10
+    public string camFormat; //11
+
+    public string addEvidence; //12
+    public string showEvidence; //13
+
+    public string background; //17
+    public string bgm; //18
     public DialogueType type;
 
     public bool isChoice;
@@ -116,16 +125,18 @@ public static class CSVParser
             }
             #endregion //3
             string charState = cols[3].Trim().Replace("\\n", "\n");//4
-            //5-int effect
-            //6 효과음 들어갈 예정
-            //7 미정
-            //8-float 논의 텍스트 시간(길이)
-            string camFormat = cols.Length > 8 ? cols[8].Trim().Replace("\r", "") : "";//9
-            string addEvidence = cols.Length > 9 ? cols[9].Trim().Replace("\r", "") : "";//10
-            string showEvidence = cols.Length > 10 ? cols[10].Trim().Replace("\r", "") : "";//11
+            string charOn = cols[4].Trim().Replace("\\n", "\n");//5
+            string charOff = cols[5].Trim().Replace("\\n", "\n");//6
+            //7-int effect
+            //8 효과음 들어갈 예정
+            //9 미정
+            //10-float 논의 텍스트 시간(길이)
+            string camFormat = cols.Length > 10 ? cols[10].Trim().Replace("\r", "") : "";//11
+            string addEvidence = cols.Length > 11 ? cols[11].Trim().Replace("\r", "") : "";//12
+            string showEvidence = cols.Length > 12 ? cols[12].Trim().Replace("\r", "") : "";//13
 
-            string background = cols.Length > 14 ? cols[14].Trim().Replace("\n", "") : "";//15
-            string bgm = cols.Length > 15 ? cols[15].Trim().Replace("\n", "") : "";//16
+            string background = cols.Length > 16 ? cols[16].Trim().Replace("\n", "") : "";//17
+            string bgm = cols.Length > 17 ? cols[17].Trim().Replace("\n", "") : "";//18
             // ============================
             // 🔥 선택지 처리
             // ============================
@@ -139,12 +150,15 @@ public static class CSVParser
                     text = "",                 // 텍스트 없음
                     characterPos = charPos,
                     charState = charState,
+                    charOn = charOn,
+                    charOff = charOff,
                     type = DialogueType.Dialogue,
                     isChoice = true,
                     choices = new List<string>(),
                     background = "",
                     bgm = "",
                 };
+
 
                 // 🔥 2열 텍스트: 선택1/선택2/선택3
                 string[] rawChoices = text.Split('/');
@@ -253,6 +267,8 @@ public static class CSVParser
                 text = text,
                 characterPos = charPos,
                 charState = charState,
+                charOn = charOn,
+                charOff = charOff,
                 camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue,
                 addEvidence = addEvidence,
@@ -261,9 +277,33 @@ public static class CSVParser
                 bgm = bgm
             };
 
-            if (cols.Length >= 4 && int.TryParse(cols[4], out int type)) //5
+            // 🔥 [추가] charOn 문자열 리스트화
+            if (!string.IsNullOrEmpty(charOn))
+            {
+                string[] names = charOn.Split('/');
+                foreach (string name in names)
+                {
+                    string trimmedName = name.Trim();
+                    if (!string.IsNullOrEmpty(trimmedName))
+                        line.charOnList.Add(trimmedName);
+                }
+            }
+
+            // 🔥 [추가] charOff 문자열 리스트화
+            if (!string.IsNullOrEmpty(charOff))
+            {
+                string[] names = charOff.Split('/');
+                foreach (string name in names)
+                {
+                    string trimmedName = name.Trim();
+                    if (!string.IsNullOrEmpty(trimmedName))
+                        line.charOffList.Add(trimmedName);
+                }
+            }
+
+            if (cols.Length >= 6 && int.TryParse(cols[6], out int type)) //7
                 line.effect = type;
-            if (cols.Length >= 7 && float.TryParse(cols[7], out float dur)) //8
+            if (cols.Length >= 9 && float.TryParse(cols[9], out float dur)) //10
                 line.textTime = dur;
 
             if (inArgument)
