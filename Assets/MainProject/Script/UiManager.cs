@@ -13,8 +13,9 @@ public class UiManager : MonoBehaviour
 
     public Transform camTransform;
 
-    [Header("논의 증거탭")]
+    [Header("논의 증거탭 & 논의 시간")]
     public RectTransform argumentEvidenceUi;
+    public RectTransform argumentTimeUi;
 
     [Header("Back Ui")]
     public CanvasGroup backUi;
@@ -38,6 +39,9 @@ public class UiManager : MonoBehaviour
     [Header("논의 시작/종료")]
     public Transform argumentStartUi;
     public Transform argumentEndUi;
+
+    public RectTransform argumentLineUp;
+    public RectTransform argumentLineDown;
 
     [Header("Shake")]
     public bool usingShake = false;
@@ -211,11 +215,19 @@ public class UiManager : MonoBehaviour
     {
         if (On)
         {
-            argumentEvidenceUi.DOAnchorPosX(576f, 1).SetUpdate(false);
+            argumentEvidenceUi.DOAnchorPosX(336, 1).SetUpdate(false);
+            argumentTimeUi.DOAnchorPosX(-111,1).SetUpdate(false);
+
+            argumentLineUp.DOAnchorPosY(0, 1).SetUpdate(true);
+            argumentLineDown.DOAnchorPosY(0, 1).SetUpdate(true);
         }
         else
         {
-            argumentEvidenceUi.DOAnchorPosX(760f, 1).SetUpdate(true);
+            argumentEvidenceUi.DOAnchorPosX(548, 1).SetUpdate(true);
+            argumentTimeUi.DOAnchorPosX(268,1).SetUpdate(true);
+
+            argumentLineUp.DOAnchorPosY(75, 1).SetUpdate(true);
+            argumentLineDown.DOAnchorPosY(-75, 1).SetUpdate(true);
         }
     }
 

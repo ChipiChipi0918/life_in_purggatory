@@ -431,7 +431,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         cg.blocksRaycasts = false;
 
         // 카메라 이동 대기 (이전 화자와 다르면 좀 더 기다림)
-        yield return new WaitForSeconds(0.2f); // 단순화
+        yield return new WaitForSeconds(0.45f); // 단순화
 
         // 페이드 인
         float elapsed = 0f;
