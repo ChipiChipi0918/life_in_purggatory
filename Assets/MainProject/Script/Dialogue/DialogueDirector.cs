@@ -25,7 +25,7 @@ public class DialogueDirector : MonoBehaviour
         { "유설희", (-60f, "#8F8F8F", null) },
         { "다니엘", (-40f, "#E7A300", null) },
         { "정희영", (-20f, "#9B2BFF", null) },
-        { "장현우", (20f, "#CB1B00", null) },
+        { "강현수", (20f, "#CB1B00", null) },
         { "천주연", (40f, "#FFE945", null) },
         { "정태준", (60f, "#1572FF", null) },
         { "서진랑", (80f, "#5E3200", null) },

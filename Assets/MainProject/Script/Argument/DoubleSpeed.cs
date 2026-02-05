@@ -10,7 +10,7 @@ public class DoubleSpeed : MonoBehaviour
     public GameObject speedLine2;
 
     [Header("Settings")]
-    private const int FRAME_INTERVAL = 26; // 스킵 속도 조절용 프레임 간격
+    public  int FRAME_INTERVAL = 26; // 스킵 속도 조절용 프레임 간격
     private int frameCount = 0;
 
     // DoubleSpeed.cs 수정본

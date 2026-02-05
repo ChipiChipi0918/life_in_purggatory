@@ -22678,6 +22678,7 @@ MonoBehaviour:
   doubleSpeedUi: {fileID: 1045538306}
   speedLine1: {fileID: 393254016}
   speedLine2: {fileID: 1150063253}
+  FRAME_INTERVAL: 1
 --- !u!1 &1270877366
 GameObject:
   m_ObjectHideFlags: 0
@@ -41295,7 +41296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loader: {fileID: 7583688865952818402}
   argumentManager: {fileID: 1260226110}
-  currentPhase: 1
+  currentPhase: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

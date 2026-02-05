@@ -67,7 +67,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         { "유설희", (-60f, "#8F8F8F") },
         { "다니엘", (-40f, "#E7A300") },
         { "정희영", (-20f, "#9B2BFF") },
-        { "장현우", (20f, "#CB1B00") },
+        { "강현수", (20f, "#CB1B00") },
         { "천주연", (40f, "#FFE945") },
         { "정태준", (60f, "#1572FF") },
         { "서진랑", (80f, "#5E3200") },
