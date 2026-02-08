@@ -215,7 +215,7 @@ public class UiManager : MonoBehaviour
     {
         if (On)
         {
-            argumentEvidenceUi.DOAnchorPosX(336, 1).SetUpdate(false);
+            argumentEvidenceUi.DOAnchorPosX(376, 1).SetUpdate(false);
             argumentTimeUi.DOAnchorPosX(-111,1).SetUpdate(false);
 
             argumentLineUp.DOAnchorPosY(0, 1).SetUpdate(true);

@@ -62,15 +62,17 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     // 캐릭터 설정 데이터 (하드코딩 제거용)
     private readonly Dictionary<string, (float camPos, string colorCode)> characterConfig = new Dictionary<string, (float, string)>()
     {
-        { "유은하", (0f, "#FFE2A0") },
-        { "백현",   (-80f, "#0E432D") },
-        { "유설희", (-60f, "#8F8F8F") },
+        { "엘리나", (0f, "#FFE2A0") },
+        { "시몬",   (-80f, "#0E432D") },
+        { "실비아", (-60f, "#8F8F8F") },
         { "다니엘", (-40f, "#E7A300") },
-        { "정희영", (-20f, "#9B2BFF") },
-        { "강현수", (20f, "#CB1B00") },
-        { "천주연", (40f, "#FFE945") },
-        { "정태준", (60f, "#1572FF") },
-        { "서진랑", (80f, "#5E3200") },
+        { "넬리", (-20f, "#9B2BFF") },
+        { "에릭", (20f, "#CB1B00") },
+        { "셀린", (40f, "#FFE945") },
+        { "로넌", (60f, "#1572FF") },
+        { "카를로스", (80f, "#5E3200") },
+        { "리디아", (-80f, "#EAEAEA") },
+        { "리네", (100f, "#EAEAEA") },
         { "Default", (0f, "#D9D9D9") } // 기본값
     };
     #endregion
@@ -262,7 +264,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
                     // 재시작 전 안내 대사 출력
                     ShowDialogue(new DialogueLine
                     {
-                        speaker = "유은하",
+                        speaker = "엘리나",
                         text = "(다시 한번 모두의 의견을 들어보자.)",
                         type = DialogueType.Dialogue
                     });
@@ -904,7 +906,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
             DialogueLine wrongLine = new DialogueLine
             {
-                speaker = "유은하",
+                speaker = "엘리나",
                 text = "(이건 아닌 것 같아... 다시 한번 생각해보자.)",
                 type = DialogueType.Dialogue
             };
@@ -969,7 +971,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
             DialogueLine wrongLine = new DialogueLine
             {
-                speaker = "유은하",
+                speaker = "엘리나",
                 text = "(여기는 아닌가봐... 다시 한번 생각해보자.)",
                 type = DialogueType.Dialogue
             };

@@ -247,7 +247,7 @@ public static class CSVParser
 
                 currentBlock.exitLine = new DialogueLine
                 {
-                    speaker = "유은하",
+                    speaker = "엘리나",
                     text = text,
                     type = DialogueType.Dialogue,
                     textTime = 0

@@ -14,23 +14,36 @@ public class DialogueDirector : MonoBehaviour
     [SerializeField] private GameObject dialoguePanel;
 
     [Header("Character List (Assign in Inspector)")]
-    public List<GameObject> character = new List<GameObject>();
+    public List<Character> character = new List<Character>();
+
+    [System.Serializable]
+    public class Character
+    {
+        public GameObject body;
+        public GameObject eyes;
+        public GameObject mouth;
+    }
 
     // 튜플 구조: (카메라X위치, 이름색상코드, 실제게임오브젝트)
     public Dictionary<string, (float camPos, string colorCode, GameObject obj)> characterConfig =
         new Dictionary<string, (float, string, GameObject)>()
     {
-        { "유은하", (0f, "#FFE2A0", null) },
-        { "백현",   (-80f, "#0E432D", null) },
-        { "유설희", (-60f, "#8F8F8F", null) },
-        { "다니엘", (-40f, "#E7A300", null) },
-        { "정희영", (-20f, "#9B2BFF", null) },
-        { "강현수", (20f, "#CB1B00", null) },
-        { "천주연", (40f, "#FFE945", null) },
-        { "정태준", (60f, "#1572FF", null) },
-        { "서진랑", (80f, "#5E3200", null) },
-        { "여세나", (100f, "#A0ECC1", null) },
-        { "Default", (0f, "#D9D9D9", null) }
+        { "리네", (100f, "#EAEAEA",null) },
+
+        { "다니엘", (-40f, "#E7A300",null) },
+        { "시몬",   (-80f, "#0E432D",null) },
+
+        { "셀린", (40f, "#FFE945",null) },
+        { "카를로스", (80f, "#5E3200",null) },
+        { "로넌", (60f, "#1572FF",null) },
+
+        { "리디아", (-100f, "#AFFFC7",null) },
+        { "넬리", (-20f, "#9B2BFF",null) },
+        { "에릭", (20f, "#CB1B00",null) },
+
+        { "엘리나", (0f, "#FFE2A0",null) },
+        { "실비아", (-60f, "#8F8F8F",null) },
+        { "Default", (0f, "#D9D9D9",null) } // 기본값
     };
 
     private void Awake()
@@ -42,13 +55,21 @@ public class DialogueDirector : MonoBehaviour
     // 리스트의 오브젝트들을 이름에 맞춰 딕셔너리에 매칭
     private void InitCharacterDictionary()
     {
-        foreach (GameObject go in character)
+        foreach (Character ch in character)
         {
-            if (go != null && characterConfig.ContainsKey(go.name))
+            if (ch == null) continue;
+
+            GameObject[] parts = { ch.body, ch.eyes, ch.mouth };
+
+            foreach (var go in parts)
             {
-                var config = characterConfig[go.name];
-                config.obj = go;
-                characterConfig[go.name] = config;
+                if (go == null) continue;
+
+                if (characterConfig.TryGetValue(go.name, out var config))
+                {
+                    config.obj = go;
+                    characterConfig[go.name] = config;
+                }
             }
         }
     }
@@ -108,12 +129,12 @@ public class DialogueDirector : MonoBehaviour
         {
             if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
             {
+                Debug.Log(characterConfig[name].obj + " 켜짐");
                 ChatactorOnOff(characterConfig[name].obj, true);
             }
         }
     }
 
-    // 🔥 [수정] 리스트를 받아 캐릭터 끄기
     public void CharacterOff(List<string> names)
     {
         if (names == null || names.Count == 0) return;
@@ -122,22 +143,27 @@ public class DialogueDirector : MonoBehaviour
         {
             if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
             {
+                Debug.Log(characterConfig[name].obj + " 꺼짐");
                 ChatactorOnOff(characterConfig[name].obj, false);
             }
         }
     }
 
-    private void ChatactorOnOff(GameObject target ,bool a)
+    private void ChatactorOnOff(GameObject target, bool a)
     {
-        if (a)
+        if (target == null) return;
+
+        var renderers = target.GetComponentsInChildren<SpriteRenderer>();
+
+        float alpha = a ? 1f : 0f;
+
+        foreach (var sr in renderers)
         {
-            target.gameObject.GetComponent<SpriteRenderer>().DOFade(1f, 0.35f);
-        }
-        else
-        {
-            target.gameObject.GetComponent<SpriteRenderer>().DOFade(0f, 0.35f);
+            sr.DOKill();
+            sr.DOFade(alpha, 0.35f);
         }
     }
+
     #endregion
 
     #region UI & Effects
