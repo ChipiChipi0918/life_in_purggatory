@@ -45,6 +45,10 @@ public class BackgroundManager : MonoBehaviour
         {
             nomalBackground.GetComponent<SpriteRenderer>().sprite = background[3];
         }
+        else if (backgroundName == "Yard")
+        {
+            nomalBackground.GetComponent<SpriteRenderer>().sprite = background[4];
+        }
     }
 
 }
