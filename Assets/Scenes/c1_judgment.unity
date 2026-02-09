@@ -32050,39 +32050,102 @@ MonoBehaviour:
   nameText: {fileID: 2338959685317133056}
   dialoguePanel: {fileID: 936172709}
   character:
-  - body: {fileID: 2084778425}
-    eyes: {fileID: 1884288600}
-    mouth: {fileID: 5931463}
-  - body: {fileID: 1678638196}
-    eyes: {fileID: 1436167411}
-    mouth: {fileID: 1587510292}
-  - body: {fileID: 681016814}
-    eyes: {fileID: 2037457542}
-    mouth: {fileID: 1900317221}
-  - body: {fileID: 1212913645}
-    eyes: {fileID: 90299873}
-    mouth: {fileID: 1108125876}
-  - body: {fileID: 575303258}
-    eyes: {fileID: 610634496}
-    mouth: {fileID: 1667425918}
-  - body: {fileID: 1086081578}
-    eyes: {fileID: 1104207699}
-    mouth: {fileID: 1070278800}
-  - body: {fileID: 2011229077}
-    eyes: {fileID: 176798003}
-    mouth: {fileID: 1780023590}
-  - body: {fileID: 797752784}
-    eyes: {fileID: 1032355263}
-    mouth: {fileID: 1804324757}
-  - body: {fileID: 1190382142}
-    eyes: {fileID: 639163667}
-    mouth: {fileID: 124392853}
-  - body: {fileID: 1768464141}
-    eyes: {fileID: 1967419937}
-    mouth: {fileID: 475672733}
-  - body: {fileID: 1886256103}
-    eyes: {fileID: 1695062896}
-    mouth: {fileID: 2041671097}
+  - name: "\uB9AC\uB124"
+    bodyRenderer: {fileID: 2084778427}
+    eyesRenderer: {fileID: 1884288602}
+    mouthRenderer: {fileID: 5931465}
+  - name: "\uB2E4\uB2C8\uC5D8"
+    bodyRenderer: {fileID: 1678638198}
+    eyesRenderer: {fileID: 1436167413}
+    mouthRenderer: {fileID: 1587510294}
+  - name: "\uC2DC\uBAAC"
+    bodyRenderer: {fileID: 681016816}
+    eyesRenderer: {fileID: 2037457544}
+    mouthRenderer: {fileID: 1900317223}
+  - name: "\uC140\uB9B0"
+    bodyRenderer: {fileID: 1212913647}
+    eyesRenderer: {fileID: 90299875}
+    mouthRenderer: {fileID: 1108125878}
+  - name: "\uCE74\uB97C\uB85C\uC2A4"
+    bodyRenderer: {fileID: 575303260}
+    eyesRenderer: {fileID: 610634498}
+    mouthRenderer: {fileID: 1667425920}
+  - name: "\uB85C\uB10C"
+    bodyRenderer: {fileID: 1086081580}
+    eyesRenderer: {fileID: 1104207701}
+    mouthRenderer: {fileID: 1070278802}
+  - name: "\uB9AC\uB514\uC544"
+    bodyRenderer: {fileID: 2011229079}
+    eyesRenderer: {fileID: 176798005}
+    mouthRenderer: {fileID: 1780023592}
+  - name: "\uB12C\uB9AC"
+    bodyRenderer: {fileID: 797752786}
+    eyesRenderer: {fileID: 1032355265}
+    mouthRenderer: {fileID: 1804324759}
+  - name: "\uC5D0\uB9AD"
+    bodyRenderer: {fileID: 1190382144}
+    eyesRenderer: {fileID: 639163669}
+    mouthRenderer: {fileID: 124392855}
+  - name: "\uC5D8\uB9AC\uB098"
+    bodyRenderer: {fileID: 1768464143}
+    eyesRenderer: {fileID: 1967419939}
+    mouthRenderer: {fileID: 475672735}
+  - name: "\uC2E4\uBE44\uC544"
+    bodyRenderer: {fileID: 1886256105}
+    eyesRenderer: {fileID: 1695062898}
+    mouthRenderer: {fileID: 2041671099}
+  characterState:
+  - characterName: "\uB9AC\uB124"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uB2E4\uB2C8\uC5D8"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uC2DC\uBAAC"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uC140\uB9B0"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uCE74\uB97C\uB85C\uC2A4"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uB85C\uB10C"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uB9AC\uB514\uC544"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uB12C\uB9AC"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uC5D0\uB9AD"
+    body: []
+    eyes: []
+    mouth: []
+  - characterName: "\uC5D8\uB9AC\uB098"
+    body:
+    - {fileID: 21300000, guid: d5e9e0f989b598e4e986ac17bbdaa3aa, type: 3}
+    - {fileID: 21300000, guid: 9513d04f43590844386769d7d4be0e68, type: 3}
+    eyes:
+    - {fileID: 21300000, guid: 74f3944e6ed962d41871f57178c86372, type: 3}
+    - {fileID: 21300000, guid: 4c9e8d6b4945d3c4fad296817c13b38c, type: 3}
+    - {fileID: 21300000, guid: c928fbdde1f693d4bb62c619c64be9c8, type: 3}
+    mouth:
+    - {fileID: 21300000, guid: d7faf432fcb6c2340bbaac35a91a92dd, type: 3}
+    - {fileID: 21300000, guid: 8646c527aed5ea34e8dea9110fd62091, type: 3}
+  - characterName: "\uC2E4\uBE44\uC544"
+    body: []
+    eyes: []
+    mouth: []
 --- !u!1 &1596851662
 GameObject:
   m_ObjectHideFlags: 0

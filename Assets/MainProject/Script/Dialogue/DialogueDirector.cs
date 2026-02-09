@@ -13,38 +13,33 @@ public class DialogueDirector : MonoBehaviour
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private GameObject dialoguePanel;
 
-    [Header("Character List (Assign in Inspector)")]
-    public List<Character> character = new List<Character>();
-
     [System.Serializable]
-    public class Character
+    public class CharacterObjClass
     {
-        public GameObject body;
-        public GameObject eyes;
-        public GameObject mouth;
+        public string name; // 캐릭터 이름 (딕셔너리 매칭용)
+        public SpriteRenderer bodyRenderer; // Root 역할을 겸함
+        public SpriteRenderer eyesRenderer;
+        public SpriteRenderer mouthRenderer;
     }
 
-    // 튜플 구조: (카메라X위치, 이름색상코드, 실제게임오브젝트)
-    public Dictionary<string, (float camPos, string colorCode, GameObject obj)> characterConfig =
-        new Dictionary<string, (float, string, GameObject)>()
+    [System.Serializable]
+    public class CharacterStateClass
     {
-        { "리네", (100f, "#EAEAEA",null) },
+        public string characterName;
+        public List<Sprite> body;
+        public List<Sprite> eyes;
+        public List<Sprite> mouth;
+    }
 
-        { "다니엘", (-40f, "#E7A300",null) },
-        { "시몬",   (-80f, "#0E432D",null) },
+    [Header("일상 파트 캐릭터 리스트")]
+    public List<CharacterObjClass> character = new List<CharacterObjClass>();
 
-        { "셀린", (40f, "#FFE945",null) },
-        { "카를로스", (80f, "#5E3200",null) },
-        { "로넌", (60f, "#1572FF",null) },
+    [Header("캐릭터 몸짓, 표정 스프라이트 리스트")]
+    public List<CharacterStateClass> characterState = new List<CharacterStateClass>();
 
-        { "리디아", (-100f, "#AFFFC7",null) },
-        { "넬리", (-20f, "#9B2BFF",null) },
-        { "에릭", (20f, "#CB1B00",null) },
-
-        { "엘리나", (0f, "#FFE2A0",null) },
-        { "실비아", (-60f, "#8F8F8F",null) },
-        { "Default", (0f, "#D9D9D9",null) } // 기본값
-    };
+    // 통합 데이터 맵: (카메라X위치, 이름색상코드, 오브젝트참조, 상태데이터참조)
+    public Dictionary<string, (float camPos, string colorCode, CharacterObjClass obj, CharacterStateClass state)> characterConfig
+        = new Dictionary<string, (float, string, CharacterObjClass, CharacterStateClass)>();
 
     private void Awake()
     {
@@ -52,25 +47,25 @@ public class DialogueDirector : MonoBehaviour
         InitCharacterDictionary();
     }
 
-    // 리스트의 오브젝트들을 이름에 맞춰 딕셔너리에 매칭
     private void InitCharacterDictionary()
     {
-        foreach (Character ch in character)
+        // 1. 기본 설정값 세팅
+        var baseData = new Dictionary<string, (float pos, string color)>()
         {
-            if (ch == null) continue;
+            { "리네", (100f, "#EAEAEA") }, { "다니엘", (-40f, "#E7A300") },
+            { "시몬", (-80f, "#0E432D") }, { "셀린", (40f, "#FFE945") },
+            { "카를로스", (80f, "#5E3200") }, { "로넌", (60f, "#1572FF") },
+            { "리디아", (-100f, "#AFFFC7") }, { "넬리", (-20f, "#9B2BFF") },
+            { "에릭", (20f, "#CB1B00") }, { "엘리나", (0f, "#FFE2A0") },
+            { "실비아", (-60f, "#8F8F8F") }, { "Default", (0f, "#D9D9D9") }
+        };
 
-            GameObject[] parts = { ch.body, ch.eyes, ch.mouth };
-
-            foreach (var go in parts)
-            {
-                if (go == null) continue;
-
-                if (characterConfig.TryGetValue(go.name, out var config))
-                {
-                    config.obj = go;
-                    characterConfig[go.name] = config;
-                }
-            }
+        // 2. 리스트에 있는 데이터를 이름 기준으로 매칭하여 캐싱
+        foreach (var data in baseData)
+        {
+            var objRef = character.Find(x => x.name == data.Key);
+            var stateRef = characterState.Find(x => x.characterName == data.Key);
+            characterConfig[data.Key] = (data.Value.pos, data.Value.color, objRef, stateRef);
         }
     }
 
@@ -95,75 +90,66 @@ public class DialogueDirector : MonoBehaviour
 
     public void MoveCharacter(string name, float duration, Vector3 targetPos)
     {
-        if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
+        if (characterConfig.TryGetValue(name, out var data) && data.obj != null)
         {
-            Debug.Log($"{name} 이동: {targetPos}");
-            GameObject target = characterConfig[name].obj;
-
-            // 기존 애니메이션 중복 방지를 위해 Kill 후 실행
-            target.transform.DOKill();
-            target.transform.DOLocalMove(targetPos, duration).SetEase(Ease.OutQuad);
+            // bodyRenderer가 Root이므로 이를 이동시키면 자식들도 함께 이동
+            Transform t = data.obj.bodyRenderer.transform;
+            t.DOKill();
+            t.DOLocalMove(targetPos, duration).SetEase(Ease.OutQuad);
         }
     }
 
-    public void CharacterState(string name, string state)
+    /// <summary>
+    /// 캐릭터 표정 변경 (state: [몸, 눈, 입] 인덱스 리스트)
+    /// </summary>
+    public void CharacterState(string name, List<string> state)
     {
-        if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
-        {
-            Debug.Log($"{name} 상태 변경: {state}");
-            GameObject target = characterConfig[name].obj;
+        if (!characterConfig.TryGetValue(name, out var data) || data.obj == null || data.state == null) return;
 
-            if(state == "Nomal")
-            {
-                //기본이라 뭐 없음
-            }
-            //추후 표정, 행동 추가 예정
+        // 각 파트별 스프라이트 교체 로직
+        SetPartSprite(data.obj.bodyRenderer, data.state.body, state, 0);
+        SetPartSprite(data.obj.eyesRenderer, data.state.eyes, state, 1);
+        SetPartSprite(data.obj.mouthRenderer, data.state.mouth, state, 2);
+    }
+
+    private void SetPartSprite(SpriteRenderer sr, List<Sprite> spriteList, List<string> indices, int listIdx)
+    {
+        if (sr == null || indices.Count <= listIdx) return;
+        if (int.TryParse(indices[listIdx], out int spriteIdx))
+        {
+            if (spriteIdx >= 0 && spriteIdx < spriteList.Count)
+                sr.sprite = spriteList[spriteIdx];
         }
     }
 
     public void CharacterOn(List<string> names)
     {
-        if (names == null || names.Count == 0) return;
-
+        if (names == null) return;
         foreach (string name in names)
-        {
-            if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
-            {
-                Debug.Log(characterConfig[name].obj + " 켜짐");
-                ChatactorOnOff(characterConfig[name].obj, true);
-            }
-        }
+            if (characterConfig.TryGetValue(name, out var data)) ChatactorOnOff(data.obj, true);
     }
 
     public void CharacterOff(List<string> names)
     {
-        if (names == null || names.Count == 0) return;
-
+        if (names == null) return;
         foreach (string name in names)
-        {
-            if (characterConfig.ContainsKey(name) && characterConfig[name].obj != null)
-            {
-                Debug.Log(characterConfig[name].obj + " 꺼짐");
-                ChatactorOnOff(characterConfig[name].obj, false);
-            }
-        }
+            if (characterConfig.TryGetValue(name, out var data)) ChatactorOnOff(data.obj, false);
     }
 
-    private void ChatactorOnOff(GameObject target, bool a)
+    private void ChatactorOnOff(CharacterObjClass target, bool isOn)
     {
         if (target == null) return;
+        float alpha = isOn ? 1f : 0f;
 
-        var renderers = target.GetComponentsInChildren<SpriteRenderer>();
-
-        float alpha = a ? 1f : 0f;
-
+        // 본체, 눈, 입 모두 페이드 처리
+        var renderers = new[] { target.bodyRenderer, target.eyesRenderer, target.mouthRenderer };
         foreach (var sr in renderers)
         {
+            if (sr == null) continue;
             sr.DOKill();
             sr.DOFade(alpha, 0.35f);
         }
     }
-
     #endregion
 
     #region UI & Effects

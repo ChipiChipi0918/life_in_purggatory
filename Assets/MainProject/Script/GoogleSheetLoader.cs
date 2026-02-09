@@ -24,6 +24,7 @@ public class DialogueLine
 
     public Vector3 characterPos; //3
     public string charState;//4
+    public List<string> charStateList = new List<string>();
 
     public string charOn;//5
     public string charOff;//6
@@ -276,6 +277,18 @@ public static class CSVParser
                 background = background,
                 bgm = bgm
             };
+
+            // 🔥 [추가] charOn 문자열 리스트화
+            if (!string.IsNullOrEmpty(charState))
+            {
+                string[] names = charState.Split('/');
+                foreach (string name in names)
+                {
+                    string trimmedName = name.Trim();
+                    if (!string.IsNullOrEmpty(trimmedName))
+                        line.charStateList.Add(trimmedName);
+                }
+            }
 
             // 🔥 [추가] charOn 문자열 리스트화
             if (!string.IsNullOrEmpty(charOn))

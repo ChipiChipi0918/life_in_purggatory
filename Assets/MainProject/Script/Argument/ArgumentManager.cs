@@ -622,7 +622,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if(line.characterPos!=Vector3.zero)
             DialogueDirector.instance.MoveCharacter(line.speaker, 1 ,line.characterPos);
 
-        DialogueDirector.instance.CharacterState(line.speaker, line.charState);
+        DialogueDirector.instance.CharacterState(line.speaker, line.charStateList);
 
         // 4. 캐릭터 켜기 & 끄기
         if (line.charOnList != null && line.charOnList.Count > 0)
