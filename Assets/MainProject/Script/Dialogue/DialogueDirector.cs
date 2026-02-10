@@ -141,13 +141,22 @@ public class DialogueDirector : MonoBehaviour
         if (target == null) return;
         float alpha = isOn ? 1f : 0f;
 
-        // 본체, 눈, 입 모두 페이드 처리
-        var renderers = new[] { target.bodyRenderer, target.eyesRenderer, target.mouthRenderer };
-        foreach (var sr in renderers)
+        // 본체 페이드 처리
+        var renderer = new[] { target.bodyRenderer };
+        foreach (var sr in renderer)
         {
             if (sr == null) continue;
             sr.DOKill();
             sr.DOFade(alpha, 0.35f);
+        }
+
+        //눈, 입 페이드 처리
+        var renderers = new[] { target.eyesRenderer, target.mouthRenderer };
+        foreach (var sr in renderers)
+        {
+            if (sr == null) continue;
+            sr.DOKill();
+            sr.DOFade(alpha, 0.125f);
         }
     }
     #endregion
