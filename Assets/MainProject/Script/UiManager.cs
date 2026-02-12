@@ -204,11 +204,13 @@ public class UiManager : MonoBehaviour
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentStartUi));
             camRotate(new Vector3(0, 0, rotationZ), 1);
+            camTransform.transform.DOMoveZ(-4.36f, 1);
         }
         else
         {
             StartCoroutine(ArgumentUiOnCoroutine(argumentEndUi));
             camRotate(new Vector3(0, 0, 0), 1);
+            camTransform.transform.DOMoveZ(-10f, 1);
         }
     }
     public void OnArgumentEvidence(bool On)
