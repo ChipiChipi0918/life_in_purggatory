@@ -13,34 +13,42 @@ using System.Text.RegularExpressions;
 
 public static class ArgumentTextFormatter
 {
-    // 정답 키워드: |*내용*|
     private static readonly Regex CorrectKeywordRegex = new Regex(@"\|\*(.*?)\*\|");
-    // 일반 키워드: |내용|
     private static readonly Regex NormalKeywordRegex = new Regex(@"\|(.*?)\|");
 
-    public static string Format(string text)
+    // currentAct를 받아서 초기 색상을 결정합니다.
+    public static string Format(string text, ArgumentManager.ActState act)
     {
         if (string.IsNullOrEmpty(text)) return text;
+        string colorCode = GetColorByAct(act);
 
-        // 1. 정답 키워드 먼저 처리
-        string formatted = CorrectKeywordRegex.Replace(text, match =>
-        {
+        // 정답 키워드: link가 color와 b를 감싸도록 수정
+        string formatted = CorrectKeywordRegex.Replace(text, match => {
             string keyword = match.Groups[1].Value;
-            // 클릭 가능한 타겟임을 알리기 위해 cmd: 접두사 유지
-            return $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
+            return $"<link=\"cmd:{keyword}\"><color={colorCode}><b>{keyword}</b></color></link>";
         });
 
-        // 2. 남은 일반 키워드 처리
-        formatted = NormalKeywordRegex.Replace(formatted, match =>
-        {
+        // 일반 키워드
+        formatted = NormalKeywordRegex.Replace(formatted, match => {
             string keyword = match.Groups[1].Value;
-            return $"<link=\"cmd2:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
+            return $"<link=\"cmd2:{keyword}\"><color={colorCode}><b>{keyword}</b></color></link>";
         });
 
         return formatted;
     }
+    // 상태별 색상을 관리하는 헬퍼 함수
+    public static string GetColorByAct(ArgumentManager.ActState act)
+    {
+        return act switch
+        {
+            ArgumentManager.ActState.None => "#575757",
+            ArgumentManager.ActState.counterargument => "#FFAE44",
+            ArgumentManager.ActState.agreement => "#44FFE6",
+            ArgumentManager.ActState.perjury => "#FF4444",
+            _ => "#575757"
+        };
+    }
 }
-
 
 public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 {
@@ -57,6 +65,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         Argument_EndWait,   // 논의 한 사이클 종료 후 대기 (재시작 또는 진행)
         Choice,           // 선택지 화면
         PlaceSelection // 🔥 [추가] 장소 지적 상태
+    }
+    public enum ActState
+    {
+        None,
+        counterargument,//반론
+        agreement, //찬성
+        perjury //위증
     }
 
     // 캐릭터 설정 데이터 (하드코딩 제거용)
@@ -106,6 +121,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public float argumentDuration = 0.5f;
     public Transform argumentCamTransform;
     public Transform argumentEvidenceButtonParent;
+    public Transform argumentActButtonParent;
     public GameObject argumentEvidenceButtonPrefab;
 
     [Header("Place Selection Logic")]
@@ -115,6 +131,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     [Header("Evidence Logic")]
     public string selectedEvidenceName; // 플레이어가 선택한 증거
     public string correctEvidenceName;  // 현재 정답 증거
+    public ActState currentAct;
 
     [Header("Dialogue UI")]
     public GameObject dialoguePanel;
@@ -133,6 +150,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private Coroutine typingRoutine;
     private Coroutine argumentRoutine;
 
+
     // 내부 변수
     private string currentRawText = "";
     private int currentLinkHoverIndex = -1;
@@ -140,7 +158,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private bool isChoiceShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
     private bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
     private bool waitingExitDialogue = false;
-    private ArgumentEvidenceButton currentSelected;
+    private ArgumentEvidenceButton currentEcidenceButtonSelected;
+    private ArgumentActButton currentActButtonSelected;
     #endregion
 
     private void Awake()
@@ -355,6 +374,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             {
                 child.GetComponent<ArgumentEvidenceButton>().Deselect(); //논의 증거품 Ui 자식(버튼)들 전부 선택 취소
             }
+            foreach (Transform child in argumentActButtonParent)
+            {
+                Debug.Log("DW");
+                child.GetComponent<ArgumentActButton>().Deselect(); //논의 행동 Ui 자식(버튼)들 전부 선택 취소
+            }
 
             UiManager.instance.ArgumentUiOn(false);
 
@@ -416,13 +440,22 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // 🔥 [수정] 직접 정의했던 MoveCam 대신 DialogueDirector를 호출합니다.
         DialogueDirector.instance.MoveCam(line.speaker, xOffset);
+
+        CanvasGroup cg = activeArgumentText.GetComponent<CanvasGroup>();
+        if (cg != null)
+        {
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+        }
+        Debug.Log($"Raycast:{cg.blocksRaycasts}, Interactable:{cg.interactable}, Alpha:{cg.alpha}");
+
         activeArgumentText.gameObject.SetActive(true);
     }
 
     IEnumerator PlayArgumentRoutine(DialogueLine line)
     {
         currentRawText = line.text;
-        activeArgumentText.text = ArgumentTextFormatter.Format(currentRawText);
+        activeArgumentText.text = ArgumentTextFormatter.Format(currentRawText, currentAct);
 
         CanvasGroup cg = activeArgumentText.GetComponent<CanvasGroup>();
         if (cg == null) cg = activeArgumentText.gameObject.AddComponent<CanvasGroup>();
@@ -489,12 +522,28 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public void ArgumentSelectEvidence(ArgumentEvidenceButton button)
     {
         // 이미 다른 게 선택되어 있으면 해제
-        if (currentSelected != null && currentSelected != button)
+        if (currentEcidenceButtonSelected != null && currentEcidenceButtonSelected != button)
         {
-            currentSelected.Deselect();
+            currentEcidenceButtonSelected.Deselect();
         }
 
-        currentSelected = button;
+        currentEcidenceButtonSelected = button;
+    }
+
+    public void ArgumentSelectAct(ArgumentActButton button)
+    {
+        activeArgumentText.text = ArgumentTextFormatter.Format(currentRawText, currentAct);
+
+        // 이미 다른 게 선택되어 있으면 해제
+        if (currentActButtonSelected != null && currentActButtonSelected != button)
+        {
+            currentActButtonSelected.Deselect();
+        }
+
+        if (currentAct == ActState.counterargument)
+            Debug.Log("반론");
+
+        currentActButtonSelected = button;
     }
 
     private void ClearAllEvidenceButtons()
@@ -505,8 +554,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             Destroy(child.gameObject);
         }
+        foreach (Transform child in argumentActButtonParent)
+        {
+            child.GetComponent<ArgumentActButton>().Deselect();
+        }
 
-        currentSelected = null;
+        currentEcidenceButtonSelected = null;
+        currentActButtonSelected = null;
+        currentAct = ActState.None;
         selectedEvidenceName = null;
     }
 
@@ -593,9 +648,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         Image selectedImg = buttonObj.GetComponent<Image>();
         if (selectedImg != null) selectedImg.color = Color.yellow; // 선택된 버튼 강조
-
-        // (선택 사항) 사운드 효과
-        // SoundManager.instance.PlaySE("Click");
     }
     #endregion
 
@@ -732,43 +784,53 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void UpdateHoverTextEffect()
     {
-        string formattedText = ArgumentTextFormatter.Format(currentRawText);
+        activeArgumentText.text = ArgumentTextFormatter.Format(currentRawText, currentAct);
+        activeArgumentText.ForceMeshUpdate();
 
-        if (currentLinkHoverIndex != -1)
+        if (currentLinkHoverIndex == -1) return;
+
+        TMP_LinkInfo info = activeArgumentText.textInfo.linkInfo[currentLinkHoverIndex];
+
+        int start = info.linkTextfirstCharacterIndex;
+        int length = info.linkTextLength;
+
+        Color hoverColor = currentAct switch
         {
-            // textInfo에서 현재 호버된 링크 정보를 가져옴
-            TMP_LinkInfo info = activeArgumentText.textInfo.linkInfo[currentLinkHoverIndex];
-            string id = info.GetLinkID();
+            ActState.None => new Color32(77, 77, 77, 255),
+            ActState.counterargument => new Color32(205, 143, 0, 255),
+            ActState.agreement => new Color32(0, 207, 180, 255),
+            ActState.perjury => new Color32(204, 0, 0, 255),
+            _ => Color.white
+        };
 
-            if (id.StartsWith("cmd:"))
-            {
-                string keyword = info.GetLinkText(); // 링크에 걸린 텍스트 직접 추출
+        for (int i = 0; i < length; i++)
+        {
+            int charIndex = start + i;
+            var charInfo = activeArgumentText.textInfo.characterInfo[charIndex];
 
-                // 호버 시 시각적 변화 (더 진한 빨간색으로 변경)
-                string normalTag = $"<link=\"cmd:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
-                string hoverTag = $"<link=\"cmd:{keyword}\"><b><color=#CC0000>{keyword}</color></b></link>";
+            if (!charInfo.isVisible) continue;
 
-                formattedText = formattedText.Replace(normalTag, hoverTag);
-            }
-            else if (id.StartsWith("cmd2:"))
-            {
-                string keyword = info.GetLinkText(); // 링크에 걸린 텍스트 직접 추출
+            int meshIndex = charInfo.materialReferenceIndex;
+            int vertexIndex = charInfo.vertexIndex;
 
-                // 호버 시 시각적 변화 (더 진한 빨간색으로 변경)
-                string normalTag = $"<link=\"cmd2:{keyword}\"><b><color=#FF4444>{keyword}</color></b></link>";
-                string hoverTag = $"<link=\"cmd2:{keyword}\"><b><color=#CC0000>{keyword}</color></b></link>";
+            var colors = activeArgumentText.textInfo.meshInfo[meshIndex].colors32;
 
-                formattedText = formattedText.Replace(normalTag, hoverTag);
-            }
+            colors[vertexIndex + 0] = hoverColor;
+            colors[vertexIndex + 1] = hoverColor;
+            colors[vertexIndex + 2] = hoverColor;
+            colors[vertexIndex + 3] = hoverColor;
         }
-        activeArgumentText.text = formattedText;
+
+        activeArgumentText.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
     }
+
 
     // IPointerClickHandler 인터페이스 구현
     public void OnPointerClick(PointerEventData eventData)
     {
         // 논의 모드가 아니면 무시
-        if (!IsArgumentMode) return;
+        Debug.Log(currentAct);
+        if (!IsArgumentMode || currentAct == ActState.None) return;
 
         Camera cam = (activeArgumentText.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
             ? null : activeArgumentText.canvas.worldCamera;
@@ -845,7 +907,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         waitingExitDialogue = false;
         isChoiceShowingWrongFeedback = false;
         selectedEvidenceName = null;
-        currentSelected = null;
+        currentEcidenceButtonSelected = null;
+        currentActButtonSelected = null;
+        currentAct = ActState.None;
     }
 
     private void EndAll()

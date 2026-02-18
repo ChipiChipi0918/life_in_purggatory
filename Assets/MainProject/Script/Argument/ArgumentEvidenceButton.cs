@@ -60,7 +60,7 @@ public class ArgumentEvidenceButton : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ArgumentManager.instance.ArgumentSelectEvidence(this);
+        
         Select();
     }
 
@@ -92,16 +92,16 @@ public class ArgumentEvidenceButton : MonoBehaviour,
             SoundManager.instance.UiSelect();
             ArgumentManager.instance.SetSelectedEvidence(argumentEvidenceName.text);
         }
+        ArgumentManager.instance.ArgumentSelectEvidence(this);
     }
 
     public void Deselect()
     {
         isSelected = false;
         bg.color = defaultColor;
+        ArgumentManager.instance.SetSelectedEvidence("");
 
         if (!isHovered)
             Hide();
     }
-
-
 }

@@ -13,8 +13,9 @@ public class UiManager : MonoBehaviour
 
     public Transform camTransform;
 
-    [Header("논의 증거탭 & 논의 시간")]
+    [Header("논의 시작 시 나오는 Ui")]
     public RectTransform argumentEvidenceUi;
+    public RectTransform argumentActUi;
     public RectTransform argumentTimeUi;
 
     [Header("Back Ui")]
@@ -218,6 +219,7 @@ public class UiManager : MonoBehaviour
         if (On)
         {
             argumentEvidenceUi.DOAnchorPosX(376, 1).SetUpdate(false);
+            argumentActUi.DOAnchorPosX(376, 1).SetUpdate(false);
             argumentTimeUi.DOAnchorPosX(-111,1).SetUpdate(false);
 
             argumentLineUp.DOAnchorPosY(0, 1).SetUpdate(true);
@@ -226,6 +228,7 @@ public class UiManager : MonoBehaviour
         else
         {
             argumentEvidenceUi.DOAnchorPosX(548, 1).SetUpdate(true);
+            argumentActUi.DOAnchorPosX(548, 1).SetUpdate(true);
             argumentTimeUi.DOAnchorPosX(268,1).SetUpdate(true);
 
             argumentLineUp.DOAnchorPosY(75, 1).SetUpdate(true);
