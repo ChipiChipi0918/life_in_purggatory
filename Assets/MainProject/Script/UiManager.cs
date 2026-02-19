@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,8 +9,12 @@ public class UiManager : MonoBehaviour
     public static UiManager instance;
 
     public bool isUiAnim;
-
     public Transform camTransform;
+
+    [Header("팝업 UI 관리 UI들")]
+    public GameObject currentNameUi;
+    public TextMeshProUGUI currentNameUiText;
+    public GameObject closeUi;
 
     [Header("논의 시작 시 나오는 Ui")]
     public RectTransform argumentEvidenceUi;
@@ -30,7 +33,7 @@ public class UiManager : MonoBehaviour
     public bool isHotelInformation;
 
     [Header("Ui Off")] //f3
-    public GameObject allUi; //캔버스
+    public GameObject allUi;
     private bool isUiOff;
 
     [Header("맵 지적")]
@@ -46,13 +49,16 @@ public class UiManager : MonoBehaviour
 
     [Header("Shake")]
     public bool usingShake = false;
-    public float m_roughness;      // 거칠기 정도
-    public float m_magnitude;      // 움직임 범위
-    public float m_rotation = 1f;       // 회전 강도 (카메라 쉐이크 강도)
+    public float m_roughness;
+    public float m_magnitude;
+    public float m_rotation = 1f;
+
+    private enum PopupType { None, Logue, HotelInformation, MapPointOut }
+    private PopupType currentPopup = PopupType.None;
 
     private void Awake()
     {
-        if(instance == null) instance = this;
+        if (instance == null) instance = this;
 
         argumentStartUi.localScale = new Vector3(1, 0, 1);
         argumentEndUi.localScale = new Vector3(1, 0, 1);
@@ -60,143 +66,150 @@ public class UiManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1) && isUiAnim == false)
+        if (Input.GetKeyDown(KeyCode.F1) && !isUiAnim && !isHotelInformation)
         {
-            isLogue = !isLogue;
-            StartCoroutine(LogueCoroutine(isLogue));
+            if (!isLogue)
+            {
+                isLogue = true;
+                currentPopup = PopupType.Logue;
+                PopupUiOn("Logue");
+                StartCoroutine(LogueCoroutine(true));
+            }
+            else PopupUiOff();
         }
-        if (Input.GetKeyDown(KeyCode.F2) && isUiAnim==false)
+
+        if (Input.GetKeyDown(KeyCode.F2) && !isUiAnim && !isLogue)
         {
-            isHotelInformation = !isHotelInformation;
-            StartCoroutine(HotelInformationCoroutine(isHotelInformation));
+            if (!isHotelInformation)
+            {
+                isHotelInformation = true;
+                currentPopup = PopupType.HotelInformation;
+                PopupUiOn("Inform");
+                StartCoroutine(HotelInformationCoroutine(true));
+            }
+            else PopupUiOff();
         }
-        if (Input.GetKeyDown(KeyCode.F3) && isUiOff==false)
+
+        if (Input.GetKeyDown(KeyCode.F3) && !isUiOff)
         {
-            Debug.Log("DW");
             isUiOff = true;
-            allUi.gameObject.SetActive(false);
+            allUi.SetActive(false);
         }
-        if ((Input.GetKeyDown(KeyCode.F3) || Input.GetMouseButtonDown(0)) && isUiOff==true)
+        if ((Input.GetKeyDown(KeyCode.F3) || Input.GetMouseButtonDown(0)) && isUiOff)
         {
             isUiOff = false;
-            allUi.gameObject.SetActive(true);
+            allUi.SetActive(true);
         }
     }
 
-    
-    private IEnumerator BackUiFade(bool InOrOut) //true 켜기 /false 끄기
+    public void PopupUiOn(string uiName)
     {
+        currentNameUiText.text = uiName;
+        currentNameUi.SetActive(true);
+        closeUi.SetActive(true);
+    }
 
-        backUi.alpha = 0f;
+    public void PopupUiOff()
+    {
+        if (isUiAnim) return;
+
+        switch (currentPopup)
+        {
+            case PopupType.Logue:
+                isLogue = false;
+                StartCoroutine(LogueCoroutine(false));
+                break;
+
+            case PopupType.HotelInformation:
+                isHotelInformation = false;
+                StartCoroutine(HotelInformationCoroutine(false));
+                break;
+
+            case PopupType.MapPointOut:
+                isMapPointOut = false;
+                StartCoroutine(MapPointOutUiCoroutine(false));
+                break;
+        }
+
+        currentPopup = PopupType.None;
+        currentNameUi.SetActive(false);
+        closeUi.SetActive(false);
+    }
+
+    private IEnumerator BackUiFade(bool on)
+    {
+        backUi.alpha = on ? 0f : 1f;
         backUi.gameObject.SetActive(true);
 
-        if (InOrOut)
+        float t = 0f;
+        while (t < 1f)
         {
-            float t = 0f;
-            while (t < 1f)
-            {
-                t += Time.unscaledDeltaTime;
-                backUi.alpha = Mathf.Lerp(0f, 1f, t / 0.5f);
-                yield return null;
-            }
-            backUi.alpha = 1f;
+            t += Time.unscaledDeltaTime;
+            backUi.alpha = on ? Mathf.Lerp(0f, 1f, t / 0.5f) : Mathf.Lerp(1f, 0f, t / 0.5f);
+            yield return null;
         }
-        else
-        {
-            float t = 0f;
-            while (t < 1f)
-            {
-                t += Time.unscaledDeltaTime;
-                backUi.alpha = Mathf.Lerp(0f, 1f, 1 - (t / 0.5f));
-                yield return null;
-            }
-            backUi.alpha = 0f;
-        }
+
+        backUi.alpha = on ? 1f : 0f;
     }
 
-    private IEnumerator HotelInformationCoroutine(bool a)
+    private IEnumerator HotelInformationCoroutine(bool on)
     {
         isUiAnim = true;
-        if (a)
+
+        StartCoroutine(BackUiFade(on));
+        Time.timeScale = on ? 0 : 1;
+
+        if (on)
         {
-            StartCoroutine(BackUiFade(true));
-
-            Time.timeScale = 0;
-
-            hotelInformation.gameObject.SetActive(isHotelInformation);
-            hotelInformation.DOAnchorPosY(0,1).SetUpdate(true);
-            yield return new WaitForSecondsRealtime(1f);
+            hotelInformation.gameObject.SetActive(true);
+            hotelInformation.DOAnchorPosY(0, 0.6f).SetUpdate(true);
+            yield return new WaitForSecondsRealtime(0.6f);
         }
         else
         {
-            StartCoroutine(BackUiFade(false));
-
-            Time.timeScale = 1;
-
-            hotelInformation.DOAnchorPosY(-1490, 1).SetUpdate(true);
-            yield return new WaitForSecondsRealtime(1f);
-            hotelInformation.gameObject.SetActive(isHotelInformation);
-        }
-       
-        isUiAnim = false;
-    }
-
-    private IEnumerator LogueCoroutine(bool a)
-    {
-        isUiAnim = true;
-        if (a)
-        {
-            StartCoroutine(BackUiFade(true));
-            logue.SetActive(true);
-            Time.timeScale = 0;
-
-            yield return new WaitForSecondsRealtime(1f);
-        }
-        else
-        {
-            StartCoroutine(BackUiFade(false));
-            logue.SetActive(false);
-            Time.timeScale = 1;
-
-            yield return new WaitForSecondsRealtime(1f);
-        }
-
-        isUiAnim = false;
-
-        yield return null;
-    }
-
-    public void MapPointOutUiOn(bool a)
-    {
-        StartCoroutine(MapPointOutUiCoroutine(a));
-    }
-
-    private IEnumerator MapPointOutUiCoroutine(bool a)
-    {
-        isUiAnim = true;
-        if (a)
-        {
-            StartCoroutine(BackUiFade(true));
-
-            Time.timeScale = 0;
-
-            mapPointOut.DOAnchorPosY(0, 1).SetUpdate(true);
-            yield return new WaitForSecondsRealtime(1f);
-        }
-        else
-        {
-            StartCoroutine(BackUiFade(false));
-
-            Time.timeScale = 1;
-
-            mapPointOut.DOAnchorPosY(-1490, 1).SetUpdate(true);
-            yield return new WaitForSecondsRealtime(1f);
+            hotelInformation.DOAnchorPosY(-1490, 0.6f).SetUpdate(true);
+            yield return new WaitForSecondsRealtime(0.6f);
+            hotelInformation.gameObject.SetActive(false);
         }
 
         isUiAnim = false;
     }
 
-    // ArgumentUiOn 메서드를 아래와 같이 수정하세요.
+    private IEnumerator LogueCoroutine(bool on)
+    {
+        isUiAnim = true;
+
+        StartCoroutine(BackUiFade(on));
+        Time.timeScale = on ? 0 : 1;
+        logue.SetActive(on);
+
+        yield return new WaitForSecondsRealtime(1f);
+        isUiAnim = false;
+    }
+
+    public void MapPointOutUiToggle()
+    {
+        if (isUiAnim) return;
+
+        isMapPointOut = !isMapPointOut;
+        currentPopup = PopupType.MapPointOut;
+
+        PopupUiOn("Map");
+        StartCoroutine(MapPointOutUiCoroutine(isMapPointOut));
+    }
+
+    private IEnumerator MapPointOutUiCoroutine(bool on)
+    {
+        isUiAnim = true;
+
+        StartCoroutine(BackUiFade(on));
+        Time.timeScale = on ? 0 : 1;
+
+        mapPointOut.DOAnchorPosY(on ? 0 : -1490, 1).SetUpdate(true);
+        yield return new WaitForSecondsRealtime(1f);
+
+        isUiAnim = false;
+    }
     public void ArgumentUiOn(bool isStart, float rotationZ = 2.5f)
     {
         OnArgumentEvidence(isStart);

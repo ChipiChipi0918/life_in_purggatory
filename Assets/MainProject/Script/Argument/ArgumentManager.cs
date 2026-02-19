@@ -993,7 +993,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         Debug.Log($"[장소 지적 시작] 정답: {currentPlaceAnswer}");
 
         // 2. 🔥 [추가] UiManager를 통해 장소 지적 UI(지도 등)를 켬
-        UiManager.instance.MapPointOutUiOn(true);
+        UiManager.instance.MapPointOutUiToggle();
     }
 
     public void OnPlaceClicked(string placeName)
@@ -1016,7 +1016,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             Debug.Log("장소 지적 정답!");
 
             // 1. 🔥 [추가] 정답일 경우 UiManager를 통해 장소 지적 UI를 끔
-            UiManager.instance.MapPointOutUiOn(false);
+            UiManager.instance.MapPointOutUiToggle();
 
             isMapPointOutShowingWrongFeedback = false;
 
