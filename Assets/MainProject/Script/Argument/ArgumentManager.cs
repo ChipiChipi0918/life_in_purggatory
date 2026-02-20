@@ -249,46 +249,39 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         switch (currentState)
         {
             case FlowState.Dialogue_Wait:
-                // 상황 A: 선택지 오답 피드백 중이었다면 선택지로 복귀
+                // 순차적으로 우선순위를 따져서 하나만 실행합니다.
                 if (isChoiceShowingWrongFeedback)
                 {
                     ReturnToChoice();
                 }
-                // 상황 B: 장소 지적 피드백 중이었다면 선택지로 복귀
-                if (isMapPointOutShowingWrongFeedback)
+                else if (isMapPointOutShowingWrongFeedback)
                 {
                     ReturnToMapPointOut();
                 }
-                // 상황 C: "다시 들어보자" 대사가 끝난 후 클릭했다면 루프 재시작 🔥 (추가됨)
                 else if (waitingExitDialogue)
                 {
                     waitingExitDialogue = false;
                     RestartArgumentLoop();
                 }
-                // 상황 D: 일반적인 다음 대사 진행
                 else
                 {
+                    // 위의 특수 상황이 아닐 때만 다음 대사를 재생합니다.
                     PlayNext();
                 }
                 break;
 
             case FlowState.Argument_EndWait:
-                // 상황 D: 논의 한 사이클 종료(ExitLine 출력 완료) 후 클릭 시 🔥 (수정됨)
                 if (argumentEvidenceButtonParent == null) return;
 
                 if (waitingArgumentEndText)
                 {
                     waitingArgumentEndText = false;
-
-                    // 재시작 전 안내 대사 출력
                     ShowDialogue(new DialogueLine
                     {
                         speaker = "엘리나",
                         text = "(다시 한번 모두의 의견을 들어보자.)",
                         type = DialogueType.Dialogue
                     });
-
-                    // 이 대사가 끝나면 다시 클릭했을 때 루프가 돌도록 플래그 설정
                     waitingExitDialogue = true;
                 }
                 break;
@@ -856,7 +849,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (string.IsNullOrEmpty(selectedEvidenceName))
         {
             Debug.Log("증거품을 먼저 선택하세요.");
-            UiManager.instance.Shaking(0.3f);
+            EffectManager.instance.CameraShake();
             return;
         }
 
@@ -868,14 +861,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         else
         {
             Debug.Log("틀렸습니다.");
-            UiManager.instance.Shaking(0.4f);
+            EffectManager.instance.CameraShake();
         }
     }
 
     private void WorngProcessKeywordClick()
     {
         Debug.Log("틀렸습니다.");
-        UiManager.instance.Shaking(0.4f);
+        EffectManager.instance.CameraShake();
     }
 
     #endregion
@@ -960,7 +953,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         else
         {
             Debug.Log("오답!");
-            UiManager.instance.Shaking(0.5f);
+            EffectManager.instance.CameraShake();
 
             // 플래그 설정: 다음 클릭 시 PlayNext()가 아닌 선택지로 돌아가게 함
             isChoiceShowingWrongFeedback = true;
@@ -992,8 +985,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         Debug.Log($"[장소 지적 시작] 정답: {currentPlaceAnswer}");
 
-        // 2. 🔥 [추가] UiManager를 통해 장소 지적 UI(지도 등)를 켬
+        // 2. 🔥 [추가] UiManager를 통해 장소 지적 UI를 켬
         UiManager.instance.MapPointOutUiToggle();
+
+        //3. 다이얼로그 숨기기
+        dialoguePanel.SetActive(false);
     }
 
     public void OnPlaceClicked(string placeName)
@@ -1029,7 +1025,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         else
         {
             Debug.Log("오답!");
-            UiManager.instance.Shaking(0.5f);
+            EffectManager.instance.CameraShake();
 
             isMapPointOutShowingWrongFeedback = true;
 

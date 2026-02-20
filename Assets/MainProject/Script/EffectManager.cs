@@ -8,6 +8,10 @@ public class EffectManager : MonoBehaviour
 {
     public static EffectManager instance;
 
+    [Header("Shake")]
+    public bool usingShake = false;
+    public Animator camAnim;
+
     [Header("피 2/3")]
     public GameObject blood;
 
@@ -26,7 +30,14 @@ public class EffectManager : MonoBehaviour
 
     public void CameraShake() //1
     {
-        UiManager.instance.Shaking(0.7f);
+        usingShake = true;
+        StartCoroutine(Shake()); // 코루틴 실행
+    }
+    IEnumerator Shake()
+    {
+        camAnim.SetTrigger("Shake");
+        yield return new WaitForSecondsRealtime(0.1f);
+        usingShake = false;
     }
 
     public void Blood() //2
@@ -62,7 +73,7 @@ public class EffectManager : MonoBehaviour
 
     public void ShakeAndBlood() //3
     {
-        UiManager.instance.Shaking(0.3f);
+        EffectManager.instance.CameraShake();
         StartCoroutine(BloodEffect());
     }
 
