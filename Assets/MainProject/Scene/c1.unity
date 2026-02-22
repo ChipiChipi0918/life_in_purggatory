@@ -19615,6 +19615,7 @@ MonoBehaviour:
   hotelInformation: {fileID: 1270877367}
   isHotelInformation: 0
   allUi: {fileID: 5432504978678866526}
+  isUiOff: 1
   mapPointOut: {fileID: 1182472132}
   isMapPointOut: 0
   argumentStartUi: {fileID: 1339710087}
