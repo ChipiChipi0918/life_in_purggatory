@@ -11,7 +11,11 @@ public class UiManager : MonoBehaviour
     public bool isUiAnim;
     public Transform camTransform;
 
+
     [Header("팝업 UI 관리 UI들")]
+    public RectTransform popupUiOnPos;
+    private bool isPopupUiOn = false;
+
     public GameObject currentNameUi;
     public TextMeshProUGUI currentNameUiText;
     public GameObject closeUi;
@@ -34,7 +38,7 @@ public class UiManager : MonoBehaviour
 
     [Header("Ui Off")] //f3
     public GameObject allUi;
-    private bool isUiOff;
+    public bool isUiOff=true;
 
     [Header("맵 지적")]
     public RectTransform mapPointOut;
@@ -59,38 +63,67 @@ public class UiManager : MonoBehaviour
         argumentEndUi.localScale = new Vector3(1, 0, 1);
     }
 
+#region 팝업Ui
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1) && !isUiAnim && !isHotelInformation)
+        if (Input.GetKeyDown(KeyCode.F1))
         {
-            if (!isLogue)
-            {
-                isLogue = true;
-                currentPopup = PopupType.Logue;
-                PopupUiOn("Logue");
-                StartCoroutine(LogueCoroutine(true));
-            }
-            else PopupUiOff();
+            On_Logue();
         }
 
-        if (Input.GetKeyDown(KeyCode.F2) && !isUiAnim && !isLogue)
+        if (Input.GetKeyDown(KeyCode.F2))
         {
-            if (!isHotelInformation)
-            {
-                isHotelInformation = true;
-                currentPopup = PopupType.HotelInformation;
-                PopupUiOn("Inform");
-                StartCoroutine(HotelInformationCoroutine(true));
-            }
-            else PopupUiOff();
+            On_HotelInformation();
         }
 
-        if (Input.GetKeyDown(KeyCode.F3) && !isUiOff)
+        if (Input.GetKeyDown(KeyCode.F3) || ((isUiOff && Input.GetMouseButtonDown(0)) || (isUiOff && Input.GetKeyDown(KeyCode.F3))))
+        {
+            On_OffUi();
+        }
+    }
+
+    public void PopupButtonsOn()
+    {
+        if(isPopupUiOn)
+            popupUiOnPos.DOAnchorPosX(124,0.7f).SetUpdate(false);
+        else
+            popupUiOnPos.DOAnchorPosX(-343, 0.7f).SetUpdate(false);
+
+        isPopupUiOn = !isPopupUiOn;
+    }
+
+    public void On_Logue()
+    {
+        if (!isLogue && !isUiAnim && !isHotelInformation)
+        {
+            isLogue = true;
+            currentPopup = PopupType.Logue;
+            PopupUiOn("Logue");
+            StartCoroutine(LogueCoroutine(true));
+        }
+        else PopupUiOff();
+    }
+    public void On_HotelInformation()
+    {
+        if (!isHotelInformation && !isUiAnim && !isLogue)
+        {
+            isHotelInformation = true;
+            currentPopup = PopupType.HotelInformation;
+            PopupUiOn("Inform");
+            StartCoroutine(HotelInformationCoroutine(true));
+        }
+        else PopupUiOff();
+    }
+
+    public void On_OffUi()
+    {
+        if (!isUiOff)
         {
             isUiOff = true;
             allUi.SetActive(false);
         }
-        if ((Input.GetKeyDown(KeyCode.F3) || Input.GetMouseButtonDown(0)) && isUiOff)
+        else
         {
             isUiOff = false;
             allUi.SetActive(true);
@@ -130,6 +163,7 @@ public class UiManager : MonoBehaviour
         currentNameUi.SetActive(false);
         closeUi.SetActive(false);
     }
+#endregion
 
     private IEnumerator BackUiFade(bool on)
     {

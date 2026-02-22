@@ -209,8 +209,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     public void PlayNext()
     {
-        // UI 애니메이션 중이거나 호텔 정보 창이 켜져있으면 대기
-        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation || UiManager.instance.isLogue) return;
+        // UI 애니메이션 중이거나 호텔 정보 창이 켜져있거나 Ui가 꺼져있으면 예외처리
+        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation || UiManager.instance.isLogue || UiManager.instance.isUiOff) return;
 
         // 1. 전체 대화 종료 체크
         if (lineIndex >= currentLines.Count)
