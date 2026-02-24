@@ -6221,8 +6221,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4.3499756, y: -348}
-  m_SizeDelta: {x: 1189.608, y: 1639.213}
+  m_AnchoredPosition: {x: -0.0000076294, y: -404}
+  m_SizeDelta: {x: 1100.093, y: 1515.867}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &343853280
 MonoBehaviour:
@@ -6244,7 +6244,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a826190af6d739140b5dbf2a00d7c72f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e4aad0aabf0c87a4285ca9a066b986f3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -34735,9 +34735,14 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 74f3944e6ed962d41871f57178c86372, type: 3}
     - {fileID: 21300000, guid: 4c9e8d6b4945d3c4fad296817c13b38c, type: 3}
     - {fileID: 21300000, guid: c928fbdde1f693d4bb62c619c64be9c8, type: 3}
+    - {fileID: 21300000, guid: 1c1a254c76d0c2048bb3fd437e9c1561, type: 3}
+    - {fileID: 21300000, guid: d8232c5aef919954dae8933ff708572c, type: 3}
     mouth:
     - {fileID: 21300000, guid: d7faf432fcb6c2340bbaac35a91a92dd, type: 3}
     - {fileID: 21300000, guid: 8646c527aed5ea34e8dea9110fd62091, type: 3}
+    - {fileID: 21300000, guid: 50740b600d1c03d4caab772169722243, type: 3}
+    - {fileID: 21300000, guid: dc56e047bf62f4545be34d363e464b70, type: 3}
+    - {fileID: 21300000, guid: ea076520efc38b24da57a2801fb33a82, type: 3}
   - characterName: "\uC2E4\uBE44\uC544"
     body: []
     eyes: []

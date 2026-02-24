@@ -95,6 +95,8 @@ public class UiManager : MonoBehaviour
 
     public void On_Logue()
     {
+        SoundManager.instance.UiSelect();
+
         if (!isLogue && !isUiAnim && !isHotelInformation)
         {
             isLogue = true;
@@ -106,6 +108,8 @@ public class UiManager : MonoBehaviour
     }
     public void On_HotelInformation()
     {
+        SoundManager.instance.UiSelect();
+
         if (!isHotelInformation && !isUiAnim && !isLogue)
         {
             isHotelInformation = true;
@@ -118,6 +122,8 @@ public class UiManager : MonoBehaviour
 
     public void On_OffUi()
     {
+        SoundManager.instance.UiSelect();
+
         if (!isUiOff)
         {
             isUiOff = true;
@@ -158,6 +164,8 @@ public class UiManager : MonoBehaviour
                 StartCoroutine(MapPointOutUiCoroutine(false));
                 break;
         }
+
+        SoundManager.instance.UiSelect();
 
         currentPopup = PopupType.None;
         currentNameUi.SetActive(false);
