@@ -88,6 +88,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         { "카를로스", (80f, "#5E3200") },
         { "리디아", (-80f, "#EAEAEA") },
         { "리네", (100f, "#EAEAEA") },
+        { "총지배인", (100f, "#D9D9D9") },
         { "Default", (0f, "#D9D9D9") } // 기본값
     };
     #endregion
@@ -123,6 +124,10 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public Transform argumentEvidenceButtonParent;
     public Transform argumentActButtonParent;
     public GameObject argumentEvidenceButtonPrefab;
+
+    [Header("Argument Progress UI")]
+    public TMP_Text progressText; // "1 / 5" 형태로 표시할 텍스트 UI
+    private int totalArgumentLines; // 현재 논의의 총 라인 수
 
     [Header("Place Selection Logic")]
     public string currentSelectedPlaceName; // 🔥 [추가] 플레이어가 클릭한 장소 이름
@@ -316,6 +321,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         Debug.Log($"논의 데이터 로드 완료! 정답: {correctEvidenceName}");
 
+        totalArgumentLines = block.lines.Count;
+        UpdateProgressUI(0); // 초기화 (0 또는 1로 시작)
+
         // 🔥 [추가/수정] 첫 번째 대사의 방향에 따라 초기 카메라 회전 결정
         float initialRotation = 2.5f; // 기본값 (left)
         if (block.lines.Count > 0)
@@ -382,6 +390,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             StartCoroutine(ArgumentEndUIEndShowDialogue(block));
             return;
         }
+        UpdateProgressUI(argumentLineIndex + 1);
 
         // 🔥 논의 진행 중
         currentState = FlowState.Argument_Loop;
@@ -395,6 +404,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 연출 코루틴 시작
         if (argumentRoutine != null) StopCoroutine(argumentRoutine);
         argumentRoutine = StartCoroutine(PlayArgumentRoutine(line));
+    }
+    private void UpdateProgressUI(int currentStep)
+    {
+        if (progressText != null)
+        {
+            // 예: "1 / 8" 형식으로 출력
+            progressText.text = $"{currentStep} / {totalArgumentLines}";
+        }
     }
 
     IEnumerator ArgumentEndUIEndShowDialogue(ArgumentBlock b)
