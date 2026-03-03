@@ -25,6 +25,10 @@ public class UiManager : MonoBehaviour
     public RectTransform argumentActUi;
     public RectTransform argumentTimeUi;
 
+    [Header("Argument Confirm UI")]
+    public RectTransform argumentConfirmPanel; // 확인 UI 패널
+    public bool isConfirmUi;
+
     [Header("Back Ui")]
     public CanvasGroup backUi;
 
@@ -282,6 +286,32 @@ public class UiManager : MonoBehaviour
 
             argumentLineUp.DOAnchorPosY(75, 1).SetUpdate(true);
             argumentLineDown.DOAnchorPosY(-75, 1).SetUpdate(true);
+        }
+    }
+
+    // UiManager 내부 함수 수정 제안
+    public void ShowArgumentConfirmUi(bool on)
+    {
+        // 이미 애니메이션 중이면 무시 (중복 클릭 방지)
+        if (on && isUiAnim) return;
+
+        isUiAnim = true; // 애니메이션 시작
+        StartCoroutine(BackUiFade(on));
+
+        if (on)
+        {
+            argumentConfirmPanel.gameObject.SetActive(true);
+            argumentConfirmPanel.localScale = Vector3.zero;
+            argumentConfirmPanel.DOScale(1, 0.4f).SetEase(Ease.OutBack).SetUpdate(true)
+                .OnComplete(() => isUiAnim = false); // 🔥 완료 후 해제
+        }
+        else
+        {
+            argumentConfirmPanel.DOScale(0, 0.3f).SetEase(Ease.InBack).SetUpdate(true)
+                .OnComplete(() => {
+                    argumentConfirmPanel.gameObject.SetActive(false);
+                    isUiAnim = false; // 🔥 완료 후 해제
+                });
         }
     }
 

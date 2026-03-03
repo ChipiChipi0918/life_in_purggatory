@@ -42,7 +42,7 @@ public static class ArgumentTextFormatter
         return act switch
         {
             ArgumentManager.ActState.None => "#575757",
-            ArgumentManager.ActState.counterargument => "#FFAE44",
+            ArgumentManager.ActState.counterargument => "#E7D134",
             ArgumentManager.ActState.agreement => "#44FFE6",
             ArgumentManager.ActState.perjury => "#FF4444",
             _ => "#575757"
@@ -62,6 +62,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         Dialogue_Typing,    // 일반 대화 타이핑 중
         Dialogue_Wait,      // 일반 대화 출력 완료 (클릭 대기)
         Argument_Loop,      // 논의 진행 중 (자동 재생)
+        Argument_Confirm,   // 논의 확인 팝업 Ui 여부
         Argument_EndWait,   // 논의 한 사이클 종료 후 대기 (재시작 또는 진행)
         Choice,           // 선택지 화면
         PlaceSelection // 🔥 [추가] 장소 지적 상태
@@ -124,6 +125,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public Transform argumentEvidenceButtonParent;
     public Transform argumentActButtonParent;
     public GameObject argumentEvidenceButtonPrefab;
+
+    [Header("Confirm UI")]
+    private string pendingLinkID;
 
     [Header("Argument Progress UI")]
     public TMP_Text progressText; // "1 / 5" 형태로 표시할 텍스트 UI
@@ -470,13 +474,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         CanvasGroup cg = activeArgumentText.GetComponent<CanvasGroup>();
         if (cg == null) cg = activeArgumentText.gameObject.AddComponent<CanvasGroup>();
 
-        // 초기화
         cg.alpha = 0f;
         cg.interactable = false;
         cg.blocksRaycasts = false;
 
-        // 카메라 이동 대기 (이전 화자와 다르면 좀 더 기다림)
-        yield return new WaitForSeconds(0.45f); // 단순화
+        yield return new WaitForSeconds(0.45f);
 
         // 페이드 인
         float elapsed = 0f;
@@ -490,14 +492,76 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         cg.interactable = true;
         cg.blocksRaycasts = true;
 
-        // 텍스트 유지 시간 대기
-        yield return new WaitForSeconds(line.textTime);
+        // 🔥 [수정] 단순 대기에서 '상태 체크형 타이머'로 변경
+        float textTimer = 0f;
+        while (textTimer < line.textTime)
+        {
+            // 논의 루프 상태일 때만 시간이 흐름
+            if (currentState == FlowState.Argument_Loop)
+            {
+                textTimer += Time.deltaTime;
+            }
+            yield return null;
+        }
 
-        // 다음 라인으로 (자동 진행)
         if (currentState == FlowState.Argument_Loop)
         {
             NextArgumentLine();
         }
+    }
+
+    // 4. OnPointerClick 수정 (즉시 실행 대신 확인창 띄우기)
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!IsArgumentMode || currentAct == ActState.None || currentState == FlowState.Argument_Confirm) return;
+
+        Camera cam = (activeArgumentText.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            ? null : activeArgumentText.canvas.worldCamera;
+
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(activeArgumentText, eventData.position, cam);
+        if (linkIndex == -1) return;
+
+        // 클릭 정보 저장 및 상태 변경
+        pendingLinkID = activeArgumentText.textInfo.linkInfo[linkIndex].GetLinkID();
+        currentState = FlowState.Argument_Confirm;
+
+        // UiManager를 통해 확인창 표시
+        UiManager.instance.ShowArgumentConfirmUi(true);
+    }
+
+    //확인창 버튼 연결
+    public void ConfirmPointOut() // "예" 버튼 클릭 시
+    {
+        UiManager.instance.ShowArgumentConfirmUi(false);
+
+        // 1. 정답 키워드(|*...*|)를 클릭한 경우
+        if (pendingLinkID.StartsWith("cmd:"))
+        {
+            // 증거까지 맞다면 ArgumentCorrect()가 호출되어 상태가 Idle로 변경됨
+            // 증거가 틀리다면 내부에서 CameraShake만 하고 상태는 유지됨
+            CorrectProcessKeywordClick();
+        }
+        // 2. 오답 키워드(|...|)를 클릭한 경우
+        else if (pendingLinkID.StartsWith("cmd2:"))
+        {
+            WorngProcessKeywordClick();
+        }
+
+        // 🔥 [핵심] 정답을 맞춰서 상태가 Idle로 변한 게 아니라면, 다시 루프를 돌려줘야 함!
+        if (currentState == FlowState.Argument_Confirm)
+        {
+            currentState = FlowState.Argument_Loop;
+            Debug.Log("오답 혹은 증거 틀림: 논의 루프 재개");
+        }
+
+        pendingLinkID = null;
+    }
+
+    public void CancelPointOut() // "아니오" 버튼
+    {
+        UiManager.instance.ShowArgumentConfirmUi(false);
+        pendingLinkID = null;
+        currentState = FlowState.Argument_Loop; // 루프 재개
     }
 
     public void ArgumentCorrect()
@@ -832,33 +896,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
 
         activeArgumentText.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
-    }
-
-
-    // IPointerClickHandler 인터페이스 구현
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        // 논의 모드가 아니면 무시
-        Debug.Log(currentAct);
-        if (!IsArgumentMode || currentAct == ActState.None) return;
-
-        Camera cam = (activeArgumentText.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-            ? null : activeArgumentText.canvas.worldCamera;
-
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(activeArgumentText, eventData.position, cam);
-        if (linkIndex == -1) return;
-
-        string id = activeArgumentText.textInfo.linkInfo[linkIndex].GetLinkID();
-        if (id.StartsWith("cmd:"))
-        {
-            // 키워드 클릭 로직
-            CorrectProcessKeywordClick();
-        }
-        if (id.StartsWith("cmd2:"))
-        {
-            // 키워드 클릭 로직
-            WorngProcessKeywordClick();
-        }
     }
 
     private void CorrectProcessKeywordClick()
