@@ -31,8 +31,11 @@ public class EvidenceManager : MonoBehaviour
     [Header("Evidence UI")]
     public RectTransform scrollViewTransform;
     public Image evidenceImage;
+    public Image evidenceImage2;
     public TextMeshProUGUI evidenceNameText;
+    public TextMeshProUGUI evidenceNameText2;
     public TextMeshProUGUI evidenceExplanationText;
+    public TextMeshProUGUI evidenceExplanationText2;
 
     [Header("Add Evidence UI")]
     public GameObject addEvidencePrefab; // RectTransform 대신 프리팹 GameObject로 변경
@@ -80,10 +83,14 @@ public class EvidenceManager : MonoBehaviour
     public void EvidenceUpdate(Evidence data)
     {
         evidenceImage.sprite = data.evidenceImage;
+        evidenceImage2.sprite = data.evidenceImage;
         evidenceNameText.text = data.evidenceName;
+        evidenceNameText2.text = data.evidenceName;
         evidenceExplanationText.text = data.evidenceExplanation;
+        evidenceExplanationText2.text = data.evidenceExplanation;
 
         evidenceExplanationText.ForceMeshUpdate();
+        evidenceExplanationText2.ForceMeshUpdate();
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollViewTransform); //스크롤뷰 강제 재계산
     }
 

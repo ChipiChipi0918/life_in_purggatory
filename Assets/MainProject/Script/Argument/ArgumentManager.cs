@@ -161,6 +161,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
 
     // 내부 변수
+    private Coroutine argumentCoroutine;
     private string currentRawText = "";
     private int currentLinkHoverIndex = -1;
     private bool lastUiAnimState = false;
@@ -424,7 +425,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // 한 사이클 종료 -> Exit Line 출력 후 대기 상태로 전환
         currentState = FlowState.Argument_EndWait;
-
         
         // Exit Line 출력
         waitingArgumentEndText = true;
@@ -530,33 +530,46 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     }
 
     //확인창 버튼 연결
-    public void ConfirmPointOut() // "예" 버튼 클릭 시
+    public void ConfirmPointOut()
     {
         UiManager.instance.ShowArgumentConfirmUi(false);
 
-        // 1. 정답 키워드(|*...*|)를 클릭한 경우
         if (pendingLinkID.StartsWith("cmd:"))
         {
-            // 증거까지 맞다면 ArgumentCorrect()가 호출되어 상태가 Idle로 변경됨
-            // 증거가 틀리다면 내부에서 CameraShake만 하고 상태는 유지됨
+            // 1. 진행 중인 모든 논의 루프 코루틴 즉시 중단
+            if (argumentCoroutine != null)
+            {
+                StopCoroutine(argumentCoroutine);
+                argumentCoroutine = null;
+            }
+
+            // 2. 정답 판정 및 연출 실행
             CorrectProcessKeywordClick();
+
+            // 3. [핵심] 정답을 맞혔으므로 즉시 논의 시스템 강제 정리
+            ImmediateExitArgument();
         }
-        // 2. 오답 키워드(|...|)를 클릭한 경우
-        else if (pendingLinkID.StartsWith("cmd2:"))
+        else
         {
             WorngProcessKeywordClick();
+            currentState = FlowState.Argument_Loop; // 오답일 땐 다시 루프 재개
         }
-
-        // 🔥 [핵심] 정답을 맞춰서 상태가 Idle로 변한 게 아니라면, 다시 루프를 돌려줘야 함!
-        if (currentState == FlowState.Argument_Confirm)
-        {
-            currentState = FlowState.Argument_Loop;
-            Debug.Log("오답 혹은 증거 틀림: 논의 루프 재개");
-        }
-
         pendingLinkID = null;
     }
 
+    // 루프가 끝나길 기다리지 않고 강제로 시스템을 정리하는 함수
+    private void ImmediateExitArgument()
+    {
+        Debug.Log("정답 확인 - 논의 루프 즉시 탈출 및 환경 복구");
+
+        currentState = FlowState.Dialogue_Wait;
+
+        Time.timeScale = 1f;
+        UiManager.instance.isUiAnim = false;
+
+        UiManager.instance.camRotate(Vector3.zero, 0.5f);
+        UiManager.instance.camTransform.DOMoveZ(-10f, 0.5f);
+    }
     public void CancelPointOut() // "아니오" 버튼
     {
         UiManager.instance.ShowArgumentConfirmUi(false);
@@ -917,6 +930,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             Debug.Log("틀렸습니다.");
             EffectManager.instance.CameraShake();
         }
+
+        currentState = FlowState.Idle; // 혹은 다음 단계 상태로 변경
+        Debug.Log("정답! 논의 시스템 종료");
     }
 
     private void WorngProcessKeywordClick()

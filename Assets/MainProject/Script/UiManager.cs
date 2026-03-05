@@ -337,6 +337,4 @@ public class UiManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(1);
         startOrEnd.localScale = new Vector3(1, 0, 1);
     }
-
-    
 }

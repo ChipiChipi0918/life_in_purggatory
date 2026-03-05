@@ -208,7 +208,7 @@ public static class CSVParser
             // ============================
             // 🔥 논의 시작
             // ============================
-            if (speaker == "논의 시작" || speaker == "심문 시작")
+            if (speaker == "논의 시작 (행동:반론)" )
             {
                 inArgument = true;
                 currentBlock = new ArgumentBlock();
@@ -234,15 +234,41 @@ public static class CSVParser
                     if (string.IsNullOrEmpty(currentBlock.correctEvidence))
                         Debug.LogWarning("정답 증거품이 지정되지 않았습니다.");
                 }
-
                 continue;
             }
+            if (speaker == "논의 시작 (행동:찬성)")
+            {
+                inArgument = true;
+                currentBlock = new ArgumentBlock();
 
+                if (!string.IsNullOrEmpty(text))
+                {
+                    string[] raw = text.Split('/');
+                    currentBlock.evidenceCandidates = new List<string>();
+
+                    foreach (string r in raw)
+                    {
+                        string ev = r.Trim();
+
+                        if (ev.StartsWith("*") && ev.EndsWith("*"))
+                        {
+                            ev = ev.Substring(1, ev.Length - 2);
+                            currentBlock.correctEvidence = ev;
+                        }
+
+                        currentBlock.evidenceCandidates.Add(ev);
+                    }
+
+                    if (string.IsNullOrEmpty(currentBlock.correctEvidence))
+                        Debug.LogWarning("정답 증거품이 지정되지 않았습니다.");
+                }
+                continue;
+            }
 
             // ============================
             // 🔥 논의 종료
             // ============================
-            if (speaker == "논의 종료" || speaker == "심문 종료")
+            if (speaker == "논의 종료" )
             {
                 inArgument = false;
 
