@@ -125,6 +125,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public Transform argumentEvidenceButtonParent;
     public Transform argumentActButtonParent;
     public GameObject argumentEvidenceButtonPrefab;
+    public TMP_Text currentActText;
 
     [Header("Confirm UI")]
     private string pendingLinkID;
@@ -631,6 +632,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             Debug.Log("반론");
 
         currentActButtonSelected = button;
+
+        if(currentAct == ActState.counterargument)
+            currentActText.text = "반론";
+        if (currentAct == ActState.agreement)
+            currentActText.text = "찬성";
+        if (currentAct == ActState.perjury)
+            currentActText.text = "위증";
     }
 
     private void ClearAllEvidenceButtons()
