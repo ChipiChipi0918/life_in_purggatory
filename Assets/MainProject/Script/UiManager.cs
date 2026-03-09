@@ -29,6 +29,13 @@ public class UiManager : MonoBehaviour
     public RectTransform argumentConfirmPanel; // 확인 UI 패널
     public bool isConfirmUi;
 
+    [Header("논의 정답 효과")]
+    public Animator hanlonAnim;
+    public Image hanlonBackground;
+    public Sprite counterargumentBackground;
+    public Sprite agreementBackground;
+    public Sprite perjuryBackground;
+
     [Header("Back Ui")]
     public CanvasGroup backUi;
 
@@ -287,6 +294,18 @@ public class UiManager : MonoBehaviour
             argumentLineUp.DOAnchorPosY(75, 1).SetUpdate(true);
             argumentLineDown.DOAnchorPosY(-75, 1).SetUpdate(true);
         }
+    }
+
+    public void HanlonAnimOn(ArgumentManager.ActState act)
+    {
+        if(act == ArgumentManager.ActState.counterargument)
+            hanlonBackground.sprite = counterargumentBackground;
+        else if (act == ArgumentManager.ActState.agreement)
+            hanlonBackground.sprite = agreementBackground;
+        else if (act == ArgumentManager.ActState.perjury)
+            hanlonBackground.sprite = perjuryBackground;
+
+        hanlonAnim.SetTrigger("On");
     }
 
     // UiManager 내부 함수 수정 제안

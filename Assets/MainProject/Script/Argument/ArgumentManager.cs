@@ -568,6 +568,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         Time.timeScale = 1f;
         UiManager.instance.isUiAnim = false;
 
+        
+
         UiManager.instance.camRotate(Vector3.zero, 0.5f);
         UiManager.instance.camTransform.DOMoveZ(-10f, 0.5f);
     }
@@ -627,9 +629,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             currentActButtonSelected.Deselect();
         }
-
-        if (currentAct == ActState.counterargument)
-            Debug.Log("반론");
 
         currentActButtonSelected = button;
 
@@ -931,6 +930,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (selectedEvidenceName == correctEvidenceName)
         {
             Debug.Log("이의 있음! (정답)");
+            UiManager.instance.HanlonAnimOn(currentAct);
             ArgumentCorrect();
         }
         else

@@ -51,7 +51,6 @@ public class ArgumentActButton : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        
         Select();
     }
 
