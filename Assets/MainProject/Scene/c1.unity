@@ -37273,7 +37273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 753c66a891c5c9f46baf4e0fb4b6a90f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  argumentCamTransform: {fileID: 1210931991}
+  camTransform: {fileID: 1210931991}
   nameTagObj: {fileID: 1090711176}
   nameText: {fileID: 2338959685317133056}
   dialoguePanel: {fileID: 936172709}
@@ -52030,7 +52030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loader: {fileID: 7583688865952818402}
   argumentManager: {fileID: 1260226110}
-  currentPhase: 1
+  currentPhase: 0
 --- !u!224 &8386969449087630720
 RectTransform:
   m_ObjectHideFlags: 0

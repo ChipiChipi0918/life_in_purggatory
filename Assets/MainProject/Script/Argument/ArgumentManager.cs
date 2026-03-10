@@ -453,8 +453,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             if (argumentLineIndex > 1) UiManager.instance.camRotate(new Vector3(0, 0, -2.5f), 0.5f);
         }
 
-        // 🔥 [수정] 직접 정의했던 MoveCam 대신 DialogueDirector를 호출합니다.
-        DialogueDirector.instance.MoveCam(line.speaker, xOffset);
+        DialogueDirector.instance.MoveArgumentCam(line.speaker, xOffset);
 
         CanvasGroup cg = activeArgumentText.GetComponent<CanvasGroup>();
         if (cg != null)
@@ -754,7 +753,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // 1. 카메라 & 증거품 처리
         if (DialogueFlowManager.instance.currentPhase == DialogueFlowManager.Phase.Judgment)
-            DialogueDirector.instance.TpCam(line.speaker);
+            DialogueDirector.instance.TpArgumentCam(line.speaker);
 
         DialogueDirector.instance.ProcessEvidenceEffects(line.addEvidence, line.showEvidence);
         DialogueDirector.instance.ProcessScreenEffects(line.effect);
@@ -764,9 +763,21 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         DialogueDirector.instance.UpdateNameTag(line.speaker);
 
 
-        // 3. 캐릭터 무브 & 캐릭터 스테이트 설정
+        // 3. (캐릭터 or 카메라) 무브 & 캐릭터 스테이트 설정
         if(line.characterPos!=Vector3.zero)
             DialogueDirector.instance.MoveCharacter(line.speaker, 1 ,line.characterPos);
+
+        if (line.cameraPos != Vector3.zero)
+            DialogueDirector.instance.MoveCamera(1, line.cameraPos);
+
+
+        //이 주석을 해제 할 시 캐릭터 움직임에 따라 카메라가 같이 이동하여
+        //카메라가 캐릭터에 가까워짐 + 캐릭터가 이동함에 따라 같은 방향으로 이동함
+        //= 그 캐릭터에 집중이 되는 즉 이목이 끌리는 효과를 볼 수 있었음 (실수였으나 나름 결과물이 보기 이뻐 일단 임시로 주석처리)
+
+        //if (line.cameraPos != Vector3.zero)
+        //    DialogueDirector.instance.MoveCamera(1, line.characterPos);
+
 
         DialogueDirector.instance.CharacterState(line.speaker, line.charStateList);
 

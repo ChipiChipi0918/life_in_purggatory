@@ -32,9 +32,9 @@ public class DialogueLine
     public List<string> charOffList = new List<string>();
 
     public int effect;//7
+    public string soundEffect;//8
 
-    //8
-    //9
+    public Vector3 cameraPos;//9
 
     public float textTime; //10
     public string camFormat; //11
@@ -130,7 +130,20 @@ public static class CSVParser
             string charOff = cols[5].Trim().Replace("\\n", "\n");//6
             //7-int effect
             //8 효과음 들어갈 예정
-            //9 미정
+            #region 9열 (카메라 위치)값 파싱
+            Vector3 camPos = Vector3.zero;
+            if (cols.Length > 2 && !string.IsNullOrEmpty(cols[8]))
+            {
+                string[] posValues = cols[8].Split('/');
+                if (posValues.Length == 3)
+                {
+                    float.TryParse(posValues[0], out float x);
+                    float.TryParse(posValues[1], out float y);
+                    float.TryParse(posValues[2], out float z);
+                    camPos = new Vector3(x, y, z) / 100;
+                }
+            }
+            #endregion //9
             //10-float 논의 텍스트 시간(길이)
             string camFormat = cols.Length > 10 ? cols[10].Trim().Replace("\r", "") : "";//11
             string addEvidence = cols.Length > 11 ? cols[11].Trim().Replace("\r", "") : "";//12
@@ -153,6 +166,7 @@ public static class CSVParser
                     charState = charState,
                     charOn = charOn,
                     charOff = charOff,
+                    cameraPos = camPos,
                     type = DialogueType.Dialogue,
                     isChoice = true,
                     choices = new List<string>(),
@@ -296,6 +310,7 @@ public static class CSVParser
                 charState = charState,
                 charOn = charOn,
                 charOff = charOff,
+                cameraPos = camPos,
                 camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue,
                 addEvidence = addEvidence,

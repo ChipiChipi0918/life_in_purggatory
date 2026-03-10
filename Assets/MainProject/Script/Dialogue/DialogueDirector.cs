@@ -8,7 +8,7 @@ public class DialogueDirector : MonoBehaviour
     public static DialogueDirector instance;
 
     [Header("References")]
-    [SerializeField] private Transform argumentCamTransform;
+    [SerializeField] private Transform camTransform;
     [SerializeField] private GameObject nameTagObj;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private GameObject dialoguePanel;
@@ -71,16 +71,16 @@ public class DialogueDirector : MonoBehaviour
     }
 
     #region Camera & Character Control
-    public void MoveCam(string name, float xOffset, float duration = 0.5f)
+    public void MoveArgumentCam(string name, float xOffset, float duration = 0.5f)
     {
         float baseX = GetCharacterPos(name);
-        argumentCamTransform.DOMoveX(baseX + xOffset, duration).SetEase(Ease.OutCubic);
+        camTransform.DOMoveX(baseX + xOffset, duration).SetEase(Ease.OutCubic);
     }
 
-    public void TpCam(string name)
+    public void TpArgumentCam(string name)
     {
         float baseX = GetCharacterPos(name);
-        argumentCamTransform.position = new Vector3(baseX, 0, -10);
+        camTransform.position = new Vector3(baseX, 0, -10);
     }
 
     public float GetCharacterPos(string name)
@@ -98,6 +98,12 @@ public class DialogueDirector : MonoBehaviour
             t.DOKill();
             t.DOLocalMove(targetPos, duration).SetEase(Ease.OutQuad);
         }
+    }
+    public void MoveCamera(float duration, Vector3 targetPos)
+    {
+        Transform t = camTransform.transform;
+        t.DOKill();
+        t.DOLocalMove(targetPos, duration).SetEase(Ease.OutQuad);
     }
 
     /// <summary>
