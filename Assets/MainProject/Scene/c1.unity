@@ -37336,9 +37336,20 @@ MonoBehaviour:
     eyes: []
     mouth: []
   - characterName: "\uC2DC\uBAAC"
-    body: []
-    eyes: []
-    mouth: []
+    body:
+    - {fileID: 21300000, guid: 61f400c928ee4a84fb9fef73ea241693, type: 3}
+    - {fileID: 21300000, guid: d525a63ce9c3fe14daf6d7b4f8d44b79, type: 3}
+    - {fileID: 21300000, guid: d32be873eef01d54d863a4165b25dbeb, type: 3}
+    eyes:
+    - {fileID: 21300000, guid: a81a1ca690728734db3e36195b0dcc95, type: 3}
+    - {fileID: 21300000, guid: 518e5627afb34c345b8d001377dae940, type: 3}
+    - {fileID: 21300000, guid: a7ae3466cfb6467488ba2b130e5d2698, type: 3}
+    - {fileID: 21300000, guid: 4eec22d2ffb34454da3e9c1ac711a759, type: 3}
+    mouth:
+    - {fileID: 21300000, guid: 6306fd7307376fa4482af5da4acd59a4, type: 3}
+    - {fileID: 21300000, guid: 137a6cb6dfbeb754d83394b139430fe9, type: 3}
+    - {fileID: 21300000, guid: 7f65a39f97a83874d95d619963f374e9, type: 3}
+    - {fileID: 21300000, guid: 5e446d323dab7e647a1586d21fd02824, type: 3}
   - characterName: "\uC140\uB9B0"
     body: []
     eyes: []
@@ -45079,9 +45090,9 @@ RectTransform:
   - {fileID: 225430882}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 188.84247, y: -120.437996}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874942172
@@ -52046,9 +52057,9 @@ RectTransform:
   - {fileID: 4864072961553108206}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 188.84247, y: -64.852}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8386969449087630721
