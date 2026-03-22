@@ -150,4 +150,42 @@ public class EffectManager : MonoBehaviour
             fadeCanvasGroup.alpha = 0f;
         }
     }
+    public void ResetAllEffects()
+    {
+        StopAllCoroutines();
+
+        // 2. 페이드 인아웃 리셋
+        if (fade != null)
+        {
+            CanvasGroup fadeCG = fade.GetComponent<CanvasGroup>();
+            if (fadeCG != null) fadeCG.alpha = 0f;
+            fade.SetActive(false);
+        }
+
+        // 3. 피 이펙트 리셋
+        if (blood != null)
+        {
+            CanvasGroup bloodCG = blood.GetComponent<CanvasGroup>();
+            if (bloodCG != null) bloodCG.alpha = 0f;
+            blood.SetActive(false);
+        }
+
+        // 4. 이의제기 UI 원위치 및 리셋
+        if (objection != null)
+        {
+            objection.DOKill(); // DOTween 트윈 중단
+            CanvasGroup objCG = objection.GetComponent<CanvasGroup>();
+            if (objCG != null) objCG.alpha = 0f;
+
+            // 연출 시작 전 Y값으로 강제 회수
+            objection.anchoredPosition = new Vector2(objection.anchoredPosition.x, 1222.426f);
+        }
+
+        // 5. 기타 플래그 리셋
+        usingShake = false;
+        if (UiManager.instance != null)
+        {
+            UiManager.instance.isUiAnim = false; // 논파 연출 중 굳음 방지
+        }
+    }
 }

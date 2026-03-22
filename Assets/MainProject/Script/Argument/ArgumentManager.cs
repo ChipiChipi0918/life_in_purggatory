@@ -869,6 +869,125 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     }
     #endregion
 
+    #region Debug & Cheat System
+    [Header("Debug")]
+    public TMP_InputField cheatInputField; // 인스펙터에서 InputField (TMP)를 연결해 주세요.
+
+    // 만약 기존 스크립트에 Start()가 없다면 추가해주시고, 있다면 내부 코드만 복사하세요.
+    private void Start()
+    {
+        // 입력창에서 엔터를 눌렀을 때 (입력이 완료되었을 때) 실행될 이벤트 연결
+        if (cheatInputField != null)
+        {
+            cheatInputField.onSubmit.AddListener(JumpToLine);
+        }
+    }
+
+    public void JumpToLine(string input)
+    {
+        if (currentLines == null || currentLines.Count == 0)
+        {
+            Debug.LogWarning("[Cheat] 현재 로드된 대사(DialogueLine) 데이터가 없습니다.");
+            return;
+        }
+
+        if (int.TryParse(input, out int targetIndex))
+        {
+            if (targetIndex >= 0 && targetIndex < currentLines.Count)
+            {
+                // 1. 즉시 현재 도는 모든 루프 및 타이핑 코루틴 중지
+                StopAllCoroutines();
+
+                // 🔥 [추가] 화면이 검게 굳어버리거나 피가 묻어있던 연출들을 즉시 투명하게 리셋
+                if (EffectManager.instance != null)
+                {
+                    EffectManager.instance.ResetAllEffects();
+                }
+
+                // 2. [핵심] 목표 지점 직전까지의 모든 캐릭터/환경 데이터 동기화
+                SynchronizeStateToLine(targetIndex);
+
+                // 3. 각종 대기 플래그 강제 해제
+                isSkipTyping = true;
+                waitingExitDialogue = false;
+                waitingArgumentEndText = false;
+                isChoiceShowingWrongFeedback = false;
+                isMapPointOutShowingWrongFeedback = false;
+
+                // 4. UI 및 환경 초기화 (기존 씬에 남아있는 UI 찌꺼기 제거)
+                ClearAllEvidenceButtons();
+                dialoguePanel.SetActive(false);
+                choicePanel.SetActive(false);
+                argumentTextLeft.gameObject.SetActive(false);
+                argumentTextRight.gameObject.SetActive(false);
+
+                // 5. 카메라 강제 원상복구
+                if (UiManager.instance != null)
+                {
+                    UiManager.instance.isUiAnim = false;
+                    UiManager.instance.camRotate(Vector3.zero, 0f);
+                }
+
+                // 6. 새로운 인덱스 주입 및 UI 재가동
+                lineIndex = targetIndex;
+                dialoguePanel.SetActive(true);
+
+                currentState = FlowState.Idle;
+                PlayNext(); // 이제 동기화된 상태에서 해당 대사가 자연스럽게 나옵니다.
+            }
+            else
+            {
+                Debug.LogWarning($"[Cheat] 범위를 벗어난 인덱스입니다. (0 ~ {currentLines.Count - 1} 사이의 숫자를 입력하세요)");
+            }
+        }
+
+        cheatInputField.text = "";
+        cheatInputField.DeactivateInputField(); // 다음 플레이를 위해 인풋 포커스 해제
+    }
+    private void SynchronizeStateToLine(int targetIndex)
+    {
+        // 🔥 i < targetIndex (목표 대사 '직전' 까지만 연출을 덮어씌웁니다)
+        for (int i = 0; i < targetIndex; i++)
+        {
+            DialogueLine line = currentLines[i];
+
+            // 1. 캐릭터 On / Off (기존 DialogueDirector의 리스트 기반 함수 그대로 사용)
+            DialogueDirector.instance.CharacterOn(line.charOnList);
+            DialogueDirector.instance.CharacterOff(line.charOffList);
+
+            // 2. 캐릭터 상태/표정
+            if (line.charStateList.Count > 0)
+            {
+                DialogueDirector.instance.CharacterState(line.speaker, line.charStateList);
+            }
+
+            // 3. 배경 & BGM (보유 중인 매니저에 맞춰 연결)
+            if (!string.IsNullOrEmpty(line.background))
+            {
+                BackgroundManager.instance.DailyMapUpdate(line.background);
+            }
+
+            if (!string.IsNullOrEmpty(line.bgm))
+            {
+                if (line.bgm == "None") SoundManager.instance.StopBGM();
+                // else SoundManager.instance.PlayBGM(line.bgm);
+            }
+
+            // 4. 증거품 획득
+            if (!string.IsNullOrEmpty(line.addEvidence))
+            {
+                // EvidenceManager.Instance.AddEvidence(line.addEvidence);
+            }
+        }
+
+        // 5. 카메라 위치는 목표 대사의 위치로 즉시 순간이동
+        if (currentLines[targetIndex].cameraPos != Vector3.zero)
+        {
+            Camera.main.transform.position = currentLines[targetIndex].cameraPos;
+        }
+    }
+    #endregion
+
     #region Interaction (Hover & Click)
 
     private void CheckHover()
