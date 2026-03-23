@@ -422,12 +422,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     IEnumerator ArgumentEndUIEndShowDialogue(ArgumentBlock b)
     {
-        yield return new WaitForSecondsRealtime(4.35f);
+        float waitTime = Mathf.Max(0f, 4.35f - argumentDuration);
+        yield return new WaitForSecondsRealtime(waitTime);
 
-        // 한 사이클 종료 -> Exit Line 출력 후 대기 상태로 전환
         currentState = FlowState.Argument_EndWait;
-        
-        // Exit Line 출력
+
         waitingArgumentEndText = true;
         ShowDialogue(b.exitLine);
     }
@@ -474,29 +473,72 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         CanvasGroup cg = activeArgumentText.GetComponent<CanvasGroup>();
         if (cg == null) cg = activeArgumentText.gameObject.AddComponent<CanvasGroup>();
 
+        // 1. 초기화 (알파 0, 클릭 방지)
         cg.alpha = 0f;
         cg.interactable = false;
         cg.blocksRaycasts = false;
 
-        yield return new WaitForSeconds(0.45f);
+        // 🔥 [추가] TMP maxVisibleCharacters 초기화 (타이핑 준비)
+        activeArgumentText.ForceMeshUpdate(); // 텍스트 메시 강제 업데이트
+        int totalVisibleCharacters = activeArgumentText.textInfo.characterCount;
+        activeArgumentText.maxVisibleCharacters = 0; // 처음에 글자 안 보임
 
-        // 페이드 인
+        yield return new WaitForSeconds(0.45f); // 기존 대기 시간 유지
+
+
+        // 2. 🔥 [통합] Fade In + Typing 동시 진행
         float elapsed = 0f;
-        while (elapsed < argumentDuration)
+
+        // 타이핑 속도 계산 (기본 다이얼로그와 동일)
+        float timePerChar = Mathf.Clamp(1.0f / totalVisibleCharacters, 0.015f, 0.05f);
+        float typingTimer = 0f;
+        int currentTypeIndex = 0;
+
+        // 페이드 인이 끝나거나 타이핑이 끝날 때까지 루프
+        while (elapsed < argumentDuration || currentTypeIndex <= totalVisibleCharacters)
         {
-            elapsed += Time.deltaTime;
-            cg.alpha = Mathf.Lerp(0f, 1f, elapsed / argumentDuration);
+            // A. 페이드 인 계산
+            if (elapsed < argumentDuration)
+            {
+                elapsed += Time.deltaTime;
+                cg.alpha = Mathf.Lerp(0f, 1f, elapsed / argumentDuration);
+            }
+            else
+            {
+                cg.alpha = 1f; // 페이드 시간 지나면 완전히 보임
+            }
+
+            // B. 타이핑 계산
+            if (currentTypeIndex <= totalVisibleCharacters)
+            {
+                typingTimer += Time.deltaTime;
+                if (typingTimer >= timePerChar)
+                {
+                    typingTimer = 0f;
+                    activeArgumentText.maxVisibleCharacters = currentTypeIndex;
+                    currentTypeIndex++;
+
+                    // 필요시 여기에 보이스 재생 (1글자씩 칠 때 사운드)
+                    // if (currentTypeIndex % 2 == 1 && line.speaker != "") SoundManager.instance.EunhaVoice();
+                }
+            }
+
             yield return null;
         }
+
+        // 3. 완료 처리 (확정)
         cg.alpha = 1f;
+        activeArgumentText.maxVisibleCharacters = totalVisibleCharacters; // 전부 보이게 확정
+
+        // 대사가 다 쳐진 후에만 클릭 가능하도록 설정
         cg.interactable = true;
         cg.blocksRaycasts = true;
 
-        // 🔥 [수정] 단순 대기에서 '상태 체크형 타이머'로 변경
+
+        // 4. [유지] 타이머 대기 로직 (상태 체크형)
         float textTimer = 0f;
         while (textTimer < line.textTime)
         {
-            // 논의 루프 상태일 때만 시간이 흐름
             if (currentState == FlowState.Argument_Loop)
             {
                 textTimer += Time.deltaTime;
@@ -504,6 +546,22 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             yield return null;
         }
 
+        // 5. 🔥 [추가] 대사 종료 시 Fade Out
+        elapsed = 0f;
+        while (elapsed < argumentDuration)
+        {
+            // 논의 루프 상태일 때만 페이드 아웃 진행
+            if (currentState == FlowState.Argument_Loop)
+            {
+                elapsed += Time.deltaTime;
+                cg.alpha = Mathf.Lerp(1f, 0f, elapsed / argumentDuration);
+            }
+            yield return null;
+        }
+        cg.alpha = 0f; // 완전히 가림
+
+
+        // 6. 다음 라인 진행
         if (currentState == FlowState.Argument_Loop)
         {
             NextArgumentLine();
@@ -536,23 +594,35 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         if (pendingLinkID.StartsWith("cmd:"))
         {
-            // 1. 진행 중인 모든 논의 루프 코루틴 즉시 중단
-            if (argumentCoroutine != null)
+            ArgumentBlock block = argumentBlocks[currentBlockIndex];
+
+            // 🔥 행동과 증거가 모두 맞는지 검사
+            bool isEvidenceCorrect = (selectedEvidenceName == correctEvidenceName);
+            bool isActCorrect = (currentAct == block.actionType); // 상황에 맞게 비교
+
+            if (isEvidenceCorrect && isActCorrect)
             {
-                StopCoroutine(argumentCoroutine);
-                argumentCoroutine = null;
+                // 🎯 정답일 때만 코루틴을 멈추고 탈출합니다.
+                if (argumentCoroutine != null)
+                {
+                    StopCoroutine(argumentCoroutine);
+                    argumentCoroutine = null;
+                }
+
+                CorrectProcessKeywordClick(); // 성공 연출 및 UI 정리
+                ImmediateExitArgument();
             }
-
-            // 2. 정답 판정 및 연출 실행
-            CorrectProcessKeywordClick();
-
-            // 3. [핵심] 정답을 맞혔으므로 즉시 논의 시스템 강제 정리
-            ImmediateExitArgument();
+            else
+            {
+                // ❌ 오답이면 카메라 셰이크 후 루프 재개
+                WorngProcessKeywordClick();
+                currentState = FlowState.Argument_Loop;
+            }
         }
         else
         {
             WorngProcessKeywordClick();
-            currentState = FlowState.Argument_Loop; // 오답일 땐 다시 루프 재개
+            currentState = FlowState.Argument_Loop;
         }
         pendingLinkID = null;
     }
@@ -566,8 +636,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         Time.timeScale = 1f;
         UiManager.instance.isUiAnim = false;
-
-        
 
         UiManager.instance.camRotate(Vector3.zero, 0.5f);
         UiManager.instance.camTransform.DOMoveZ(-10f, 0.5f);
@@ -1057,25 +1125,32 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        if (selectedEvidenceName == correctEvidenceName)
+        ArgumentBlock block = argumentBlocks[currentBlockIndex];
+
+        // 🔥 1. 증거 일치 여부
+        bool isEvidenceCorrect = (selectedEvidenceName == correctEvidenceName);
+
+        // 🔥 2. 행동(찬성/반론) 일치 여부
+        bool isActCorrect = (currentAct == block.actionType);
+
+        if (isEvidenceCorrect && isActCorrect)
         {
             Debug.Log("이의 있음! (정답)");
+            
             UiManager.instance.HanlonAnimOn(currentAct);
-            ArgumentCorrect();
+            ArgumentCorrect(); // 내부에서 currentState를 Dialogue_Wait 등으로 전환
+            EffectManager.instance.CameraShake();
         }
         else
         {
-            Debug.Log("틀렸습니다.");
+            Debug.Log("틀렸습니다. (증거품 또는 행동 불일치)");
             EffectManager.instance.CameraShake();
         }
-
-        currentState = FlowState.Idle; // 혹은 다음 단계 상태로 변경
-        Debug.Log("정답! 논의 시스템 종료");
     }
 
     private void WorngProcessKeywordClick()
     {
-        Debug.Log("틀렸습니다.");
+        Debug.Log("틀렸습니다. (틀린 키워드 클릭)");
         EffectManager.instance.CameraShake();
     }
 

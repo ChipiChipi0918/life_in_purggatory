@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
+using static ArgumentManager;
 
 #region Dialogue Data Class
 public enum DialogueType
@@ -14,6 +15,12 @@ public enum DialogueType
     Dialogue,
     Argument,
     PlaceSelection // 🔥 [추가] 장소 지적 타입
+}
+public enum ArgumentActionType
+{
+    None,
+    Refutation, // 반론
+    Agreement   // 찬성
 }
 
 [System.Serializable]
@@ -60,8 +67,10 @@ public class ArgumentBlock
     public List<DialogueLine> lines = new List<DialogueLine>();
     public DialogueLine exitLine;
 
-    public string correctEvidence;              // 🔥 정답
-    public List<string> evidenceCandidates;     // (선택) 후보들
+    public string correctEvidence;
+    public List<string> evidenceCandidates;
+
+    public ActState actionType;
 }
 
 public static class CSVUtil
@@ -222,38 +231,20 @@ public static class CSVParser
             // ============================
             // 🔥 논의 시작
             // ============================
-            if (speaker == "논의 시작 (행동:반론)" )
+            if (speaker.StartsWith("논의 시작"))
             {
                 inArgument = true;
                 currentBlock = new ArgumentBlock();
 
-                if (!string.IsNullOrEmpty(text))
+                // 🔥 [추가] 화자 텍스트를 분석하여 행동 타입 분류
+                if (speaker.Contains("반론"))
                 {
-                    string[] raw = text.Split('/');
-                    currentBlock.evidenceCandidates = new List<string>();
-
-                    foreach (string r in raw)
-                    {
-                        string ev = r.Trim();
-
-                        if (ev.StartsWith("*") && ev.EndsWith("*"))
-                        {
-                            ev = ev.Substring(1, ev.Length - 2);
-                            currentBlock.correctEvidence = ev;
-                        }
-
-                        currentBlock.evidenceCandidates.Add(ev);
-                    }
-
-                    if (string.IsNullOrEmpty(currentBlock.correctEvidence))
-                        Debug.LogWarning("정답 증거품이 지정되지 않았습니다.");
+                    currentBlock.actionType = ActState.counterargument;
                 }
-                continue;
-            }
-            if (speaker == "논의 시작 (행동:찬성)")
-            {
-                inArgument = true;
-                currentBlock = new ArgumentBlock();
+                else if (speaker.Contains("찬성"))
+                {
+                    currentBlock.actionType = ActState.agreement;
+                }
 
                 if (!string.IsNullOrEmpty(text))
                 {
@@ -274,7 +265,7 @@ public static class CSVParser
                     }
 
                     if (string.IsNullOrEmpty(currentBlock.correctEvidence))
-                        Debug.LogWarning("정답 증거품이 지정되지 않았습니다.");
+                        Debug.LogWarning($"{speaker} : 정답 증거품이 지정되지 않았습니다.");
                 }
                 continue;
             }

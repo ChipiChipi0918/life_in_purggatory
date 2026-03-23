@@ -31,6 +31,7 @@ public class UiManager : MonoBehaviour
 
     [Header("논의 정답 효과")]
     public Animator hanlonAnim;
+    public Animator hanlonEffectAnim;
     public Image hanlonBackground;
     public Sprite counterargumentBackground;
     public Sprite agreementBackground;
@@ -306,6 +307,7 @@ public class UiManager : MonoBehaviour
             hanlonBackground.sprite = perjuryBackground;
 
         hanlonAnim.SetTrigger("On");
+        hanlonEffectAnim.SetTrigger("On");
     }
 
     // UiManager 내부 함수 수정 제안
