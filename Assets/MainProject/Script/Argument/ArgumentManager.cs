@@ -971,8 +971,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
                 {
                     EffectManager.instance.ResetAllEffects();
                 }
-
-                // 2. [핵심] 목표 지점 직전까지의 모든 캐릭터/환경 데이터 동기화
+                CheatJumpWithEvidence(targetIndex);
                 SynchronizeStateToLine(targetIndex);
 
                 // 3. 각종 대기 플래그 강제 해제
@@ -1053,6 +1052,33 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             Camera.main.transform.position = currentLines[targetIndex].cameraPos;
         }
+    }
+
+    public void CheatJumpWithEvidence(int targetIndex)
+    {
+        // 1. 인벤토리 일단 초기화 (선택 사항)
+        EvidenceManager.Instance.ClearEvidence();
+
+        // 2. 0번부터 목표 인덱스까지 루프를 돌며 증거 획득 로직만 실행
+        for (int i = 0; i < targetIndex; i++)
+        {
+            DialogueLine line = currentLines[i];
+
+            // 증거 획득 데이터가 있다면 실행
+            if (!string.IsNullOrEmpty(line.addEvidence))
+            {
+                // EvidenceManager에 해당 증거를 추가 (이미 있다면 무시하도록 설계되어야 함)
+                EvidenceManager.Instance.AddEvidence(line.addEvidence);
+            }
+
+            // 추가로 배경이나 BGM도 마지막 상태를 기억하고 싶다면 여기서 변수에 담아둘 수 있음
+        }
+
+        // 3. 이제 실제 대사 위치 이동 및 화면 갱신
+        this.lineIndex = targetIndex;
+        StopAllCoroutines();
+        ResetUI();
+        PlayNext();
     }
     #endregion
 

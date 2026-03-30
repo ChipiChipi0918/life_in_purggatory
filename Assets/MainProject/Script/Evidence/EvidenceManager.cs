@@ -76,7 +76,26 @@ public class EvidenceManager : MonoBehaviour
 
         Debug.Log($"증거품 추가됨: {name}");
     }
+    // =============================
+    // 증거 전부 삭제
+    // =============================
+    public void ClearEvidence()
+    {
+        // 1. 리스트 데이터 삭제
+        evidence.Clear();
 
+        // 2. 생성된 UI 버튼들 삭제
+        if (evidenceButtonGroup != null)
+        {
+            // 부모(ButtonGroup) 아래에 있는 모든 자식 요소를 순회하며 파괴
+            foreach (Transform child in evidenceButtonGroup.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        Debug.Log("모든 증거 데이터와 UI 버튼이 삭제되었습니다.");
+    }
     // =============================
     // 증거 UI 갱신
     // =============================
