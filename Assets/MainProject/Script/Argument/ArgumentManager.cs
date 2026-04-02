@@ -169,6 +169,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private bool isChoiceShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
     private bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
     private bool waitingExitDialogue = false;
+    private bool isObjectionAnim = false;
     private ArgumentEvidenceButton currentEcidenceButtonSelected;
     private ArgumentActButton currentActButtonSelected;
     #endregion
@@ -221,7 +222,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     public void PlayNext()
     {
         // UI 애니메이션 중이거나 호텔 정보 창이 켜져있거나 Ui가 꺼져있으면 예외처리
-        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation || UiManager.instance.isLogue || UiManager.instance.isUiOff) return;
+        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation || UiManager.instance.isLogue || UiManager.instance.isUiOff || isObjectionAnim) return;
 
         // 1. 전체 대화 종료 체크
         if (lineIndex >= currentLines.Count)
@@ -788,7 +789,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             string s = evName;
             btn.onClick.AddListener(() => {
                 OnArgumentEvidenceButtonClicked(s, btnObj);
-                // ArgumentEvidenceButton 내부의 Select를 호출하기 위해
                 evidenceBtn.OnPointerClick(null);
             });
         }
@@ -826,10 +826,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         DialogueDirector.instance.ProcessEvidenceEffects(line.addEvidence, line.showEvidence);
         DialogueDirector.instance.ProcessScreenEffects(line.effect);
 
-
         // 2. UI 텍스트 설정
         DialogueDirector.instance.UpdateNameTag(line.speaker);
-
 
         // 3. (캐릭터 or 카메라) 무브 & 캐릭터 스테이트 설정
         if(line.characterPos!=Vector3.zero)
@@ -1162,10 +1160,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (isEvidenceCorrect && isActCorrect)
         {
             Debug.Log("이의 있음! (정답)");
-            
-            UiManager.instance.HanlonAnimOn(currentAct);
+            StartCoroutine(CorrectAnswer(2.2f));
             ArgumentCorrect(); // 내부에서 currentState를 Dialogue_Wait 등으로 전환
-            EffectManager.instance.CameraShake();
         }
         else
         {
@@ -1255,6 +1251,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (choiceIndex == line.correctIndex)
         {
             Debug.Log("정답!");
+            StartCoroutine(CorrectAnswer(2.2f));
             isChoiceShowingWrongFeedback = false;
             choicePanel.SetActive(false);
             PlayNext();
@@ -1293,8 +1290,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         currentSelectedPlaceName = "";
 
         Debug.Log($"[장소 지적 시작] 정답: {currentPlaceAnswer}");
-
-        // 2. 🔥 [추가] UiManager를 통해 장소 지적 UI를 켬
+        
         UiManager.instance.MapPointOutUiToggle();
 
         //3. 다이얼로그 숨기기
@@ -1319,17 +1315,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (currentSelectedPlaceName.Trim() == currentPlaceAnswer)
         {
             Debug.Log("장소 지적 정답!");
+            StartCoroutine(CorrectAnswer(2.2f));
 
-            // 1. 🔥 [추가] 정답일 경우 UiManager를 통해 장소 지적 UI를 끔
             UiManager.instance.MapPointOutUiToggle();
 
             isMapPointOutShowingWrongFeedback = false;
-
-            // 2. 상태 초기화 및 다음 대사 진행
-            currentState = FlowState.Idle;
-
-            // UI가 들어가는 시간(약 1초)을 고려하여 약간의 딜레이 후 다음 대사 재생
-            StartCoroutine(WaitAndPlayNext(1.1f));
         }
         else
         {
@@ -1349,12 +1339,25 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    // UI 연출이 끝난 뒤 대화를 이어가기 위한 헬퍼 코루틴
+    /*// UI 연출이 끝난 뒤 대화를 이어가기 위한 헬퍼 코루틴
     private IEnumerator WaitAndPlayNext(float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
         PlayNext();
     }
-
+    */
     #endregion
+
+    IEnumerator CorrectAnswer(float waitTime)
+    {
+        currentState = FlowState.Idle;
+        isObjectionAnim = true;
+        EffectManager.instance.CameraShake();
+        UiManager.instance.HanlonAnimOn(currentAct);
+        yield return new WaitForSecondsRealtime(waitTime);
+        currentState = FlowState.Dialogue_Wait;
+        yield return new WaitForSecondsRealtime(1.2f);
+        isObjectionAnim = false;
+        PlayNext();
+    }
 }

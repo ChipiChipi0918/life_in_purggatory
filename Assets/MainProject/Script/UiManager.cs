@@ -305,6 +305,8 @@ public class UiManager : MonoBehaviour
             hanlonBackground.sprite = agreementBackground;
         else if (act == ArgumentManager.ActState.perjury)
             hanlonBackground.sprite = perjuryBackground;
+        else
+            hanlonBackground.sprite = counterargumentBackground;
 
         hanlonAnim.SetTrigger("On");
         hanlonEffectAnim.SetTrigger("On");
