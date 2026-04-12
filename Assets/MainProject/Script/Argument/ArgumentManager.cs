@@ -519,8 +519,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
                     activeArgumentText.maxVisibleCharacters = currentTypeIndex;
                     currentTypeIndex++;
 
-                    // 필요시 여기에 보이스 재생 (1글자씩 칠 때 사운드)
-                    // if (currentTypeIndex % 2 == 1 && line.speaker != "") SoundManager.instance.EunhaVoice();
+                    if (currentTypeIndex % 2 == 1 && line.speaker != "") SoundManager.instance.EllinaVoice();
                 }
             }
 
@@ -793,7 +792,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             });
         }
     }
-    // 🔥 [신규 함수] 증거 버튼 클릭 시 실행될 로직
+    // 증거 버튼 클릭 시 실행될 로직
     private void OnArgumentEvidenceButtonClicked(string evidenceName, GameObject buttonObj)
     {
         // 현재 선택된 증거 이름 저장
@@ -835,15 +834,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         if (line.cameraPos != Vector3.zero)
             DialogueDirector.instance.MoveCamera(1, line.cameraPos);
-
-
-        //이 주석을 해제 할 시 캐릭터 움직임에 따라 카메라가 같이 이동하여
-        //카메라가 캐릭터에 가까워짐 + 캐릭터가 이동함에 따라 같은 방향으로 이동함
-        //= 그 캐릭터에 집중이 되는 즉 이목이 끌리는 효과를 볼 수 있었음 (실수였으나 나름 결과물이 보기 이뻐 일단 임시로 주석처리)
-
-        //if (line.cameraPos != Vector3.zero)
-        //    DialogueDirector.instance.MoveCamera(1, line.characterPos);
-
 
         DialogueDirector.instance.CharacterState(line.speaker, line.charStateList);
 
@@ -893,7 +883,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         for (int i = 0; i < text.Length; i++)
         {
             dialogueText.text = text.Substring(0, i + 1);
-            if (i % 2 == 1 && speaker!="") SoundManager.instance.EunhaVoice(); // 보이스 재생
+            if (i % 2 == 1 && speaker!="") SoundManager.instance.EllinaVoice(); // 보이스 재생
 
             yield return new WaitForSeconds(timePerChar);
 

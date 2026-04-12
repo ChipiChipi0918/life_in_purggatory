@@ -29,7 +29,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void EunhaVoice()
+    public void EllinaVoice()
     {
         RuntimeManager.PlayOneShot(eunhaVoice);
     }

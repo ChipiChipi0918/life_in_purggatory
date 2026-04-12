@@ -149,7 +149,7 @@ public static class CSVParser
                     float.TryParse(posValues[0], out float x);
                     float.TryParse(posValues[1], out float y);
                     float.TryParse(posValues[2], out float z);
-                    camPos = new Vector3(x, y, z) / 100;
+                    camPos = new Vector3(x, y, z);
                 }
             }
             #endregion //9

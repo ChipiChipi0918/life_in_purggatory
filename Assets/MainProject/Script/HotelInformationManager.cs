@@ -34,7 +34,7 @@ public class HotelInformationManager : MonoBehaviour
         ruleTap.SetActive(false);
 
         if (informationTap < 0)
-            informationTap = 2;
+            informationTap = 3;
         else if (informationTap > 3)
             informationTap = 0;
 
@@ -64,13 +64,13 @@ public class HotelInformationManager : MonoBehaviour
 
     public void LeftArrow()
     {
-        informationTap -= 1;
+        informationTap --;
         InformationTapUpdate();
     }
 
     public void RightArrow()
     {
-        informationTap += 1;
+        informationTap ++;
         InformationTapUpdate();
     }
 }
