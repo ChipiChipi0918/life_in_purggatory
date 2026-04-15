@@ -1155,14 +1155,16 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            Debug.Log("틀렸습니다. (증거품 또는 행동 불일치)");
+            Debug.Log("논의 오답 (증거품 또는 행동 불일치)");
+            HpManager.instance.GetHp(- 1);
             EffectManager.instance.CameraShake();
         }
     }
 
     private void WorngProcessKeywordClick()
     {
-        Debug.Log("틀렸습니다. (틀린 키워드 클릭)");
+        Debug.Log("논의 오답 (틀린 키워드 클릭)");
+        HpManager.instance.GetHp(-1);
         EffectManager.instance.CameraShake();
     }
 
@@ -1240,7 +1242,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         if (choiceIndex == line.correctIndex)
         {
-            Debug.Log("정답!");
+            Debug.Log("객관식 정답");
             StartCoroutine(CorrectAnswer(2.2f));
             isChoiceShowingWrongFeedback = false;
             choicePanel.SetActive(false);
@@ -1248,7 +1250,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            Debug.Log("오답!");
+            Debug.Log("객관식 오답");
+            HpManager.instance.GetHp(-1);
             EffectManager.instance.CameraShake();
 
             // 플래그 설정: 다음 클릭 시 PlayNext()가 아닌 선택지로 돌아가게 함
@@ -1304,7 +1307,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         if (currentSelectedPlaceName.Trim() == currentPlaceAnswer)
         {
-            Debug.Log("장소 지적 정답!");
+            Debug.Log("장소 지적 정답");
             StartCoroutine(CorrectAnswer(2.2f));
 
             UiManager.instance.MapPointOutUiToggle();
@@ -1313,7 +1316,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            Debug.Log("오답!");
+            Debug.Log("장소 지적 오답");
+            HpManager.instance.GetHp(-1);
             EffectManager.instance.CameraShake();
 
             isMapPointOutShowingWrongFeedback = true;
@@ -1342,6 +1346,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     {
         currentState = FlowState.Idle;
         isObjectionAnim = true;
+
+        HpManager.instance.GetHp(1);
         EffectManager.instance.CameraShake();
         UiManager.instance.HanlonAnimOn(currentAct);
         yield return new WaitForSecondsRealtime(waitTime);
