@@ -57,6 +57,17 @@ public class EvidenceManager : MonoBehaviour
             Instance = this;
     }
 
+    public void OnHotelInform()
+    {
+        if (evidence == null || evidence.Count == 0)
+        {
+            Debug.LogWarning("증거 리스트가 비어있음");
+            return;
+        }
+
+        EvidenceUpdate(evidence[0]);
+    }
+
     // =============================
     // 증거 추가
     // =============================
@@ -102,11 +113,8 @@ public class EvidenceManager : MonoBehaviour
     public void EvidenceUpdate(Evidence data)
     {
         evidenceImage.sprite = data.evidenceImage;
-        evidenceImage2.sprite = data.evidenceImage;
         evidenceNameText.text = data.evidenceName;
-        evidenceNameText2.text = data.evidenceName;
         evidenceExplanationText.text = data.evidenceExplanation;
-        evidenceExplanationText2.text = data.evidenceExplanation;
 
         evidenceExplanationText.ForceMeshUpdate();
         evidenceExplanationText2.ForceMeshUpdate();
@@ -179,7 +187,7 @@ public class EvidenceManager : MonoBehaviour
     public string GetEvidenceExplanation(string name)
     {
         if (name == "시몬이 남긴 쪽지")
-            return "백현이 은하에게 남긴 쪽지.\n직접 쓴 손글씨로 쓰여있다.\n\n언제쯤 볼지는 모르겠지만\n만약에 이 쪽지를 보고 있다는 거라면 테라스로 잘 와 주었겠구나.\n미안하지만 탐정으로써 처리해야할 일이 생겨서 말이야.\n직접 얼굴 보지 못해서 아쉽네.\n내가 나중에 따로 찾아갈 테니 여기 호텔도 좀 둘러보고.\n다른 사람들과 인사라도 나눠둬.\n-최고의 명탐정 로넌이-";
+            return "시몬이 엘리나에게 남긴 쪽지.\n직접 쓴 손글씨로 쓰여있다.\n\n언제쯤 볼지는 모르겠지만\n만약에 이 쪽지를 보고 있다는 거라면 테라스로 잘 와 주었겠구나.\n미안하지만 탐정으로써 처리해야할 일이 생겨서 말이야.\n직접 얼굴 보지 못해서 아쉽네.\n내가 나중에 따로 찾아갈 테니 여기 호텔도 좀 둘러보고.\n다른 사람들과 인사라도 나눠둬.\n-최고의 명탐정 로넌이-";
         if (name == "로넌의 시체 사진")
             return "사건 현장에서 찍은 로넌의 시체 사진\n피해자 왼쪽 머리에 총상이 있다.\n그 외의 자세한 특징은 없다.";
         if (name == "권총")

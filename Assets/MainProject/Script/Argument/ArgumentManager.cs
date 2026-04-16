@@ -74,6 +74,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         agreement, //찬성
         perjury //위증
     }
+    public enum wrongState
+    {
+        None,
+        keyword,
+        Evidence,
+        Act
+    }
 
     // 캐릭터 설정 데이터 (하드코딩 제거용)
     private readonly Dictionary<string, (float camPos, string colorCode)> characterConfig = new Dictionary<string, (float, string)>()
@@ -166,10 +173,18 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private string currentRawText = "";
     private int currentLinkHoverIndex = -1;
     private bool lastUiAnimState = false;
-    private bool isChoiceShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
-    private bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
+
     private bool waitingExitDialogue = false;
     private bool isObjectionAnim = false;
+
+    private bool isArgumentWrongFeedback = false;
+    private List<DialogueLine> argumentWrongLines;
+    private int argumentWrongIndex = 0;
+
+    private bool isChoiceShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
+    private bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
+    private wrongState currentWrong;
+
     private ArgumentEvidenceButton currentEcidenceButtonSelected;
     private ArgumentActButton currentActButtonSelected;
     #endregion
@@ -261,8 +276,26 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         switch (currentState)
         {
             case FlowState.Dialogue_Wait:
-                // 순차적으로 우선순위를 따져서 하나만 실행합니다.
-                if (isChoiceShowingWrongFeedback)
+                if (isArgumentWrongFeedback)
+                {
+                    argumentWrongIndex++;
+
+                    if (argumentWrongIndex == 1)
+                       HpManager.instance.GetHp(-1); //채력감소 함수 실행
+                    
+                    if (argumentWrongIndex < argumentWrongLines.Count)
+                    {
+                        ShowDialogue(argumentWrongLines[argumentWrongIndex]);
+                    }
+                    else
+                    {
+                        isArgumentWrongFeedback = false;
+                        argumentWrongIndex = 0;
+
+                        RestartArgumentLoop();
+                    }
+                }
+                else if (isChoiceShowingWrongFeedback)
                 {
                     ReturnToChoice();
                 }
@@ -614,17 +647,57 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             }
             else
             {
-                // ❌ 오답이면 카메라 셰이크 후 루프 재개
-                WorngProcessKeywordClick();
-                currentState = FlowState.Argument_Loop;
+                if(!isEvidenceCorrect) currentWrong = wrongState.Evidence;
+                else if (!isActCorrect) currentWrong = wrongState.Act;
+                WrongArgumentAnswer();
             }
         }
         else
         {
-            WorngProcessKeywordClick();
-            currentState = FlowState.Argument_Loop;
+            currentWrong = wrongState.keyword;
+            WrongArgumentAnswer();
         }
         pendingLinkID = null;
+    }
+    void WrongArgumentAnswer()
+    {
+        WorngProcessKeywordClick();
+
+        isArgumentWrongFeedback = true;
+        argumentWrongIndex = 0;
+
+        if (currentWrong == wrongState.keyword)
+        {
+            argumentWrongLines = new List<DialogueLine>()
+        {
+            new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(잘못 짚은 것 같아.)", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(다시 한번 모두의 의견을 들어보자.)", type = DialogueType.Dialogue }
+        };
+        }
+        else if (currentWrong == wrongState.Act)
+        {
+            argumentWrongLines = new List<DialogueLine>()
+        {
+            new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(그래도 지적해야할 부분은 잘 찾은 것 같아\n 아무래도 다른 행동을 해보는게 좋겠어.)", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(다른 방식으로 접근해보자.)", type = DialogueType.Dialogue }
+        };
+        }
+        else if (currentWrong == wrongState.Evidence)
+        {
+            argumentWrongLines = new List<DialogueLine>()
+        {
+            new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(그래도 지적해야 할 건 맞는 것 같아\n내 발언을 뒷받침해줄 다른 증거는 없을까?)", type = DialogueType.Dialogue },
+            new DialogueLine { speaker = "엘리나", text = "(다른 증거를 찾아보자.)", type = DialogueType.Dialogue }
+        };
+        }
+
+        ShowDialogue(argumentWrongLines[argumentWrongIndex]);
     }
 
     // 루프가 끝나길 기다리지 않고 강제로 시스템을 정리하는 함수
@@ -1156,7 +1229,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         else
         {
             Debug.Log("논의 오답 (증거품 또는 행동 불일치)");
-            HpManager.instance.GetHp(- 1);
             EffectManager.instance.CameraShake();
         }
     }
@@ -1164,7 +1236,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private void WorngProcessKeywordClick()
     {
         Debug.Log("논의 오답 (틀린 키워드 클릭)");
-        HpManager.instance.GetHp(-1);
         EffectManager.instance.CameraShake();
     }
 
@@ -1252,7 +1323,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             Debug.Log("객관식 오답");
             HpManager.instance.GetHp(-1);
-            EffectManager.instance.CameraShake();
 
             // 플래그 설정: 다음 클릭 시 PlayNext()가 아닌 선택지로 돌아가게 함
             isChoiceShowingWrongFeedback = true;
@@ -1318,7 +1388,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         {
             Debug.Log("장소 지적 오답");
             HpManager.instance.GetHp(-1);
-            EffectManager.instance.CameraShake();
 
             isMapPointOutShowingWrongFeedback = true;
 
@@ -1347,7 +1416,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         currentState = FlowState.Idle;
         isObjectionAnim = true;
 
-        HpManager.instance.GetHp(1);
+        HpManager.instance.GetHp(1); //채력 증가 함수 실행
         EffectManager.instance.CameraShake();
         UiManager.instance.HanlonAnimOn(currentAct);
         yield return new WaitForSecondsRealtime(waitTime);

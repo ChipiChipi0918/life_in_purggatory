@@ -20,8 +20,18 @@ public class HpManager : MonoBehaviour
 
     public void GetHp(int hp)
     {
-        if (nowHp < 5 && hp >= 0) nowHp += hp;
-        else if (nowHp < 0 && hp < 0) nowHp += hp;
+
+        if (nowHp < 5 && hp >= 0)
+        {
+            nowHp += hp;
+            Debug.Log("½Å·Úµµ Áõ°¡");
+        }
+        else if (nowHp > 0 && hp < 0)
+        {
+            nowHp += hp;
+            EffectManager.instance.CameraShake();
+            Debug.Log("½Å·Úµµ °¨¼Ò");
+        }
         SetHpImg();
     }
 

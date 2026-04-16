@@ -8,6 +8,8 @@ public class UiManager : MonoBehaviour
 {
     public static UiManager instance;
 
+    private EvidenceManager.Evidence data;
+
     public bool isUiAnim;
     public Transform camTransform;
 
@@ -150,6 +152,7 @@ public class UiManager : MonoBehaviour
 
     public void PopupUiOn(string uiName)
     {
+        EvidenceManager.Instance.OnHotelInform();
         currentNameUiText.text = uiName;
         currentNameUi.SetActive(true);
         closeUi.SetActive(true);
