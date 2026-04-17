@@ -89,6 +89,7 @@ public class ArgumentEvidenceButton : MonoBehaviour,
             isSelected = true;
             bg.color = Color.red;
 
+            EvidenceManager.Instance.ArgumentEvidenceUpdate(data);
             SoundManager.instance.UiSelect();
             ArgumentManager.instance.SetSelectedEvidence(argumentEvidenceName.text);
         }

@@ -177,13 +177,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     private bool waitingExitDialogue = false;
     private bool isObjectionAnim = false;
 
-    private bool isArgumentWrongFeedback = false;
+    public bool isArgumentWrongFeedback = false;
     private List<DialogueLine> argumentWrongLines;
     private int argumentWrongIndex = 0;
-
-    private bool isChoiceShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
-    private bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
     private wrongState currentWrong;
+
+    public bool isChoiceShowingWrongFeedback = false; // 오답 피드백 대사 중인지 체크
+
+    public  bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
 
     private ArgumentEvidenceButton currentEcidenceButtonSelected;
     private ArgumentActButton currentActButtonSelected;
@@ -207,13 +208,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (IsArgumentMode) CheckHover();
 
         // 클릭 입력 처리
-        if (Input.GetMouseButtonDown(0)) HandleInput();
+        if (Input.GetMouseButtonDown(0) && UiManager.instance.isMouseUiHover==false) HandleInput();
     }
 
     private void LateUpdate()
     {
         // 타이핑 스킵 처리
-        if (currentState == FlowState.Dialogue_Typing && Input.GetMouseButtonDown(0))
+        if (currentState == FlowState.Dialogue_Typing && Input.GetMouseButtonDown(0) && UiManager.instance.isMouseUiHover == false)
         {
             isSkipTyping = true;
         }
@@ -662,6 +663,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     void WrongArgumentAnswer()
     {
         WorngProcessKeywordClick();
+
+        HpManager.instance.DamageAnim();
+        UiManager.instance.camRotate(Vector3.zero, 0.5f);
+        argumentTextLeft.gameObject.SetActive(false);
+        argumentTextRight.gameObject.SetActive(false);
 
         isArgumentWrongFeedback = true;
         argumentWrongIndex = 0;

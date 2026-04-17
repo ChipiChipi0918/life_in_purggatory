@@ -14596,6 +14596,7 @@ GameObject:
   - component: {fileID: 778912090}
   - component: {fileID: 778912089}
   - component: {fileID: 778912088}
+  - component: {fileID: 778912091}
   m_Layer: 5
   m_Name: HpUi
   m_TagString: Untagged
@@ -14691,6 +14692,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 778912086}
   m_CullTransparentMesh: 1
+--- !u!95 &778912091
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 778912086}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8a8c5a5fe64ae9d4f8667fc2f88421c5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &784101724
 GameObject:
   m_ObjectHideFlags: 0
@@ -19031,6 +19053,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isUiAnim: 0
   camTransform: {fileID: 1210931991}
+  isMouseUiHover: 0
   popupUiOnPos: {fileID: 1507519223}
   currentNameUi: {fileID: 478472576}
   currentNameUiText: {fileID: 318351976}
@@ -24904,6 +24927,9 @@ MonoBehaviour:
   NextImg: {fileID: 1561168202}
   logueParent: {fileID: 2007123973}
   logueBox: {fileID: 5326941325098951523, guid: 4cf2e16838575644db92bc2e7bad003c, type: 3}
+  isArgumentWrongFeedback: 0
+  isChoiceShowingWrongFeedback: 0
+  isMapPointOutShowingWrongFeedback: 0
   cheatInputField: {fileID: 2039758395}
 --- !u!114 &1260226111
 MonoBehaviour:
@@ -31046,6 +31072,7 @@ GameObject:
   - component: {fileID: 1507519226}
   - component: {fileID: 1507519225}
   - component: {fileID: 1507519224}
+  - component: {fileID: 1507519227}
   m_Layer: 5
   m_Name: Ui-On/Close-Popup
   m_TagString: Untagged
@@ -31139,6 +31166,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507519222}
   m_CullTransparentMesh: 1
+--- !u!114 &1507519227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507519222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1017087174}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1017087174}
+          m_TargetAssemblyTypeName: 
+          m_MethodName: 
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: 
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1509691164
 GameObject:
   m_ObjectHideFlags: 0
@@ -39837,6 +39909,7 @@ MonoBehaviour:
   nowHp: 5
   good: {fileID: 21300000, guid: 33cd3b491748050418115b4d3a0b6534, type: 3}
   bad: {fileID: 21300000, guid: f9619563aba8b7542abf0aabdc638afe, type: 3}
+  hpUiAnim: {fileID: 778912091}
   hpImage:
   - {fileID: 1422277014}
   - {fileID: 1197865484}
@@ -46108,7 +46181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loader: {fileID: 7583688865952818402}
   argumentManager: {fileID: 1260226110}
-  currentPhase: 1
+  currentPhase: 0
 --- !u!224 &8386969449087630720
 RectTransform:
   m_ObjectHideFlags: 0

@@ -117,8 +117,16 @@ public class EvidenceManager : MonoBehaviour
         evidenceExplanationText.text = data.evidenceExplanation;
 
         evidenceExplanationText.ForceMeshUpdate();
-        evidenceExplanationText2.ForceMeshUpdate();
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollViewTransform); //스크롤뷰 강제 재계산
+    }
+
+    public void ArgumentEvidenceUpdate(Evidence data)
+    {
+        evidenceImage2.sprite = data.evidenceImage;
+        evidenceNameText2.text = data.evidenceName;
+        evidenceExplanationText2.text = data.evidenceExplanation;
+
+        evidenceExplanationText2.ForceMeshUpdate();
     }
 
     // =============================

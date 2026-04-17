@@ -13,6 +13,8 @@ public class UiManager : MonoBehaviour
     public bool isUiAnim;
     public Transform camTransform;
 
+    public bool isMouseUiHover = false;
+
 
     [Header("팝업 UI 관리 UI들")]
     public RectTransform popupUiOnPos;

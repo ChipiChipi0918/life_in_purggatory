@@ -11,6 +11,8 @@ public class HpManager : MonoBehaviour
     public Sprite good;
     public Sprite bad;
 
+    public Animator hpUiAnim;
+
     public List<Image> hpImage = new List<Image>();
 
     private void Awake()
@@ -33,6 +35,11 @@ public class HpManager : MonoBehaviour
             Debug.Log("½Å·Úµµ °¨¼Ò");
         }
         SetHpImg();
+    }
+
+    public void DamageAnim()
+    {
+        hpUiAnim.SetTrigger("Damage");
     }
 
     private void SetHpImg()

@@ -46,7 +46,9 @@ public class DoubleSpeed : MonoBehaviour
         // 1. 종료 대기 상태이거나 선택지 상태라면 스킵 방지
         if (am.CurrentState == ArgumentManager.FlowState.Argument_EndWait ||
             am.CurrentState == ArgumentManager.FlowState.Choice ||
-            am.CurrentState == ArgumentManager.FlowState.Idle)
+            am.CurrentState == ArgumentManager.FlowState.Idle ||
+            am.CurrentState == ArgumentManager.FlowState.PlaceSelection ||
+            ArgumentManager.instance.isArgumentWrongFeedback || ArgumentManager.instance.isChoiceShowingWrongFeedback || ArgumentManager.instance.isMapPointOutShowingWrongFeedback)
         {
             ResetSpeed();
             return;
