@@ -69,7 +69,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639057074880698295
+  lastModified: 639056734724512047
   FileSizes:
   - Name: Desktop
     Value: 1126
@@ -89,7 +89,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 639057074880670254
+  lastModified: 639056734724476938
   FileSizes:
   - Name: Desktop
     Value: 3274432
@@ -125,7 +125,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639057074880698295
+  cacheTime: 639056734724512047
   SerializableEventsDict:
   - key: event:/eunha_Voice
     index: 0
@@ -154,7 +154,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639046019307513825
+  lastModified: 639056734724502002
   FileSizes:
   - Name: Desktop
     Value: 1074
@@ -228,7 +228,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639057074880686779
+  lastModified: 639055783162700413
   FileSizes:
   - Name: Desktop
     Value: 3168
@@ -275,7 +275,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639046019308028361
+  lastModified: 639054683141704254
   FileSizes:
   - Name: Desktop
     Value: 22944

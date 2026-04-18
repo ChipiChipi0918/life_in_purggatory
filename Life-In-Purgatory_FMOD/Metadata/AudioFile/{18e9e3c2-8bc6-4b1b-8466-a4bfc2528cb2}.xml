@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{18e9e3c2-8bc6-4b1b-8466-a4bfc2528cb2}">
+		<property name="assetPath">
+			<value>Sfx/02_stabbed.ogg</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>2.1682708333333331</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9207a6ee-e594-4434-9fa5-cf6600acedaa}</destination>
+		</relationship>
+	</object>
+</objects>

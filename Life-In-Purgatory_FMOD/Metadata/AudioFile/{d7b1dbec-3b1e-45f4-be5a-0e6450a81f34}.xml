@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{d7b1dbec-3b1e-45f4-be5a-0e6450a81f34}">
+		<property name="assetPath">
+			<value>Sfx/08_Walking_2.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>5.6971249999999998</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9207a6ee-e594-4434-9fa5-cf6600acedaa}</destination>
+		</relationship>
+	</object>
+</objects>
