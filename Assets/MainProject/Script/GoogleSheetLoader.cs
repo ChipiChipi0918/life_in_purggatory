@@ -138,7 +138,7 @@ public static class CSVParser
             string charOn = cols[4].Trim().Replace("\\n", "\n");//5
             string charOff = cols[5].Trim().Replace("\\n", "\n");//6
             //7-int effect
-            //8 효과음 들어갈 예정
+            string soundEffect = cols[7].Trim().Replace("\\n", "\n");//8
             #region 9열 (카메라 위치)값 파싱
             Vector3 camPos = Vector3.zero;
             if (cols.Length > 2 && !string.IsNullOrEmpty(cols[8]))
@@ -175,6 +175,7 @@ public static class CSVParser
                     charState = charState,
                     charOn = charOn,
                     charOff = charOff,
+                    soundEffect = soundEffect,
                     cameraPos = camPos,
                     type = DialogueType.Dialogue,
                     isChoice = true,
@@ -301,6 +302,7 @@ public static class CSVParser
                 charState = charState,
                 charOn = charOn,
                 charOff = charOff,
+                soundEffect = soundEffect,
                 cameraPos = camPos,
                 camFormat = camFormat,
                 type = inArgument ? DialogueType.Argument : DialogueType.Dialogue,

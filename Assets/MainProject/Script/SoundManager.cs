@@ -54,6 +54,7 @@ public class SoundManager : MonoBehaviour
 
     public void SFX(string sfxName)
     {
+        if (sfxName == "") return;
         Debug.Log(sfxName+" 사운드 재생");
 
         if (sfxName == "stabbed_02") RuntimeManager.PlayOneShot(stabbed_02);
@@ -71,6 +72,7 @@ public class SoundManager : MonoBehaviour
 
     public void BGM(string bgmName)
     {
+        if (bgmName == "") return;
         Debug.Log(bgmName + " 배경음 재생");
 
         if (bgmName== "None") StopBGM();
@@ -78,7 +80,7 @@ public class SoundManager : MonoBehaviour
         else if(bgmName == "bgm_daily_04") PlayBGM(daily_04);
         else if (bgmName == "bgm_judgment_02") PlayBGM(judgment_02);
     }
-    void PlayBGM(EventReference bgmEvent)
+    public void PlayBGM(EventReference bgmEvent)
     {
         if (bgmInstance.isValid())
         {
