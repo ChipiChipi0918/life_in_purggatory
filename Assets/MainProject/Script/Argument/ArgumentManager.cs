@@ -931,10 +931,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         // 5. 배경 & BGM 업데이트
         BackgroundManager.instance.DailyMapUpdate(line.background);
 
-        if(line.bgm=="None")
-            SoundManager.instance.StopBGM();
-        else if(line.bgm== "bgm_daily01")
-            SoundManager.instance.BgmDaily_01();
+        SoundManager.instance.BGM(line.bgm);
 
 
         // 6 로그 박스 생성

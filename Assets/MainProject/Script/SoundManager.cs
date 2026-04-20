@@ -39,6 +39,12 @@ public class SoundManager : MonoBehaviour
         RuntimeManager.PlayOneShot(uiSelect);
     }
 
+    public void BGM(string bgmName)
+    {
+        if(bgmName== "None") SoundManager.instance.StopBGM();
+        else if(bgmName == "bgm_daily01") SoundManager.instance.BgmDaily_01();
+    }
+
     public void BgmDaily_01()
     {
         PlayBGM(daily_01);
