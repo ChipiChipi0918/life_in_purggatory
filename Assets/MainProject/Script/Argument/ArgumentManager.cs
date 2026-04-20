@@ -928,11 +928,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         }
 
 
-        // 5. 배경 & BGM 업데이트
+        // 5. 배경 & BGM & SFX 업데이트
         BackgroundManager.instance.DailyMapUpdate(line.background);
 
         SoundManager.instance.BGM(line.bgm);
-
+        SoundManager.instance.SFX(line.soundEffect);
 
         // 6 로그 박스 생성
         GameObject logue = Instantiate(logueBox,logueParent.transform);

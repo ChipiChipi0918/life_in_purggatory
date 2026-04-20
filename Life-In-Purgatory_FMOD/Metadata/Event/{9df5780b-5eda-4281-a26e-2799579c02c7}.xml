@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{9df5780b-5eda-4281-a26e-2799579c02c7}">
 		<property name="name">
-			<value>SFX_08_walking</value>
+			<value>SFX_walking_08</value>
 		</property>
 		<property name="outputFormat">
 			<value>1</value>
@@ -30,6 +30,9 @@
 		</relationship>
 		<relationship name="parameters">
 			<destination>{a7f9d2be-23ef-470b-ad08-3cfb02d03ba1}</destination>
+		</relationship>
+		<relationship name="banks">
+			<destination>{360e9679-f61f-4da7-8944-18946763bacf}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{7397c77c-7376-462f-a853-d8dab29a2dbd}">

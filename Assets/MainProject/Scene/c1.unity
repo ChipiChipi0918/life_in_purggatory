@@ -4190,11 +4190,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eunhaVoice:
     Guid:
-      Data1: 1938771805
-      Data2: 1147750332
-      Data3: 985915303
-      Data4: -1183361498
-    Path: event:/eunha_Voice
+      Data1: 879945456
+      Data2: 1306938510
+      Data3: -976734063
+      Data4: -1594133078
+    Path: event:/Ellena_Voice
   uiSelect:
     Guid:
       Data1: 1952185505
@@ -4202,27 +4202,90 @@ MonoBehaviour:
       Data3: -454360397
       Data4: -658745769
     Path: event:/Ui_Sound1
+  stabbed_02:
+    Guid:
+      Data1: -1274951672
+      Data2: 1305523634
+      Data3: 1633381565
+      Data4: -577772259
+    Path: event:/SFX/SFX_stabbed_02
+  door_open_05:
+    Guid:
+      Data1: 147689739
+      Data2: 1173034595
+      Data3: -936944760
+      Data4: -354690947
+    Path: event:/SFX/SFX_door_open_05
+  item_get_06:
+    Guid:
+      Data1: 450722349
+      Data2: 1274682104
+      Data3: -65768268
+      Data4: 647424633
+    Path: event:/SFX/SFX_item_get_06
+  run_07:
+    Guid:
+      Data1: 1890881065
+      Data2: 1142737772
+      Data3: 1589465788
+      Data4: 1813223686
+    Path: event:/SFX/SFX_run_07
+  run2_07:
+    Guid:
+      Data1: 2020728296
+      Data2: 1083766292
+      Data3: 150040231
+      Data4: -2115289343
+    Path: event:/SFX/SFX_run2_07
+  walking_08:
+    Guid:
+      Data1: -1644857333
+      Data2: 1115774682
+      Data3: -1725469022
+      Data4: -956130217
+    Path: event:/SFX/SFX_walking_08
+  walking2_08:
+    Guid:
+      Data1: 335190836
+      Data2: 1255038988
+      Data3: -505907036
+      Data4: 660718574
+    Path: event:/SFX/SFX_walking2_08
+  happy_09:
+    Guid:
+      Data1: 280170036
+      Data2: 1340583818
+      Data3: -46760516
+      Data4: 552337011
+    Path: event:/SFX/SFX_happy_09
+  gun_shot_10:
+    Guid:
+      Data1: 1328089207
+      Data2: 1085596746
+      Data3: 1749655707
+      Data4: 500668080
+    Path: event:/SFX/SFX_gun_Shot_10
   daily_01:
     Guid:
       Data1: 169968390
       Data2: 1194599477
       Data3: -600441422
       Data4: 1600553429
-    Path: event:/BGM_daily01
+    Path: event:/BGM/BGM_daily_01
   daily_04:
     Guid:
       Data1: 879945456
       Data2: 1306938510
       Data3: -976734063
       Data4: -1594133078
-    Path: event:/BGM_daily04
+    Path: event:/BGM/BGM_daily_04
   judgment_02:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -182736537
+      Data2: 1302219831
+      Data3: 933486245
+      Data4: 2039801830
+    Path: event:/BGM/BGM_judgment_02
 --- !u!1 &227327274
 GameObject:
   m_ObjectHideFlags: 0
@@ -39613,9 +39676,9 @@ RectTransform:
   - {fileID: 225430882}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 188.84247, y: -120.437996}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874942172
@@ -46198,9 +46261,9 @@ RectTransform:
   - {fileID: 4864072961553108206}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 188.84247, y: -64.852}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8386969449087630721

@@ -481,6 +481,7 @@ MonoBehaviour:
   Banks:
   - BGM
   - Dialog
+  - SFX
   - Ui
   BanksToLoad: []
   LiveUpdatePort: 9264

@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{7871dde8-f614-4098-a76e-f108013feb81}">
 		<property name="name">
-			<value>SFX_07_run_2</value>
+			<value>SFX_run2_07</value>
 		</property>
 		<property name="outputFormat">
 			<value>1</value>
@@ -30,6 +30,9 @@
 		</relationship>
 		<relationship name="parameters">
 			<destination>{4a09ef74-18c8-4bbb-ae80-aa5f3c37ce08}</destination>
+		</relationship>
+		<relationship name="banks">
+			<destination>{360e9679-f61f-4da7-8944-18946763bacf}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{05a9a6bf-4502-407d-a237-a356a93807b2}">
