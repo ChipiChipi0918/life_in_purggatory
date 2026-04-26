@@ -373,6 +373,10 @@ public class GoogleSheetLoader : MonoBehaviour
 {
     public int chapter = 1;
 
+    [Header("Extra URL")]
+    public string Extra_DailyURL;
+    public string Extra_JudgmentURL;
+
     [Header("Chapter1 URL")]
     public string Chapter1_DailyURL;
     public string Chapter1_JudgmentURL;
@@ -387,12 +391,12 @@ public class GoogleSheetLoader : MonoBehaviour
 
     public IEnumerator LoadDialogueCSV(Action<List<DialogueLine>> onLoaded)
     {
-        yield return LoadCSV(Chapter1_DailyURL, onLoaded);
+        yield return LoadCSV(Extra_DailyURL, onLoaded);
     }
 
     public IEnumerator LoadArgumentCSV(Action<List<DialogueLine>> onLoaded)
     {
-        yield return LoadCSV(Chapter1_JudgmentURL, onLoaded);
+        yield return LoadCSV(Extra_JudgmentURL, onLoaded);
     }
 
     private IEnumerator LoadCSV(string url, Action<List<DialogueLine>> onLoaded)

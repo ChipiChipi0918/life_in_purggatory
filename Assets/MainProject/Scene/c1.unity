@@ -39676,9 +39676,9 @@ RectTransform:
   - {fileID: 225430882}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 188.84247, y: -120.437996}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874942172
@@ -46217,6 +46217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chapter: 1
+  Extra_DailyURL: https://docs.google.com/spreadsheets/d/e/2PACX-1vTacDcWsunOXmR3LxiCU56b0acyGBFMyqArtWwsGvEDzvUGB5M2viZ-arSJSJINFm7J0n71ZMocwBUt/pub?gid=1187675192&single=true&output=csv
+  Extra_JudgmentURL: https://docs.google.com/spreadsheets/d/e/2PACX-1vTacDcWsunOXmR3LxiCU56b0acyGBFMyqArtWwsGvEDzvUGB5M2viZ-arSJSJINFm7J0n71ZMocwBUt/pub?gid=855928182&single=true&output=csv
   Chapter1_DailyURL: https://docs.google.com/spreadsheets/d/e/2PACX-1vTacDcWsunOXmR3LxiCU56b0acyGBFMyqArtWwsGvEDzvUGB5M2viZ-arSJSJINFm7J0n71ZMocwBUt/pub?gid=0&single=true&output=csv
   Chapter1_JudgmentURL: https://docs.google.com/spreadsheets/d/e/2PACX-1vTacDcWsunOXmR3LxiCU56b0acyGBFMyqArtWwsGvEDzvUGB5M2viZ-arSJSJINFm7J0n71ZMocwBUt/pub?gid=1648047883&single=true&output=csv
   Chapter2_DailyURL: 
@@ -46261,9 +46263,9 @@ RectTransform:
   - {fileID: 4864072961553108206}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 188.84247, y: -64.852}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8386969449087630721
