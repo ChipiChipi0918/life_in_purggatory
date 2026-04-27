@@ -355,6 +355,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void StartArgumentMode()
     {
+        SoundManager.instance.BGM("bgm_judgment_02"); //논의 배경음 사운드
+
         // 1. 해당 논의 블록의 기초 데이터 세팅
         ArgumentBlock block = argumentBlocks[currentBlockIndex];
         correctEvidenceName = block.correctEvidence;
