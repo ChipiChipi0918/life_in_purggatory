@@ -26,6 +26,8 @@ public class EvidenceManager : MonoBehaviour
 
     [Header("Evidence Data")]
     public List<Evidence> evidence = new List<Evidence>();
+
+    public List<Sprite> ex_evidence = new List<Sprite>();
     public List<Sprite> ch1_evidence = new List<Sprite>();
 
     [Header("Evidence UI")]
@@ -182,10 +184,23 @@ public class EvidenceManager : MonoBehaviour
     // =============================
     public Sprite GetEvidenceImage(string name)
     {
+        if (name == "Add Evidence") return ex_evidence[0];
+        if (name == "권총") return ex_evidence[1];
+        if (name == "현장 사진1") return ex_evidence[2];
+        if (name == "현장 사진2") return ex_evidence[3];
+        if (name == "장식용 검") return ex_evidence[4];
+        if (name == "금고") return ex_evidence[5];
+        if (name == "빨간 봉랍") return ex_evidence[6];
+        if (name == "카메라") return ex_evidence[7];
+        if (name == "기현상 - 사후재판") return ex_evidence[8];
+        if (name == "기현상 - 402호의 특성") return ex_evidence[8];
+        if (name == "기현상 - 정전") return ex_evidence[8];
+
+
         if (name == "Add Evidence") return ch1_evidence[0];
         if (name == "시몬이 남긴 쪽지") return ch1_evidence[1];
         if (name == "로넌의 시체 사진") return ch1_evidence[2];
-        if (name == "권총") return ch1_evidence[3];
+        if (name == "로넌의 권총") return ch1_evidence[3];
         if (name == "시몬의 부검 기록") return ch1_evidence[0];
         if (name == "탄흔") return ch1_evidence[4];
 
@@ -194,11 +209,35 @@ public class EvidenceManager : MonoBehaviour
 
     public string GetEvidenceExplanation(string name)
     {
+        if (name == "권총")
+            return "로넌에게서 빌린 권총\n잠긴 402호의 방 문을 여는데 사용했다.";
+        if (name == "현장 사진1")
+            return "테라스에서 찍은 시체 사진\n목이 잘린체 머리만 남아있다.\n떨어진 위치에는 피가 터진듯 퍼져있다 아무래도 이곳에서 큰 충격을 받은 듯 한 모양.";
+        if (name == "현장 사진2")
+            return "402호에 베란다에서 찍은 시체 사진\n목이 잘린체 몸통만 남아있다.\n목에서 피가 흐르고있다.\n카를로스의 말에 따르면 죽은지 3분도 안된 모양.";
+        if (name == "도둑맞은 문서")
+            return "테라스에서 피해자의 머리와 함께 발견.";
+        if (name == "장식용 검") //<--흉기아님 피같은거 묻어있음
+            return "402호에서 발견한 검\n매우 무거워서 한손으로는 휘두를 수 없다.\n장식용이지만 사람을 일격에 죽이는데에는 적합하다.\n피로 추정되는 액체는 말라서 굳어있다.";
+        if (name == "금고")
+            return "402호에서 발견한 금고\n원래 안에 도둑맞은 문서가 들어있었다고 한다.";
+        if (name == "빨간 봉랍")
+            return "열려있던 금고 내부에서 발견한 빨간 봉랍\n뭐... 당연하겠지만 아무래도 편지를 봉인할때 썼겠지..";
+        if (name == "카메라")
+            return "402호에서 발견\n겉보기엔 평범한 카메라처럼 보이지만 사실은 최첨단 적외선 카메라다.\n이것이 왜 이곳에 설치 되어 있는지는 불명.";
+        if (name == "기현상 - 402호의 특성")
+            return "다른 방의 열쇠를 402호에 열쇠구멍에 넣을 경우\n해당 열쇠의 방과 402호의 방 내부가 서로 바뀐다\n이 때문에 호텔 측에서는 왠만하면 402호 키를 주지 않지만 지금처럼 사람이 가득 찰 경우 402호 키를 넘기기도 했다고 한다";
+        if (name == "기현상 - 사후재판")
+            return "호탤 내부에서 살인사건이 일어날 경우\n모든 출입구가 봉쇄된다.\n이 상황에서는 밖으로 나가는 것 조차가 불가능 하며\n범인을 찾아 처형하기 전까진 나갈 수 없다.\n이상하게도 호텔 측에선 그닥 큰 문제를 삼고있지 않는다.";
+        if (name == "기현상 - 정전")
+            return "규칙적으로 매달 30일 오후 10시에는 정전이 일어난다.\n이때 같은 경우 밖에서 들어오는 빛들도 전부 차단되기 때문에 아무것도 보이지 않는다.\n하지만 정전의 지속 시간은 길어봤자 1~2분이기 때문에 호텔 측에선 그닥 큰 문제를 삼고있지 않는다.";
+
+
         if (name == "시몬이 남긴 쪽지")
             return "시몬이 엘리나에게 남긴 쪽지.\n직접 쓴 손글씨로 쓰여있다.\n\n언제쯤 볼지는 모르겠지만\n만약에 이 쪽지를 보고 있다는 거라면 테라스로 잘 와 주었겠구나.\n미안하지만 탐정으로써 처리해야할 일이 생겨서 말이야.\n직접 얼굴 보지 못해서 아쉽네.\n내가 나중에 따로 찾아갈 테니 여기 호텔도 좀 둘러보고.\n다른 사람들과 인사라도 나눠둬.\n-최고의 명탐정 로넌이-";
         if (name == "로넌의 시체 사진")
             return "사건 현장에서 찍은 로넌의 시체 사진\n피해자 왼쪽 머리에 총상이 있다.\n그 외의 자세한 특징은 없다.";
-        if (name == "권총")
+        if (name == "로넌의 권총")
             return "피해자의 시체 왼쪽에서 발견된 권총\n\n피해자의 권총으로 기존에 2발 장전 되어 있었으나\n현장에서 발견 당시 탄환 2발이 전부 사라져있었다.";
         if (name == "시몬의 부검 기록")
             return "피해자가 살해된 시각은 시체 발견 시각과 거의 동일하다.\n즉 시체 발견 직전 들린 총성에 의해 살해당한 모양.\n때문에 총상으로 인한 즉사로 추정.";

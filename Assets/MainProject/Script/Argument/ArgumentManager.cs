@@ -82,6 +82,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         Act
     }
 
+    public enum HeroState
+    {
+        Simon,
+        Ellina,
+        Silvia
+    }
+
     // 캐릭터 설정 데이터 (하드코딩 제거용)
     private readonly Dictionary<string, (float camPos, string colorCode)> characterConfig = new Dictionary<string, (float, string)>()
     {
@@ -104,6 +111,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #region Variables
     [Header("State Info")]
     [SerializeField] private FlowState currentState = FlowState.Idle;
+    [SerializeField] private HeroState heroState = HeroState.Simon;
 
     public FlowState CurrentState => currentState;
     public bool IsArgumentMode => currentState == FlowState.Argument_Loop || currentState == FlowState.Argument_EndWait;
@@ -322,12 +330,24 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
                 if (waitingArgumentEndText)
                 {
                     waitingArgumentEndText = false;
-                    ShowDialogue(new DialogueLine
+                    if (heroState == HeroState.Simon)
                     {
-                        speaker = "엘리나",
-                        text = "(다시 한번 모두의 의견을 들어보자.)",
-                        type = DialogueType.Dialogue
-                    });
+                        ShowDialogue(new DialogueLine
+                        {
+                            speaker = "시몬",
+                            text = "(다시 한번 모두의 의견을 들어봐야겠어)",
+                            type = DialogueType.Dialogue
+                        });
+                    }
+                    else if (heroState == HeroState.Ellina)
+                    {
+                        ShowDialogue(new DialogueLine
+                        {
+                            speaker = "엘리나",
+                            text = "(다시 한번 모두의 의견을 들어보자.)",
+                            type = DialogueType.Dialogue
+                        });
+                    }
                     waitingExitDialogue = true;
                 }
                 break;
@@ -674,33 +694,73 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         if (currentWrong == wrongState.keyword)
         {
-            argumentWrongLines = new List<DialogueLine>()
-        {
-            new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(잘못 짚은 것 같아.)", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(다시 한번 모두의 의견을 들어보자.)", type = DialogueType.Dialogue }
-        };
+            if (heroState == HeroState.Simon)
+            {
+                argumentWrongLines = new List<DialogueLine>()
+                {
+                    new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(아니였나보군...)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(잘못 짚은나?)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(다시 한번 모두의 의견을 들어봐야겠어.)", type = DialogueType.Dialogue }
+                };
+            }
+            else if (heroState == HeroState.Ellina)
+            {
+                argumentWrongLines = new List<DialogueLine>()
+                {
+                    new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(잘못 짚은 것 같아.)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(다시 한번 모두의 의견을 들어보자.)", type = DialogueType.Dialogue }
+                };
+            }
         }
         else if (currentWrong == wrongState.Act)
         {
-            argumentWrongLines = new List<DialogueLine>()
-        {
-            new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(그래도 지적해야할 부분은 잘 찾은 것 같아\n 아무래도 다른 행동을 해보는게 좋겠어.)", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(다른 방식으로 접근해보자.)", type = DialogueType.Dialogue }
-        };
+            if (heroState == HeroState.Simon)
+            {
+                argumentWrongLines = new List<DialogueLine>()
+                {
+                    new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(아니였나보군...)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(그래도 지적해야할 부분은 잘 찾은 것 같아\n 아무래도 다른 행동을 해보는게 좋겠어.)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(다른 방식으로 접근해보지.)", type = DialogueType.Dialogue }
+                };
+            }
+            else if (heroState == HeroState.Ellina)
+            {
+                argumentWrongLines = new List<DialogueLine>()
+                {
+                    new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(그래도 지적해야할 부분은 잘 찾은 것 같아\n 아무래도 다른 행동을 해보는게 좋겠어.)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(다른 방식으로 접근해보자.)", type = DialogueType.Dialogue }
+                };
+            }
         }
         else if (currentWrong == wrongState.Evidence)
         {
-            argumentWrongLines = new List<DialogueLine>()
-        {
-            new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(그래도 지적해야 할 건 맞는 것 같아\n내 발언을 뒷받침해줄 다른 증거는 없을까?)", type = DialogueType.Dialogue },
-            new DialogueLine { speaker = "엘리나", text = "(다른 증거를 찾아보자.)", type = DialogueType.Dialogue }
-        };
+            if (heroState == HeroState.Simon)
+            {
+                argumentWrongLines = new List<DialogueLine>()
+                {
+                    new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(아니였나보군...)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(그래도 지적해야 할 건 맞는 것 같아\n내 발언을 뒷받침해줄 다른 증거는 없으려나...)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "시몬", text = "(다른 증거를 찾아보지.)", type = DialogueType.Dialogue }
+                };
+            }
+            else if (heroState == HeroState.Ellina)
+            {
+                argumentWrongLines = new List<DialogueLine>()
+                {
+                    new DialogueLine { speaker = "", text = "......", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(역시 아니였나...)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(그래도 지적해야 할 건 맞는 것 같아\n내 발언을 뒷받침해줄 다른 증거는 없을까?)", type = DialogueType.Dialogue },
+                    new DialogueLine { speaker = "엘리나", text = "(다른 증거를 찾아보자.)", type = DialogueType.Dialogue }
+                };
+            }
+            
         }
 
         ShowDialogue(argumentWrongLines[argumentWrongIndex]);
@@ -1333,14 +1393,28 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             // 대화창이 뜰 때 선택지 버튼이 가려지도록 잠시 비활성화 (선택 사항)
             choicePanel.SetActive(false);
 
-            DialogueLine wrongLine = new DialogueLine
+            if (heroState == HeroState.Simon)
             {
-                speaker = "엘리나",
-                text = "(이건 아닌 것 같아... 다시 한번 생각해보자.)",
-                type = DialogueType.Dialogue
-            };
+                DialogueLine wrongLine = new DialogueLine
+                {
+                    speaker = "시몬",
+                    text = "(이거로 증명은 무리였나... 다시 생각해보지.)",
+                    type = DialogueType.Dialogue
+                };
 
-            ShowDialogue(wrongLine);
+                ShowDialogue(wrongLine);
+            }
+            else if (heroState == HeroState.Ellina)
+            {
+                DialogueLine wrongLine = new DialogueLine
+                {
+                    speaker = "엘리나",
+                    text = "(이거는 아닌가봐... 다시 한번 생각해보자.)",
+                    type = DialogueType.Dialogue
+                };
+
+                ShowDialogue(wrongLine);
+            }
         }
     }
     #endregion
@@ -1394,14 +1468,28 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
             isMapPointOutShowingWrongFeedback = true;
 
-            DialogueLine wrongLine = new DialogueLine
+            if (heroState == HeroState.Simon)
             {
-                speaker = "엘리나",
-                text = "(여기는 아닌가봐... 다시 한번 생각해보자.)",
-                type = DialogueType.Dialogue
-            };
+                DialogueLine wrongLine = new DialogueLine
+                {
+                    speaker = "시몬",
+                    text = "(이곳은 아니였나... 다시 한번 생각해봐야겠어.)",
+                    type = DialogueType.Dialogue
+                };
 
-            ShowDialogue(wrongLine);
+                ShowDialogue(wrongLine);
+            }
+            else if (heroState == HeroState.Ellina)
+            {
+                DialogueLine wrongLine = new DialogueLine
+                {
+                    speaker = "엘리나",
+                    text = "(여기는 아닌가봐... 다시 한번 생각해보자.)",
+                    type = DialogueType.Dialogue
+                };
+
+                ShowDialogue(wrongLine);
+            }
         }
     }
 
