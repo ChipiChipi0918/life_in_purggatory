@@ -6241,7 +6241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &340761072
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6609,7 +6609,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 74f3944e6ed962d41871f57178c86372, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5bf273614cb350c4baad1ebbbdb394b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -10492,7 +10492,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 21300000, guid: d5e9e0f989b598e4e986ac17bbdaa3aa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ea5ff9b615113034f92369a58016f0e2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -11206,7 +11206,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: 74f3944e6ed962d41871f57178c86372, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5bf273614cb350c4baad1ebbbdb394b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -18897,7 +18897,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d5e9e0f989b598e4e986ac17bbdaa3aa, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ea5ff9b615113034f92369a58016f0e2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -31689,7 +31689,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: d7faf432fcb6c2340bbaac35a91a92dd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d366a1fb52368d4498d56a0a5bba9326, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -33002,9 +33002,12 @@ MonoBehaviour:
     mouth:
     - {fileID: 21300000, guid: 9133fd86ad99d564fa0305e51155fb05, type: 3}
   - characterName: "\uCE74\uB97C\uB85C\uC2A4"
-    body: []
-    eyes: []
-    mouth: []
+    body:
+    - {fileID: 21300000, guid: ea5ff9b615113034f92369a58016f0e2, type: 3}
+    eyes:
+    - {fileID: 21300000, guid: 5bf273614cb350c4baad1ebbbdb394b3, type: 3}
+    mouth:
+    - {fileID: 21300000, guid: d366a1fb52368d4498d56a0a5bba9326, type: 3}
   - characterName: "\uB85C\uB10C"
     body: []
     eyes: []
@@ -34702,7 +34705,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: d7faf432fcb6c2340bbaac35a91a92dd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d366a1fb52368d4498d56a0a5bba9326, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -37054,7 +37057,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1766167382
 SpriteRenderer:
   m_ObjectHideFlags: 0

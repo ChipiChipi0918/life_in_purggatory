@@ -111,7 +111,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #region Variables
     [Header("State Info")]
     [SerializeField] private FlowState currentState = FlowState.Idle;
-    [SerializeField] private HeroState heroState = HeroState.Simon;
+    public HeroState heroState = HeroState.Simon;
 
     public FlowState CurrentState => currentState;
     public bool IsArgumentMode => currentState == FlowState.Argument_Loop || currentState == FlowState.Argument_EndWait;

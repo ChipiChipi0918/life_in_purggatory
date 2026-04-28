@@ -278,15 +278,28 @@ public static class CSVParser
             {
                 inArgument = false;
 
-                currentBlock.exitLine = new DialogueLine
+                if (ArgumentManager.instance.heroState == HeroState.Simon)
                 {
-                    speaker = "엘리나",
-                    text = text,
-                    type = DialogueType.Dialogue,
-                    textTime = 0
-                };
+                    currentBlock.exitLine = new DialogueLine
+                    {
+                        speaker = "엘리나",
+                        text = text,
+                        type = DialogueType.Dialogue,
+                        textTime = 0
+                    };
+                }
+                else if (ArgumentManager.instance.heroState == HeroState.Simon)
+                {
+                    currentBlock.exitLine = new DialogueLine
+                    {
+                        speaker = "시몬",
+                        text = text,
+                        type = DialogueType.Dialogue,
+                        textTime = 0
+                    };
+                }
 
-                ArgumentManager.argumentBlocks.Add(currentBlock);
+                    ArgumentManager.argumentBlocks.Add(currentBlock);
                 continue;
             }
 
