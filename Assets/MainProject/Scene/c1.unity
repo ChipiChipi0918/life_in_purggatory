@@ -4202,6 +4202,13 @@ MonoBehaviour:
       Data3: -454360397
       Data4: -658745769
     Path: event:/Ui_Sound1
+  objection:
+    Guid:
+      Data1: -212659078
+      Data2: 1144274780
+      Data3: -604136300
+      Data4: 721127042
+    Path: event:/ObjectionEffect
   stabbed_02:
     Guid:
       Data1: -1274951672
@@ -4279,6 +4286,13 @@ MonoBehaviour:
       Data3: -976734063
       Data4: -1594133078
     Path: event:/BGM/BGM_daily_04
+  argument_01:
+    Guid:
+      Data1: -1152839857
+      Data2: 1315483406
+      Data3: 1683349925
+      Data4: 2027412695
+    Path: event:/BGM/BGM_argument_01
   judgment_02:
     Guid:
       Data1: -182736537
@@ -21726,7 +21740,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1118167250
 Transform:
   m_ObjectHideFlags: 0
@@ -32087,7 +32101,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1566167374
 Transform:
   m_ObjectHideFlags: 0
@@ -32803,7 +32817,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1589742994
 Transform:
   m_ObjectHideFlags: 0
@@ -45005,7 +45019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2116744408
 Transform:
   m_ObjectHideFlags: 0
@@ -46267,7 +46281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loader: {fileID: 7583688865952818402}
   argumentManager: {fileID: 1260226110}
-  currentPhase: 0
+  currentPhase: 1
 --- !u!224 &8386969449087630720
 RectTransform:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("UI")]
     public EventReference uiSelect;
-
+    public EventReference objection;
 
     [Header("SFX")]
     public EventReference stabbed_02;
@@ -28,6 +28,8 @@ public class SoundManager : MonoBehaviour
     [Header("BGM")]
     public EventReference daily_01;
     public EventReference daily_04;
+
+    public EventReference argument_01;
 
     public EventReference judgment_02;
 
@@ -50,6 +52,11 @@ public class SoundManager : MonoBehaviour
     public void UiSelect()
     {
         RuntimeManager.PlayOneShot(uiSelect);
+    }
+
+    public void Objection()
+    {
+        RuntimeManager.PlayOneShot(objection);
     }
 
     public void SFX(string sfxName)
@@ -75,9 +82,13 @@ public class SoundManager : MonoBehaviour
         if (bgmName == "") return;
         Debug.Log(bgmName + " 배경음 재생");
 
-        if (bgmName== "None") StopBGM();
-        else if(bgmName == "bgm_daily_01") PlayBGM(daily_01);
-        else if(bgmName == "bgm_daily_04") PlayBGM(daily_04);
+        if (bgmName == "None") StopBGM();
+        
+        else if (bgmName == "bgm_daily_01") PlayBGM(daily_01);
+        else if (bgmName == "bgm_daily_04") PlayBGM(daily_04);
+
+        else if (bgmName == "bgm_argument_01") PlayBGM(argument_01);
+
         else if (bgmName == "bgm_judgment_02") PlayBGM(judgment_02);
     }
     public void PlayBGM(EventReference bgmEvent)

@@ -380,6 +380,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         correctEvidenceName = block.correctEvidence;
         selectedEvidenceName = null;
 
+        SoundManager.instance.BGM("bgm_argument_01");
+
         Debug.Log($"논의 데이터 로드 완료! 정답: {correctEvidenceName}");
 
         totalArgumentLines = block.lines.Count;
@@ -1065,7 +1067,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     [Header("Debug")]
     public TMP_InputField cheatInputField; // 인스펙터에서 InputField (TMP)를 연결해 주세요.
 
-    // 만약 기존 스크립트에 Start()가 없다면 추가해주시고, 있다면 내부 코드만 복사하세요.
     private void Start()
     {
         // 입력창에서 엔터를 눌렀을 때 (입력이 완료되었을 때) 실행될 이벤트 연결
@@ -1510,6 +1511,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         HpManager.instance.GetHp(1); //채력 증가 함수 실행
         EffectManager.instance.CameraShake();
         UiManager.instance.HanlonAnimOn(currentAct);
+        SoundManager.instance.Objection();
         yield return new WaitForSecondsRealtime(waitTime);
         currentState = FlowState.Dialogue_Wait;
         yield return new WaitForSecondsRealtime(1.2f);

@@ -96,11 +96,38 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639128058907637574
+  lastModified: 639136426947205675
   FileSizes:
   - Name: Desktop
     Value: 466304
   Exists: 1
+--- !u!114 &-5792347770426597061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ObjectionEffect
+  m_EditorClassIdentifier: 
+  Path: event:/ObjectionEffect
+  Guid:
+    Data1: -212659078
+    Data2: 1144274780
+    Data3: -604136300
+    Data4: 721127042
+  Banks:
+  - {fileID: 891229174712809751}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-4499566296110390936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,10 +197,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639128058907627566
+  lastModified: 639136438224557526
   FileSizes:
   - Name: Desktop
-    Value: 1566
+    Value: 1654
   Exists: 1
 --- !u!114 &-1121732612197236119
 MonoBehaviour:
@@ -217,10 +244,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 639128058907617567
+  lastModified: 639136438224388313
   FileSizes:
   - Name: Desktop
-    Value: 3274432
+    Value: 5006208
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -257,13 +284,15 @@ MonoBehaviour:
   - {fileID: -8636956836169452837}
   - {fileID: -4499566296110390936}
   - {fileID: 2129271709840979883}
+  - {fileID: -5792347770426597061}
+  - {fileID: 3775948999293961430}
   EditorParameters: []
   MasterBanks:
   - {fileID: 891229174712809751}
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639128058907647578
+  cacheTime: 639136438224557526
   SerializableEventsDict:
   - key: event:/Ui_Sound1
     index: 0
@@ -295,6 +324,10 @@ MonoBehaviour:
     index: 13
   - key: event:/SFX/SFX_run2_07
     index: 14
+  - key: event:/ObjectionEffect
+    index: 15
+  - key: event:/BGM/BGM_argument_01
+    index: 16
 --- !u!114 &891229174712809751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,10 +343,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639056734724502002
+  lastModified: 639136438224547522
   FileSizes:
   - Name: Desktop
-    Value: 1074
+    Value: 24768
   Exists: 1
 --- !u!114 &2129271709840979883
 MonoBehaviour:
@@ -411,7 +444,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639128058907617567
+  lastModified: 639136426943307149
   FileSizes:
   - Name: Desktop
     Value: 3168
@@ -437,6 +470,33 @@ MonoBehaviour:
   Banks:
   - {fileID: -6127807448926823122}
   IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &3775948999293961430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/BGM_argument_01
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/BGM_argument_01
+  Guid:
+    Data1: -1152839857
+    Data2: 1315483406
+    Data3: 1683349925
+    Data4: 2027412695
+  Banks:
+  - {fileID: -925525731721845435}
+  IsStream: 1
   Is3D: 0
   IsOneShot: 1
   Parameters: []
@@ -566,7 +626,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639128058907647578
+  lastModified: 639136426947495750
   FileSizes:
   - Name: Desktop
     Value: 22944
