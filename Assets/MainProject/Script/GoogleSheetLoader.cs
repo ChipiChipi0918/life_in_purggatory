@@ -282,17 +282,17 @@ public static class CSVParser
                 {
                     currentBlock.exitLine = new DialogueLine
                     {
-                        speaker = "엘리나",
+                        speaker = "시몬",
                         text = text,
                         type = DialogueType.Dialogue,
                         textTime = 0
                     };
                 }
-                else if (ArgumentManager.instance.heroState == HeroState.Simon)
+                else if (ArgumentManager.instance.heroState == HeroState.Ellina)
                 {
                     currentBlock.exitLine = new DialogueLine
                     {
-                        speaker = "시몬",
+                        speaker = "엘리나",
                         text = text,
                         type = DialogueType.Dialogue,
                         textTime = 0

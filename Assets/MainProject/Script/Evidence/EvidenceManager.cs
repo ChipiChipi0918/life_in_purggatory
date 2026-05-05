@@ -186,12 +186,12 @@ public class EvidenceManager : MonoBehaviour
     {
         if (name == "Add Evidence") return ex_evidence[0];
         if (name == "권총") return ex_evidence[1];
-        if (name == "현장 사진1") return ex_evidence[2];
-        if (name == "현장 사진2") return ex_evidence[3];
-        if (name == "장식용 검") return ex_evidence[4];
+        if (name == "현장 사진1") return ex_evidence[3];
+        if (name == "현장 사진2") return ex_evidence[2];
+        if (name == "검") return ex_evidence[4];
         if (name == "금고") return ex_evidence[5];
         if (name == "빨간 봉랍") return ex_evidence[6];
-        if (name == "카메라") return ex_evidence[7];
+        if (name == "소형 카메라") return ex_evidence[7];
         if (name == "기현상 - 사후재판") return ex_evidence[8];
         if (name == "기현상 - 402호의 특성") return ex_evidence[8];
         if (name == "기현상 - 정전") return ex_evidence[8];
@@ -212,19 +212,19 @@ public class EvidenceManager : MonoBehaviour
         if (name == "권총")
             return "로넌에게서 빌린 권총\n잠긴 402호의 방 문을 여는데 사용했다.";
         if (name == "현장 사진1")
-            return "테라스에서 찍은 시체 사진\n목이 잘린체 머리만 남아있다.\n떨어진 위치에는 피가 터진듯 퍼져있다 아무래도 이곳에서 큰 충격을 받은 듯 한 모양.";
-        if (name == "현장 사진2")
             return "402호에 베란다에서 찍은 시체 사진\n목이 잘린체 몸통만 남아있다.\n목에서 피가 흐르고있다.\n카를로스의 말에 따르면 죽은지 3분도 안된 모양.";
+        if (name == "현장 사진2")
+            return "테라스에서 찍은 시체 사진\n목이 잘린체 머리만 남아있다.\n떨어진 위치에는 피가 터진듯 퍼져있다 아무래도 이곳에서 큰 충격을 받은 듯 한 모양.";
         if (name == "도둑맞은 문서")
-            return "테라스에서 피해자의 머리와 함께 발견.";
-        if (name == "장식용 검") //<--흉기아님 피같은거 묻어있음
+            return "엘리나에게 받았다\n테라스에서 피해자의 머리와 함께 발견했다고 한다.";
+        if (name == "검") //<--흉기아님 피같은거 묻어있음
             return "402호에서 발견한 검\n매우 무거워서 한손으로는 휘두를 수 없다.\n장식용이지만 사람을 일격에 죽이는데에는 적합하다.\n피로 추정되는 액체는 말라서 굳어있다.";
         if (name == "금고")
-            return "402호에서 발견한 금고\n원래 안에 도둑맞은 문서가 들어있었다고 한다.";
+            return "402호에서 발견한 피해자의 금고\n원래 안에 도둑맞은 문서가 들어있었다고 한다.";
         if (name == "빨간 봉랍")
             return "열려있던 금고 내부에서 발견한 빨간 봉랍\n뭐... 당연하겠지만 아무래도 편지를 봉인할때 썼겠지..";
-        if (name == "카메라")
-            return "402호에서 발견\n겉보기엔 평범한 카메라처럼 보이지만 사실은 최첨단 적외선 카메라다.\n이것이 왜 이곳에 설치 되어 있는지는 불명.";
+        if (name == "소형 카메라")
+            return "402호에서 발견\n겉보기엔 평범한 소형 카메라처럼 보이지만\n사실은 녹화부터 장거리 화면 송출, 적외선(IR), 열화상, UV 모드까지 탑제되어 있는 국가 시설에서만 사용 가능한 최신형 카메라다.\n이것이 왜 이곳에 설치 되어 있는지는 불명.";
         if (name == "기현상 - 402호의 특성")
             return "다른 방의 열쇠를 402호에 열쇠구멍에 넣을 경우\n해당 열쇠의 방과 402호의 방 내부가 서로 바뀐다\n이 때문에 호텔 측에서는 왠만하면 402호 키를 주지 않지만 지금처럼 사람이 가득 찰 경우 402호 키를 넘기기도 했다고 한다";
         if (name == "기현상 - 사후재판")
