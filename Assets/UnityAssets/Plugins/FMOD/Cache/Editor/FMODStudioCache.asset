@@ -96,10 +96,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639136426947205675
+  lastModified: 639136656695062136
   FileSizes:
   - Name: Desktop
-    Value: 466304
+    Value: 533024
   Exists: 1
 --- !u!114 &-5792347770426597061
 MonoBehaviour:
@@ -197,10 +197,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639136438224557526
+  lastModified: 639136656693885662
   FileSizes:
   - Name: Desktop
-    Value: 1654
+    Value: 1698
   Exists: 1
 --- !u!114 &-1121732612197236119
 MonoBehaviour:
@@ -244,7 +244,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 639136438224388313
+  lastModified: 639136656692275144
   FileSizes:
   - Name: Desktop
     Value: 5006208
@@ -286,13 +286,14 @@ MonoBehaviour:
   - {fileID: 2129271709840979883}
   - {fileID: -5792347770426597061}
   - {fileID: 3775948999293961430}
+  - {fileID: 1352534584658092051}
   EditorParameters: []
   MasterBanks:
   - {fileID: 891229174712809751}
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639136438224557526
+  cacheTime: 639136656695676588
   SerializableEventsDict:
   - key: event:/Ui_Sound1
     index: 0
@@ -328,6 +329,8 @@ MonoBehaviour:
     index: 15
   - key: event:/BGM/BGM_argument_01
     index: 16
+  - key: event:/ObjectionEffect 2
+    index: 17
 --- !u!114 &891229174712809751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,11 +346,39 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639136438224547522
+  lastModified: 639136656693875572
   FileSizes:
   - Name: Desktop
-    Value: 24768
+    Value: 91488
   Exists: 1
+--- !u!114 &1352534584658092051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/ObjectionEffect 2
+  m_EditorClassIdentifier: 
+  Path: event:/ObjectionEffect 2
+  Guid:
+    Data1: 1438838467
+    Data2: 1205425322
+    Data3: -1614213707
+    Data4: -1658641945
+  Banks:
+  - {fileID: 891229174712809751}
+  - {fileID: -6127807448926823122}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &2129271709840979883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -444,7 +475,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639136426943307149
+  lastModified: 639136656692722650
   FileSizes:
   - Name: Desktop
     Value: 3168
@@ -626,7 +657,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639136426947495750
+  lastModified: 639136656695676588
   FileSizes:
   - Name: Desktop
     Value: 22944

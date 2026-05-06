@@ -195,7 +195,7 @@ public class EvidenceManager : MonoBehaviour
         if (name == "기현상 - 사후재판") return ex_evidence[8];
         if (name == "기현상 - 402호의 특성") return ex_evidence[8];
         if (name == "기현상 - 정전") return ex_evidence[8];
-
+        if (name == "도둑맞은 문서") return ex_evidence[6];
 
         if (name == "Add Evidence") return ch1_evidence[0];
         if (name == "시몬이 남긴 쪽지") return ch1_evidence[1];
