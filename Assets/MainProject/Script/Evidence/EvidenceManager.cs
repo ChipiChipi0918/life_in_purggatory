@@ -195,7 +195,7 @@ public class EvidenceManager : MonoBehaviour
         if (name == "기현상 - 사후재판") return ex_evidence[8];
         if (name == "기현상 - 402호의 특성") return ex_evidence[8];
         if (name == "기현상 - 정전") return ex_evidence[8];
-        if (name == "도둑맞은 문서") return ex_evidence[6];
+        if (name == "도둑맞은 문서") return ex_evidence[9];
 
         if (name == "Add Evidence") return ch1_evidence[0];
         if (name == "시몬이 남긴 쪽지") return ch1_evidence[1];
@@ -210,7 +210,7 @@ public class EvidenceManager : MonoBehaviour
     public string GetEvidenceExplanation(string name)
     {
         if (name == "권총")
-            return "로넌에게서 빌린 권총\n잠긴 402호의 방 문을 여는데 사용했다.";
+            return "로넌에게서 빌린 권총.";
         if (name == "현장 사진1")
             return "402호에 베란다에서 찍은 시체 사진\n목이 잘린체 몸통만 남아있다.\n목에서 피가 흐르고있다.\n카를로스의 말에 따르면 죽은지 3분도 안된 모양.";
         if (name == "현장 사진2")
