@@ -169,12 +169,14 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     [Header("Logue")]
     public GameObject logueParent;
     public GameObject logueBox;
+    public GameObject logueLine;
 
     [Header("Typing Settings")]
     private bool isSkipTyping;
     private Coroutine typingRoutine;
     private Coroutine argumentRoutine;
 
+    
 
     // 내부 변수
     private Coroutine argumentCoroutine;
@@ -908,7 +910,6 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             if (data == null)
             {
                 Debug.LogWarning($"{evName} 데이터를 EvidenceManager에서 찾을 수 없습니다. 기본 이미지로 생성합니다.");
-                // 선택 사항: 임시 데이터 생성
                 Sprite img = EvidenceManager.Instance.GetEvidenceImage(evName);
                 string desc = EvidenceManager.Instance.GetEvidenceExplanation(evName);
                 data = new EvidenceManager.Evidence(evName, desc, img);
@@ -998,6 +999,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // 6 로그 박스 생성
         GameObject logue = Instantiate(logueBox,logueParent.transform);
+        Instantiate(logueLine, logueParent.transform);
         logue.GetComponent<LogueBox>().LogueBoxUpdate(line.speaker,line.text);
 
         // 7. 타이핑 시작
@@ -1069,6 +1071,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
+        Instantiate(logueLine, logueParent.transform);
+
         // 입력창에서 엔터를 눌렀을 때 (입력이 완료되었을 때) 실행될 이벤트 연결
         if (cheatInputField != null)
         {

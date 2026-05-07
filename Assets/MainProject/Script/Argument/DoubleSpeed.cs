@@ -13,6 +13,10 @@ public class DoubleSpeed : MonoBehaviour
     public  int FRAME_INTERVAL = 26; // 스킵 속도 조절용 프레임 간격
     private int frameCount = 0;
 
+    [Header("Stop")]
+    public GameObject stopUi;
+    private bool isStop;
+
     // DoubleSpeed.cs 수정본
     void Update()
     {
@@ -37,6 +41,13 @@ public class DoubleSpeed : MonoBehaviour
         {
             ResetSpeed(); // 여기서 비로소 평상시 scale 1로 복구
         }
+
+
+        if (Input.GetKeyDown(KeyCode.Space) && ArgumentManager.instance.IsArgumentMode)
+        {
+            isStop = !isStop;
+            stopUi.SetActive(isStop);
+        }
     }
 
     private void ProcessSpeedUp()
@@ -57,8 +68,15 @@ public class DoubleSpeed : MonoBehaviour
         // 2. 논의 모드 (Argument Mode) -> 타임스케일 2배
         if (am.IsArgumentMode)
         {
-            SetTimeScale(2.0f);
-            ToggleVisuals(isArgument: true);
+            if (isStop)
+            {
+                SetTimeScale(0f);
+            }
+            else
+            {
+                SetTimeScale(2.0f);
+                ToggleVisuals(isArgument: true);
+            }
         }
         // 3. 일반 대화 모드 (Normal Dialogue) -> 빠르게 넘기기
         else
