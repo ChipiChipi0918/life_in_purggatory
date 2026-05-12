@@ -193,9 +193,9 @@ public class EvidenceManager : MonoBehaviour
         if (name == "빨간 봉랍") return ex_evidence[6];
         if (name == "소형 카메라") return ex_evidence[7];
         if (name == "기현상 - 사후재판") return ex_evidence[8];
-        if (name == "기현상 - 402호의 특성") return ex_evidence[8];
-        if (name == "기현상 - 정전") return ex_evidence[8];
-        if (name == "도둑맞은 문서") return ex_evidence[9];
+        if (name == "기현상 - 402호의 특성") return ex_evidence[9];
+        if (name == "기현상 - 정전") return ex_evidence[10];
+        if (name == "도둑맞은 문서") return ex_evidence[11];
 
         if (name == "Add Evidence") return ch1_evidence[0];
         if (name == "시몬이 남긴 쪽지") return ch1_evidence[1];
