@@ -196,6 +196,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     public  bool isMapPointOutShowingWrongFeedback = false; // 장소 지적 대사 중인지 체크
 
+    private int TutorialNum = 0;
+
     private ArgumentEvidenceButton currentEcidenceButtonSelected;
     private ArgumentActButton currentActButtonSelected;
     #endregion
@@ -408,10 +410,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         // 2. 루프 시작
         RestartArgumentLoop();
+        TutorialNum++;
     }
     private void RestartArgumentLoop()
     {
-        // 🔥 [추가] 논의 시작 UI 연출 실행 (Banner 애니메이션)
+        ArgumentTutorial.instance.TutorialOn(TutorialNum);
+
         UiManager.instance.ArgumentUiOn(true);
 
         // 대화창은 연출 중에 가려지도록 설정
@@ -453,6 +457,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
 
             StartCoroutine(ArgumentEndUIEndShowDialogue(block));
+
+            ArgumentTutorial.instance.TutorialOff(TutorialNum);
             return;
         }
         UpdateProgressUI(argumentLineIndex + 1);
@@ -771,7 +777,8 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     }
 
     // 루프가 끝나길 기다리지 않고 강제로 시스템을 정리하는 함수
-    private void ImmediateExitArgument()
+    private void 
+        ImmediateExitArgument()
     {
         Debug.Log("정답 확인 - 논의 루프 즉시 탈출 및 환경 복구");
 
@@ -1278,6 +1285,12 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             Debug.Log("증거품을 먼저 선택하세요.");
             EffectManager.instance.CameraShake();
             return;
+        }
+
+        if (DoubleSpeed.instance.isStop == true)
+        {
+            DoubleSpeed.instance.stopUi.SetActive(false);
+            DoubleSpeed.instance.isStop = false;
         }
 
         ArgumentBlock block = argumentBlocks[currentBlockIndex];

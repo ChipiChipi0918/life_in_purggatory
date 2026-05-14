@@ -10,30 +10,24 @@ public class ArgumentActButton : MonoBehaviour,
     IPointerClickHandler
 {
     public ArgumentManager.ActState actState;
-
     private EvidenceManager.Evidence data;
 
     public bool isHovered = false;
     public bool isSelected = false;
 
     private Color defaultColor;
-
     private RectTransform rect;
     private Image bg;
 
     private const float SHOW_X = 80f;
     private const float HIDE_X = 188.8423f;
 
-    private void Awake()
+    private void Start()
     {
         rect = GetComponent<RectTransform>();
         bg = GetComponent<Image>();
         defaultColor = bg.color;
     }
-
-    // ======================
-    // Pointer Events
-    // ======================
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -45,6 +39,7 @@ public class ArgumentActButton : MonoBehaviour,
     {
         isHovered = false;
 
+        // 선택된 상태가 아닐 때만 숨김
         if (!isSelected)
             Hide();
     }
@@ -54,23 +49,22 @@ public class ArgumentActButton : MonoBehaviour,
         Select();
     }
 
-    // ======================
-    // State Control
-    // ======================
-
     private void Show()
     {
+        rect.DOKill(); // 이전 애니메이션 정지
         rect.DOAnchorPosX(SHOW_X, 0.25f).SetUpdate(true);
     }
 
     public void Hide()
     {
+        rect.DOKill(); // 이전 애니메이션 정지
         rect.DOAnchorPosX(HIDE_X, 0.25f).SetUpdate(true);
     }
 
     public void Select()
     {
         SoundManager.instance.UiSelect();
+
         if (isSelected)
         {
             ArgumentManager.instance.currentAct = ArgumentManager.ActState.None;
@@ -80,8 +74,8 @@ public class ArgumentActButton : MonoBehaviour,
         {
             isSelected = true;
             bg.color = Color.red;
-
             ArgumentManager.instance.currentAct = actState;
+            Show(); // 선택 시 확실히 보여줌
         }
 
         ArgumentManager.instance.ArgumentSelectAct(this);
@@ -92,6 +86,8 @@ public class ArgumentActButton : MonoBehaviour,
         isSelected = false;
         bg.color = defaultColor;
 
-        Hide();
+        // 마우스가 버튼 위에 없다면 숨기고, 위에 있다면 Show 상태 유지
+        if (!isHovered)
+            Hide();
     }
 }
