@@ -1522,6 +1522,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     IEnumerator CorrectAnswer(float waitTime)
     {
+        ArgumentTutorial.instance.TutorialOff(0);
         currentState = FlowState.Idle;
         isObjectionAnim = true;
 

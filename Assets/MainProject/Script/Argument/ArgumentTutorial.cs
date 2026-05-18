@@ -1,17 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [System.Serializable]
 public class TutorialStep
 {
     public string stepName; // 에디터 식별용 이름
+
+    [TextArea]
+    public string stepDescription;
+
     public List<GameObject> objectsToActivate; // 이 단계에서 켜질 오브젝트들
 }
 
 public class ArgumentTutorial : MonoBehaviour
 {
     public static ArgumentTutorial instance;
+
+    public TextMeshProUGUI descriptionText;
 
     [Header("튜토리얼 단계 설정")]
     public List<TutorialStep> tutorialSteps = new List<TutorialStep>();

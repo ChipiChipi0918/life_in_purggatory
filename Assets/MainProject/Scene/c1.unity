@@ -4358,7 +4358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.9085387, b: 0.50377357, a: 0.05882353}
+  m_Color: {r: 1, g: 0.9689051, b: 0.8283019, a: 0.05882353}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -25675,7 +25675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.9098039, b: 0.5058824, a: 0.05882353}
+  m_Color: {r: 1, g: 0.972549, b: 0.83137256, a: 0.05882353}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -26276,16 +26276,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e1d9759c7c891d478444df53c3b467d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  descriptionText: {fileID: 525733838}
   tutorialSteps:
   - stepName: "\uB17C\uC758 \uC2DC\uC2A4\uD15C \uC124\uBA85"
+    stepDescription: "\uC6B0\uCE21\uC758 \uC99D\uAC70\uD488 \uD0ED\uACFC \uD589\uB3D9
+      \uD0ED\uC5D0\uC11C \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694\n\uC99D\uAC70\uD488\uACFC
+      \uD589\uB3D9\uC744 \uC120\uD0DD\uD558\uACE0 \uC0C1\uB300\uBC29\uC774 \uD558\uB294
+      \uB9D0\uC5D0 \uD5C8\uC810\uC744 \uCC3E\uC544 \uD074\uB9AD\uD558\uC5EC \uBC18\uB860\uD558\uC138\uC694\n"
     objectsToActivate:
     - {fileID: 224911481}
     - {fileID: 2047321535}
     - {fileID: 1234360817}
   - stepName: "\uC5EC\uB7EC \uC99D\uAC70\uD488"
-    objectsToActivate: []
+    stepDescription: "\uC774\uC81C\uBD80\uD130\uB294 \uC81C\uC2DC\uD560 \uC99D\uAC70\uD488\uACFC
+      \uBC18\uB860\uD574\uC57C\uD560 \uD0A4\uC6CC\uB4DC\uAC00 \uC5EC\uB7EC\uAC8C
+      \uB098\uC635\uB2C8\uB2E4 \uB300\uD654\uB97C \uBCF4\uACE0 \uBCF8\uC778\uC758
+      \uBC18\uB860\uC744 \uB4B7\uBC1B\uCE68\uD560 \uAC00\uC7A5 \uC801\uC808\uD55C
+      \uC99D\uAC70\uD488\uC744 \uC120\uD0DD\uD558\uC138\uC694."
+    objectsToActivate:
+    - {fileID: 224911481}
   - stepName: "\uCC2C\uC131 \uC2DC\uC2A4\uD15C"
-    objectsToActivate: []
+    stepDescription: "\uD589\uB3D9 \uD0ED\uC5D0 \uCC2C\uC131\uC774 \uCD94\uAC00\uB418\uC5C8\uC2B5\uB2C8\uB2E4
+      \uBC18\uB860\uC73C\uB85C \uB354\uC774\uC0C1 \uB17C\uC758\uB97C \uC774\uB04C\uC5B4\uAC08\uC9C0
+      \uBABB\uD560\uB54C\uB294 \uCC2C\uC131\uC744 \uC0AC\uC6A9\uD558\uC138\uC694\n\uCC2C\uC131
+      \uB610\uD55C \uBCF8\uC778\uC758 \uC8FC\uC7A5\uC744 \uB4B7\uBC1B\uCE68\uD560
+      \uC801\uC808\uD55C \uC99D\uAC70\uD488\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."
+    objectsToActivate:
+    - {fileID: 224911481}
   argumentActButtonCounterarument: {fileID: 1212543919598488224}
   argumentActButtonArgument: {fileID: 1874942170}
   argumentActButtonPerjury: {fileID: 797345726}
@@ -45486,7 +45503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.9098039, b: 0.5058824, a: 0.05882353}
+  m_Color: {r: 1, g: 0.972549, b: 0.83137256, a: 0.05882353}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
