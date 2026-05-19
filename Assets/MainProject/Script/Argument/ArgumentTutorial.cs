@@ -40,6 +40,8 @@ public class ArgumentTutorial : MonoBehaviour
     {
         if (argumentNumber < 0 || argumentNumber >= tutorialSteps.Count) return;
 
+        descriptionText.text = tutorialSteps[argumentNumber].stepDescription;
+
         // 해당 단계에 등록된 모든 오브젝트를 순회하며 활성화
         foreach (GameObject obj in tutorialSteps[argumentNumber].objectsToActivate)
         {
