@@ -186,8 +186,8 @@ public class EvidenceManager : MonoBehaviour
     {
         if (name == "Add Evidence") return ex_evidence[0];
         if (name == "권총") return ex_evidence[1];
-        if (name == "현장 사진1") return ex_evidence[3];
-        if (name == "현장 사진2") return ex_evidence[2];
+        if (name == "402호 현장 사진") return ex_evidence[3];
+        if (name == "테라스 현장 사진") return ex_evidence[2];
         if (name == "검") return ex_evidence[4];
         if (name == "금고") return ex_evidence[5];
         if (name == "빨간 봉랍") return ex_evidence[6];
@@ -211,9 +211,9 @@ public class EvidenceManager : MonoBehaviour
     {
         if (name == "권총")
             return "로넌에게서 빌린 권총.";
-        if (name == "현장 사진1")
+        if (name == "402호 현장 사진")
             return "402호에 베란다에서 찍은 시체 사진\n목이 잘린체 몸통만 남아있다.\n목에서 피가 흐르고있다.\n카를로스의 말에 따르면 죽은지 3분도 안된 모양.";
-        if (name == "현장 사진2")
+        if (name == "테라스 현장 사진")
             return "테라스에서 찍은 시체 사진\n목이 잘린체 머리만 남아있다.\n떨어진 위치에는 피가 터진듯 퍼져있다 아무래도 이곳에서 큰 충격을 받은 듯 한 모양.";
         if (name == "도둑맞은 문서")
             return "엘리나에게 받았다\n테라스에서 피해자의 머리와 함께 발견했다고 한다.";
