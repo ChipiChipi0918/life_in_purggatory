@@ -25,7 +25,22 @@ public class CharacterButton : MonoBehaviour
     private void SetCharacterInfo()
     {
         characterImgUi.sprite = characterImg;
-        characterNameUi.text = characterName;
         characterExplanationUi.text = characterExplanation;
+
+        string colorCode = "#D9D9D9";
+
+        if (DialogueDirector.instance != null)
+        {
+            if (DialogueDirector.instance.characterConfig.TryGetValue(characterName, out var data))
+                colorCode = data.colorCode;
+            else
+                colorCode = DialogueDirector.instance.characterConfig["Default"].colorCode;
+        }
+
+        string firstChar = characterName.Substring(0, 1);
+        string restName = characterName.Length > 1 ? characterName.Substring(1) : "";
+
+        characterNameUi.text =
+            $"<size=180%><color={colorCode}>{firstChar}</color></size>{restName}";
     }
 }

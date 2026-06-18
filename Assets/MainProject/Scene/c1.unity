@@ -1831,8 +1831,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImg: {fileID: 21300000, guid: 1147d38e2902a3b448d94c6de4067954, type: 3}
   characterName: "\uB85C\uB10C"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "305\uD638\r\n34\uC138\r\n\uB0A8\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uD638\uD154\uC5D0\uC11C \uC77C\uC5B4\uB09C \uC0AC\uAC74\uC744 \uC870\uC0AC\uD558\uAE30
+    \uC704\uD574 \r\n\uC2DC\uBAAC\uC5D0\uAC8C \uC758\uB8B0\uB97C \uB9E1\uAE34 \uB7F0\uB358
+    \uC9C0\uBD80 \uAC15\uB825\uACC4 \uD615\uC0AC.\r\n\uC2DC\uBAAC\uC758 \uC804 \uC218\uC0AC\uACFC
+    \uB3D9\uB8CC\uC774\uC790 \uC9C0\uAE08\uC740 \uAC04\uAC04\uC774 \uC5F0\uB77D\uD558\uB294
+    \uC0AC\uC774.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -6847,7 +6851,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0000076294, y: -404}
+  m_AnchoredPosition: {x: -0.0000076294, y: -471}
   m_SizeDelta: {x: 1500, y: 2400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &343853280
@@ -8326,8 +8330,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImg: {fileID: 21300000, guid: 0f2b6a145e0b7f048a5d5bb31fe94a44, type: 3}
   characterName: "\uB12C\uB9AC"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "306\uD638\r\n19\uC138\r\n\uC5EC\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC0B6\uC758 \uB8E8\uD2F4\uC774 \uC218\uBA74, \uC2DD\uC0AC, \uAC8C\uC784\uC778
+    \uC804\uD615\uC801\uC778 \uD3D0\uC778.\r\n\uBD80\uBAA8\uB2D8\uC758 \uC0AC\uACE0\uB85C
+    \uC778\uD574 \uB9CE\uC740 \uC720\uC0B0\uC744 \uBB3C\uB824\uBC1B\uC544 \uC0DD\uD65C\uC5D0\uB294
+    \uBB38\uC81C\uAC00 \uC5C6\uB2E4.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -11884,8 +11891,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImg: {fileID: 21300000, guid: b80693bffb7958040adaa820d2df49b6, type: 3}
   characterName: "\uCE74\uB97C\uB85C\uC2A4"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "405\uD638\r\n24\uC138\r\n\uB0A8\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC0DD\uBA85\uACF5\uD559\uC5D0 \uC885\uC0AC \uC911\uC778 \uC5F0\uAD6C\uC6D0.\r\n\uAE30\uD604\uC0C1\uACFC
+    \uC0DD\uBA85\uC758 \uC5F0\uAD00\uC131\uC5D0 \uB300\uD55C \uC5F0\uAD6C\uB97C \uD558\uAE30
+    \uC704\uD574 \r\n\uAE30\uD604\uC0C1\uC774 \uB2E4\uC218 \uBC1C\uC0DD\uD558\uB294
+    \uCE74\uCE20 \uD638\uD154\uC5D0 \uC219\uBC15 \uC911.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -15912,9 +15922,9 @@ RectTransform:
   - {fileID: 1039728755}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 189.42749, y: -148.23099}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &797345728
@@ -16841,8 +16851,8 @@ RectTransform:
   m_Children:
   - {fileID: 1993512635}
   - {fileID: 937662667}
-  - {fileID: 1035465455}
   - {fileID: 2136220661}
+  - {fileID: 1035465455}
   - {fileID: 596579049}
   - {fileID: 84631491}
   - {fileID: 1462319499}
@@ -20437,7 +20447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 95, y: -95}
+  m_AnchoredPosition: {x: 270, y: -95}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1035465456
@@ -20536,8 +20546,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImg: {fileID: 21300000, guid: 87b8b6f5443053f4595c7fdd31fc3471, type: 3}
   characterName: "\uC2DC\uBAAC"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "402\uD638\r\n21\uC138\r\n\uB0A8\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC790\uCE6D \uC138\uAE30\uC758 \uBA85\uD0D0\uC815\uC774\uC790 \uBB34\uC5C7\uC774\uB4E0
+    \uCC3E\uC544\uB0B4\uB294 \uCC9C\uC7AC \uD0D0\uC815.\r\n\uC61B \uB3D9\uB8CC\uC758
+    \uC758\uB8B0\uB97C \uBC1B\uC544 \uC0AC\uAC74\uC744 \uC870\uC0AC \uC911.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -22081,8 +22093,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImg: {fileID: 21300000, guid: e4aad0aabf0c87a4285ca9a066b986f3, type: 3}
   characterName: "\uC5D8\uB9AC\uB098"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "403\uD638\r\n18\uC138\r\n\uC5EC\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC2DC\uBAAC\uC758 \uC870\uC218\uC774\uC790 \uD0D0\uC815\uC744 \uAFC8\uAFB8\uB294
+    \uC18C\uB140.\r\n\uD559\uC5C5\uACFC \uC870\uC218 \uC77C\uC744 \uBCD1\uD589 \uC911\uC774\uB2E4.\r\n\uC131\uC801\uC740
+    \uAF64 \uC88B\uC740 \uD3B8.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -31013,12 +31027,12 @@ GameObject:
   - component: {fileID: 1440618662}
   - component: {fileID: 1440618665}
   m_Layer: 5
-  m_Name: "button-\uC9C1\uC6D0-\uD638\uD154\uB9AC\uC5B4"
+  m_Name: "button-\uC9C0\uBB34\uCD08"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1440618661
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31103,7 +31117,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: e9007045ee63a7b419b19ec9026048b7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -31133,10 +31147,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 110de7e1b9edd0f4cb99b5b8b4946a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterImg: {fileID: 21300000, guid: 87b8b6f5443053f4595c7fdd31fc3471, type: 3}
-  characterName: "\uC2DC\uBAAC"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterImg: {fileID: 21300000, guid: 1745accf360e12e4eb3ac3776e000302, type: 3}
+  characterName: "\uC9C0\uBB34\uCD08"
+  characterExplanation: "401\uD638\r\n47\uC138\r\n\uB0A8\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC804 \uC218\uC0AC\uACFC\uC758 \uD300\uC7A5.\r\n\uC2DC\uBAAC\uACFC \uB85C\uB10C\uC744
+    \uC544\uB4E4\uCC98\uB7FC \uC544\uAF08\uC9C0\uB9CC, \uBAA8\uC885\uC758 \uC774\uC720\uB85C
+    \uC218\uC0AC\uACFC\uB97C\r\n\uD574\uCCB4\uC2DC\uD0A8 \uD6C4 \uC7A0\uC801\uD588\uB2E4.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -31753,8 +31769,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImg: {fileID: 21300000, guid: 4fdb3a467f9b6c34bb4bd992566cecea, type: 3}
   characterName: "\uB9AC\uB514\uC544"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "401\uD638\r\n20\uC138\r\n\uC5EC\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC77C\uBCF8\uC5D0\uC11C \uC601\uAD6D\uC73C\uB85C \uB9DD\uBA85\uD55C \uC77C\uBCF8\uACC4
+    \uC601\uAD6D\uC778.\r\n\uB300\uD559\uC0DD\uC774\uBA70, \uC804\uD1B5\uBB34\uC608\uD559\uACFC\uB97C
+    \uB2E4\uB2CC\uB2E4.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -36874,7 +36892,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: b41c8e7c6a64620438b7a8c377feee8e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -36904,10 +36922,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 110de7e1b9edd0f4cb99b5b8b4946a0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterImg: {fileID: 21300000, guid: 87b8b6f5443053f4595c7fdd31fc3471, type: 3}
+  characterImg: {fileID: 21300000, guid: 027a897d05da667438e75065256dc0e0, type: 3}
   characterName: "\uCD1D\uC9C0\uBC30\uC778"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "??\uC138\r\n\uC5EC\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC77C\uB2E8\uC740 \uC18C\uB140\uB85C \uBCF4\uC774\uB294 \uC791\uC740 \uCCB4\uAD6C\uC758
+    \uC5EC\uC131.\r\n\uD638\uD154\uC758 \uBAA8\uB4E0 \uAD00\uB9AC\uB97C \uCC45\uC784\uC9C0\uACE0
+    \uC788\uB2E4.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -41323,9 +41343,9 @@ RectTransform:
   - {fileID: 225430882}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 189.42749, y: -92.645}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1874942172
@@ -47122,7 +47142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 270, y: -95}
+  m_AnchoredPosition: {x: 95, y: -95}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2136220662
@@ -47221,8 +47241,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImg: {fileID: 21300000, guid: 580bd153da92ae947a17f5f526192770, type: 3}
   characterName: "\uC140\uB9B0"
-  characterExplanation: "\uAC1D\uC2E4 : 404\uD638\n\uB098\uC774 : 17\uC138\n\uD2B9\uC774\uC0AC\uD56D
-    : \uC2DC\uBAAC\uC758 \uC870\uC218"
+  characterExplanation: "301\uD638\r\n26\uC138\r\n\uC5EC\uC131\r\n\r\n\uD2B9\uC774\uC0AC\uD56D:
+    \r\n\uC9C0\uBB34\uCD08 \uCF00\uC774\uC2A4\uC758 \uBE44\uC11C.\r\n\uC9C0\uBB34\uCD08
+    \uCF00\uC774\uC2A4\uC640 \uC5B4\uB9B4 \uC801\uBD80\uD130 \uC54C\uACE0 \uC9C0\uB0B4\uB358
+    \uC0AC\uC774, \r\n\uBE44\uC11C\uBCF4\uB2E8 \uBD80\uB140 \uAD00\uACC4\uC5D0 \uAC00\uAE5D\uB2E4.\r"
   characterImgUi: {fileID: 343853280}
   characterNameUi: {fileID: 609124248}
   characterExplanationUi: {fileID: 1690471461}
@@ -48105,9 +48127,9 @@ RectTransform:
   - {fileID: 4864072961553108206}
   m_Father: {fileID: 1436784309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 189.42749, y: -37.059}
   m_SizeDelta: {x: 377.685, y: 46.586}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8386969449087630721
