@@ -24,6 +24,9 @@ public class CharacterButton : MonoBehaviour
 
     private void SetCharacterInfo()
     {
+
+        SoundManager.instance.UiSelect();
+
         characterImgUi.sprite = characterImg;
         characterExplanationUi.text = characterExplanation;
 
