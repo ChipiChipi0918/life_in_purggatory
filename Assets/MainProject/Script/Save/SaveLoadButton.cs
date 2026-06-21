@@ -60,7 +60,7 @@ public class SaveLoadButton : MonoBehaviour
         }
         else
         {
-            text.text = $"ภ๚ภๅตส\nLine {data.lineIndex}";
+            text.text = $"ภ๚ภๅตส\n{data.currentPhase}\nLine {data.lineIndex}";
 
             if (image != null)
                 image.sprite = UseSlot;

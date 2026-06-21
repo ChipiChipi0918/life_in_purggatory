@@ -224,7 +224,7 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         if (IsArgumentMode) CheckHover();
 
         // 클릭 입력 처리
-        if (Input.GetMouseButtonDown(0) && UiManager.instance.isMouseUiHover==false) HandleInput();
+        if (Input.GetMouseButtonDown(0) && !UiManager.instance.isMouseUiHover && !UiManager.instance.isTitle) HandleInput();
     }
 
     private void LateUpdate()
@@ -244,13 +244,11 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         StopAllCoroutines();
 
         currentBlockIndex = data.currentBlockIndex;
-
-        SynchronizeStateToLine(data.lineIndex);
+        SynchronizeStateToLine(data.lineIndex, data.currentBlockIndex);
 
         lineIndex = data.lineIndex;
 
         ResetUI();
-
         currentState = FlowState.Idle;
 
         PlayNext();
@@ -274,10 +272,13 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     public void PlayNext()
     {
-        // UI 애니메이션 중이거나 호텔 정보 창이 켜져있거나 Ui가 꺼져있으면 예외처리
-        if (UiManager.instance.isUiAnim || UiManager.instance.isHotelInformation || UiManager.instance.isLogue || UiManager.instance.isUiOff || isObjectionAnim) return;
+        if (UiManager.instance.isUiAnim ||
+            UiManager.instance.isHotelInformation ||
+            UiManager.instance.isLogue ||
+            UiManager.instance.isUiOff ||
+            isObjectionAnim)
+            return;
 
-        // 1. 전체 대화 종료 체크
         if (lineIndex >= currentLines.Count)
         {
             EndAll();
@@ -286,27 +287,79 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
         DialogueLine line = currentLines[lineIndex];
 
-        // 2. 대화 타입에 따른 분기
+        lineIndex++;
+
+        ExecuteLine(line, false);
+    }
+    private void ExecuteLine(DialogueLine line, bool replay)
+    {
         if (line.type == DialogueType.Argument)
         {
-            if (!IsArgumentMode) StartArgumentMode();
-            else NextArgumentLine();
+            if (!IsArgumentMode)
+                StartArgumentMode();
+            else
+                NextArgumentLine();
+
+            return;
         }
-        else if (line.type == DialogueType.PlaceSelection) // 🔥 [추가] 장소 지적 처리
+
+        if (line.type == DialogueType.PlaceSelection)
         {
-            lineIndex++; // 인덱스 증가
-            StartPlaceSelection(line);
+            if (!replay)
+                StartPlaceSelection(line);
+
+            return;
         }
-        else if (line.isChoice)
+
+        if (line.isChoice)
         {
-            lineIndex++;
-            ShowChoice(line);
+            if (!replay)
+                ShowChoice(line);
+
+            return;
         }
-        else // 일반 Dialogue
+
+        if (!replay)
         {
-            lineIndex++;
             ShowDialogue(line);
         }
+
+        ApplyLineState(line);
+    }
+    private void ApplyLineState(DialogueLine line)
+    {
+        // Character On
+        DialogueDirector.instance.CharacterOn(line.charOnList);
+
+        // Character Off
+        DialogueDirector.instance.CharacterOff(line.charOffList);
+
+        // 표정
+        if (line.charStateList.Count > 0)
+            DialogueDirector.instance.CharacterState(line.speaker, line.charStateList);
+
+        // 배경
+        if (!string.IsNullOrEmpty(line.background))
+            BackgroundManager.instance.DailyMapUpdate(line.background);
+
+        // BGM
+        if (!string.IsNullOrEmpty(line.bgm))
+        {
+            if (line.bgm == "None")
+                SoundManager.instance.StopBGM();
+            else
+                SoundManager.instance.BGM(line.bgm);
+        }
+
+        // 카메라
+        if (line.cameraPos != Vector3.zero)
+            Camera.main.transform.position = line.cameraPos;
+
+        // 증거
+        if (!string.IsNullOrEmpty(line.addEvidence))
+            EvidenceManager.Instance.AddEvidence(line.addEvidence);
+
+        // 앞으로 추가되는 연출도 전부 여기
     }
 
     private void HandleInput()
@@ -986,58 +1039,83 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
     #endregion
 
     #region Dialogue System (General)
-
     private void ShowDialogue(DialogueLine line)
     {
         currentState = FlowState.Dialogue_Typing;
         dialoguePanel.SetActive(true);
 
-        // 1. 카메라 & 증거품 처리
+        // ★ 상태 변경
+        ApplyLineState(line, false);
+
+        // 로그
+        GameObject logue = Instantiate(logueBox, logueParent.transform);
+        Instantiate(logueLine, logueParent.transform);
+        logue.GetComponent<LogueBox>().LogueBoxUpdate(line.speaker, line.text);
+
+        // 타이핑
+        if (typingRoutine != null)
+            StopCoroutine(typingRoutine);
+
+        typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text, line.textTime));
+    }
+    private void ApplyLineState(DialogueLine line, bool isReplay)
+    {
+        // 1. 카메라 & 증거품
         if (DialogueFlowManager.instance.currentPhase == DialogueFlowManager.Phase.Judgment)
             DialogueDirector.instance.TpArgumentCam(line.speaker);
 
         DialogueDirector.instance.ProcessEvidenceEffects(line.addEvidence, line.showEvidence);
         DialogueDirector.instance.ProcessScreenEffects(line.effect);
 
-        // 2. UI 텍스트 설정
-        DialogueDirector.instance.UpdateNameTag(line.speaker);
+        // 2. 이름
+        if (!isReplay)
+            DialogueDirector.instance.UpdateNameTag(line.speaker);
 
-        // 3. (캐릭터 or 카메라) 무브 & 캐릭터 스테이트 설정
-        if(line.characterPos!=Vector3.zero)
-            DialogueDirector.instance.MoveCharacter(line.speaker, 1 ,line.characterPos);
+        // 3. 위치
+        if (line.characterPos != Vector3.zero)
+        {
+            if (isReplay)
+                DialogueDirector.instance.SetCharacterPosition(line.speaker, line.characterPos);   // 즉시 이동
+            else
+                DialogueDirector.instance.MoveCharacter(line.speaker, 1, line.characterPos);
+        }
 
         if (line.cameraPos != Vector3.zero)
-            DialogueDirector.instance.MoveCamera(1, line.cameraPos);
+        {
+            if (isReplay)
+                DialogueDirector.instance.SetCameraPosition(line.cameraPos);
+            else
+                DialogueDirector.instance.MoveCamera(1, line.cameraPos);
+        }
 
+        // 4. 표정
         DialogueDirector.instance.CharacterState(line.speaker, line.charStateList);
 
-        // 4. 캐릭터 켜기 & 끄기
-        if (line.charOnList != null && line.charOnList.Count > 0)
-        {
-            DialogueDirector.instance.CharacterOn(line.charOnList);
-        }
+        // 5. 등장 / 퇴장
+        DialogueDirector.instance.CharacterOn(line.charOnList);
+        DialogueDirector.instance.CharacterOff(line.charOffList);
 
-        if (line.charOffList != null && line.charOffList.Count > 0)
-        {
-            DialogueDirector.instance.CharacterOff(line.charOffList);
-        }
-
-
-        // 5. 배경 & BGM & SFX 업데이트
+        // 6. 배경
         BackgroundManager.instance.DailyMapUpdate(line.background);
 
+        // 7. 사운드
         SoundManager.instance.BGM(line.bgm);
-        SoundManager.instance.SFX(line.soundEffect);
 
-        // 6 로그 박스 생성
-        GameObject logue = Instantiate(logueBox,logueParent.transform);
-        Instantiate(logueLine, logueParent.transform);
-        logue.GetComponent<LogueBox>().LogueBoxUpdate(line.speaker,line.text);
+        if (!isReplay)
+            SoundManager.instance.SFX(line.soundEffect);
 
-        // 7. 타이핑 시작
-        if (typingRoutine != null) StopCoroutine(typingRoutine);
-        typingRoutine = StartCoroutine(TypeRoutine(line.speaker, line.text, line.textTime));
+        // 논의용 상태도 같이 복원
+        if (line.type == DialogueType.Argument &&
+            currentBlockIndex >= 0 &&
+            currentBlockIndex < argumentBlocks.Count)
+        {
+            ArgumentBlock block = argumentBlocks[currentBlockIndex];
+
+            correctEvidenceName = block.correctEvidence;
+            totalArgumentLines = block.lines.Count;
+        }
     }
+
     IEnumerator TypeRoutine(string speaker, string text, float time)
     {
         yield return new WaitForSecondsRealtime(0.02f);
@@ -1133,7 +1211,9 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
                     EffectManager.instance.ResetAllEffects();
                 }
                 CheatJumpWithEvidence(targetIndex);
-                SynchronizeStateToLine(targetIndex);
+                int targetBlock = CalculateBlockIndex(targetIndex);
+
+                SynchronizeStateToLine(targetIndex, targetBlock);
 
                 // 3. 각종 대기 플래그 강제 해제
                 isSkipTyping = true;
@@ -1172,47 +1252,76 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
         cheatInputField.text = "";
         cheatInputField.DeactivateInputField(); // 다음 플레이를 위해 인풋 포커스 해제
     }
-    private void SynchronizeStateToLine(int targetIndex)
+    private int CalculateBlockIndex(int targetIndex)
     {
-        // 🔥 i < targetIndex (목표 대사 '직전' 까지만 연출을 덮어씌웁니다)
+        int block = 0;
+
         for (int i = 0; i < targetIndex; i++)
         {
-            DialogueLine line = currentLines[i];
-
-            // 1. 캐릭터 On / Off (기존 DialogueDirector의 리스트 기반 함수 그대로 사용)
-            DialogueDirector.instance.CharacterOn(line.charOnList);
-            DialogueDirector.instance.CharacterOff(line.charOffList);
-
-            // 2. 캐릭터 상태/표정
-            if (line.charStateList.Count > 0)
+            if (currentLines[i].type == DialogueType.Argument)
             {
-                DialogueDirector.instance.CharacterState(line.speaker, line.charStateList);
-            }
+                while (i + 1 < targetIndex &&
+                       currentLines[i + 1].type == DialogueType.Argument)
+                {
+                    i++;
+                }
 
-            // 3. 배경 & BGM (보유 중인 매니저에 맞춰 연결)
-            if (!string.IsNullOrEmpty(line.background))
-            {
-                BackgroundManager.instance.DailyMapUpdate(line.background);
-            }
-
-            if (!string.IsNullOrEmpty(line.bgm))
-            {
-                if (line.bgm == "None") SoundManager.instance.StopBGM();
-                // else SoundManager.instance.PlayBGM(line.bgm);
-            }
-
-            // 4. 증거품 획득
-            if (!string.IsNullOrEmpty(line.addEvidence))
-            {
-                // EvidenceManager.Instance.AddEvidence(line.addEvidence);
+                block++;
             }
         }
 
-        // 5. 카메라 위치는 목표 대사의 위치로 즉시 순간이동
-        if (currentLines[targetIndex].cameraPos != Vector3.zero)
+        return Mathf.Clamp(block, 0, Mathf.Max(0, argumentBlocks.Count - 1));
+    }
+
+    private void SynchronizeStateToLine(int targetIndex, int targetBlock)
+    {
+        ClearScene();
+
+        currentBlockIndex = targetBlock;
+
+        Debug.Log($"targetIndex : {targetIndex}");
+        Debug.Log($"currentLines.Count : {currentLines.Count}");
+
+        targetIndex = Mathf.Min(targetIndex, currentLines.Count);
+
+        for (int i = 0; i < targetIndex; i++)
         {
-            Camera.main.transform.position = currentLines[targetIndex].cameraPos;
+            ApplyLineState(currentLines[i], true);
         }
+
+        if (currentBlockIndex < argumentBlocks.Count)
+        {
+            ArgumentBlock block = argumentBlocks[currentBlockIndex];
+
+            correctEvidenceName = block.correctEvidence;
+            totalArgumentLines = block.lines.Count;
+        }
+    }
+
+    private void ClearScene()
+    {
+        StopAllCoroutines();
+
+        dialoguePanel.SetActive(false);
+        choicePanel.SetActive(false);
+
+        argumentTextLeft.gameObject.SetActive(false);
+        argumentTextRight.gameObject.SetActive(false);
+
+        ClearAllEvidenceButtons();
+
+        UiManager.instance.isUiAnim = false;
+        UiManager.instance.camRotate(Vector3.zero, 0);
+
+        waitingArgumentEndText = false;
+        waitingExitDialogue = false;
+
+        isChoiceShowingWrongFeedback = false;
+        isMapPointOutShowingWrongFeedback = false;
+        isArgumentWrongFeedback = false;
+
+        currentAct = ActState.None;
+        selectedEvidenceName = null;
     }
 
     public void CheatJumpWithEvidence(int targetIndex)

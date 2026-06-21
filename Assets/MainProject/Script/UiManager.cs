@@ -15,6 +15,13 @@ public class UiManager : MonoBehaviour
 
     public bool isMouseUiHover = false;
 
+    [Header("타이틀")]
+    public bool isTitle=true;
+    [SerializeField] private GameObject title;
+    [SerializeField] private GameObject titleLoad;
+
+    [SerializeField] private GameObject titleLoading;
+
 
     [Header("팝업 UI 관리 UI들")]
     public RectTransform popupUiOnPos;
@@ -81,6 +88,8 @@ public class UiManager : MonoBehaviour
     {
         if (instance == null) instance = this;
 
+        isTitle = true;
+
         argumentStartUi.localScale = new Vector3(1, 0, 1);
         argumentEndUi.localScale = new Vector3(1, 0, 1);
     }
@@ -113,6 +122,24 @@ public class UiManager : MonoBehaviour
         {
             On_LoadUi();
         }
+    }
+
+    public void TitleLoad()
+    {
+        titleLoad.SetActive(true);
+    }
+    public void TitleOff()
+    {
+        StartCoroutine(TitleOffRoutine());
+    }
+
+    IEnumerator TitleOffRoutine()
+    {
+        titleLoading.SetActive(true);
+        yield return new WaitForSecondsRealtime(1.5f);
+        isTitle = false;
+        title.SetActive(false);
+        isMouseUiHover = false;
     }
 
     public void UiHover(bool on)

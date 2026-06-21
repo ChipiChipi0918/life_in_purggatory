@@ -70,6 +70,21 @@ public class DialogueDirector : MonoBehaviour
         }
     }
 
+    public void SetCharacterPosition(string name, Vector3 pos)
+    {
+        if (characterConfig.TryGetValue(name, out var data) && data.obj != null)
+        {
+            Transform t = data.obj.bodyRenderer.transform;
+            t.DOKill();
+            t.localPosition = pos;
+        }
+    }
+    public void SetCameraPosition(Vector3 pos)
+    {
+        camTransform.DOKill();
+        camTransform.localPosition = pos;
+    }
+
     #region Camera & Character Control
     public void MoveArgumentCam(string name, float xOffset, float duration = 0.5f)
     {

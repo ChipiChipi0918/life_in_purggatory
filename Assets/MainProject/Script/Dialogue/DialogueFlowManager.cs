@@ -40,7 +40,17 @@ public class DialogueFlowManager : MonoBehaviour
             yield return loader.LoadArgumentCSV(OnLoaded);
         }
     }
+    public IEnumerator LoadPhase(Phase phase)
+    {
+        currentPhase = phase;
 
+        allLines.Clear();
+
+        if (phase == Phase.Daily)
+            yield return loader.LoadDialogueCSV(OnLoaded);
+        else if (phase == Phase.Judgment)
+            yield return loader.LoadArgumentCSV(OnLoaded);
+    }
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -64,7 +74,10 @@ public class DialogueFlowManager : MonoBehaviour
             Debug.Log("모든 파트 종료");
         }
     }
-
+    public List<DialogueLine> GetAllLines()
+    {
+        return allLines;
+    }
 
     IEnumerator StartNextPhase()
     {
