@@ -96,10 +96,10 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639145336598974797
+  lastModified: 639176792255753895
   FileSizes:
   - Name: Desktop
-    Value: 533024
+    Value: 420352
   Exists: 1
 --- !u!114 &-5792347770426597061
 MonoBehaviour:
@@ -148,7 +148,7 @@ MonoBehaviour:
     Data4: 500668080
   Banks:
   - {fileID: -6127807448926823122}
-  IsStream: 1
+  IsStream: 0
   Is3D: 0
   IsOneShot: 1
   Parameters: []
@@ -197,7 +197,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639145336598949284
+  lastModified: 639176792255113444
   FileSizes:
   - Name: Desktop
     Value: 1698
@@ -244,7 +244,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 639136438224388313
+  lastModified: 639176792253636183
   FileSizes:
   - Name: Desktop
     Value: 5006208
@@ -293,7 +293,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -1843200061435694460}
   cacheVersion: 131849
-  cacheTime: 639145336598974797
+  cacheTime: 639176792256182408
   SerializableEventsDict:
   - key: event:/Ui_Sound1
     index: 0
@@ -346,7 +346,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639145336598944225
+  lastModified: 639176792255103441
   FileSizes:
   - Name: Desktop
     Value: 91488
@@ -475,7 +475,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Dialog.bank
   Name: Dialog
   StudioPath: bank:/Dialog
-  lastModified: 639136426943307149
+  lastModified: 639176792253988342
   FileSizes:
   - Name: Desktop
     Value: 3168
@@ -657,7 +657,7 @@ MonoBehaviour:
   Path: Life-In-Purgatory_FMOD/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639136426947495750
+  lastModified: 639176792256182408
   FileSizes:
   - Name: Desktop
     Value: 22944

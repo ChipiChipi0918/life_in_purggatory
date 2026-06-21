@@ -197,6 +197,8 @@ public class UiManager : MonoBehaviour
         {
             isUiOff = false;
             allUi.SetActive(true);
+
+            isMouseUiHover = false;
         }
     }
 
@@ -219,6 +221,7 @@ public class UiManager : MonoBehaviour
             isSave = false;
             isPopupUiOn = false;
             save.SetActive(false);
+            isMouseUiHover = false;
         }
     }
 

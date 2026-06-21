@@ -36,7 +36,10 @@ public class SaveLoadButton : MonoBehaviour
         if (isSaveButton)
         {
             SaveManager.Instance.Save(slotNumber);
-            RefreshText();   // 저장 후 즉시 갱신
+            foreach (SaveLoadButton button in FindObjectsOfType<SaveLoadButton>(true))
+            {
+                button.RefreshText();
+            }
         }
         else
         {
