@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static Unity.Collections.AllocatorManager;
-
+using System.IO;
 using System.Text.RegularExpressions;
 
 public static class ArgumentTextFormatter
@@ -200,6 +200,10 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
 
     private ArgumentEvidenceButton currentEcidenceButtonSelected;
     private ArgumentActButton currentActButtonSelected;
+
+
+    public int CurrentLineIndex => lineIndex;
+    public int CurrentBlockIndex => currentBlockIndex;
     #endregion
 
     private void Awake()
@@ -231,6 +235,27 @@ public class ArgumentManager : MonoBehaviour, IPointerClickHandler
             isSkipTyping = true;
         }
     }
+
+
+    #region 불러오기
+
+    public void LoadGame(SaveData data)
+    {
+        StopAllCoroutines();
+
+        currentBlockIndex = data.currentBlockIndex;
+
+        SynchronizeStateToLine(data.lineIndex);
+
+        lineIndex = data.lineIndex;
+
+        ResetUI();
+
+        currentState = FlowState.Idle;
+
+        PlayNext();
+    }
+    #endregion
 
     #region Core Flow (State Machine)
 

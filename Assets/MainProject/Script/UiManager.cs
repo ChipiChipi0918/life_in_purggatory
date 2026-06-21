@@ -52,6 +52,12 @@ public class UiManager : MonoBehaviour
     public RectTransform hotelInformation;
     public bool isHotelInformation;
 
+    [Header("저장/불러오기")]
+    public GameObject save;
+    public bool isSave;
+    public GameObject load;
+    public bool isLoad;
+
     [Header("Ui Off")] //f3
     public GameObject allUi;
     public bool isUiOff=true;
@@ -97,6 +103,21 @@ public class UiManager : MonoBehaviour
         {
             On_OffUi();
         }
+
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            On_SaveUi();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            On_LoadUi();
+        }
+    }
+
+    public void UiHover(bool on)
+    {
+        isMouseUiHover = on;
     }
 
     public void PopupButtonsOn()
@@ -149,6 +170,50 @@ public class UiManager : MonoBehaviour
         {
             isUiOff = false;
             allUi.SetActive(true);
+        }
+    }
+
+    public void On_SaveUi()
+    {
+        SoundManager.instance.UiSelect();
+
+        if (!isSave && !isUiAnim &&
+            !isLogue &&
+            !isHotelInformation &&
+            !isLoad &&
+            !isMapPointOut)
+        {
+            isSave = true;
+            isPopupUiOn = true;
+            save.SetActive(true);
+        }
+        else
+        {
+            isSave = false;
+            isPopupUiOn = false;
+            save.SetActive(false);
+        }
+    }
+
+    public void On_LoadUi()
+    {
+        SoundManager.instance.UiSelect();
+
+        if (!isLoad && !isUiAnim &&
+            !isLogue &&
+            !isHotelInformation &&
+            !isSave &&
+            !isMapPointOut)
+        {
+            isPopupUiOn = true;
+            isLoad = true;
+            load.SetActive(true);
+        }
+        else
+        {
+            isPopupUiOn = false;
+            isLoad = false;
+            load.SetActive(false);
         }
     }
 

@@ -37,6 +37,12 @@ public class HpManager : MonoBehaviour
         SetHpImg();
     }
 
+    public void SetHp(int hp)
+    {
+        nowHp = hp;
+
+        SetHpImg();
+    }
     public void DamageAnim()
     {
         hpUiAnim.SetTrigger("Damage");
